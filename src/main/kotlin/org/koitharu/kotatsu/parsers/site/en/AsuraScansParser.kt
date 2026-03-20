@@ -163,6 +163,7 @@ internal class AsuraScansParser(context: MangaLoaderContext) :
 			)
 		}
 		val author = doc.selectFirst("div.grid > div:has(h3:eq(0):containsOwn(Author)) > h3:eq(1)")?.text().orEmpty()
+		val cutoffTime = System.currentTimeMillis() - CHAPTER_HIDE_WINDOW_MS
 		return manga.copy(
 			title = doc.selectFirst("article h1")
 				?.text()
@@ -213,6 +214,8 @@ internal class AsuraScansParser(context: MangaLoaderContext) :
 					branch = null,
 					source = source,
 				)
+			}.filter { chapter ->
+				chapter.uploadDate == 0L || chapter.uploadDate <= cutoffTime
 			},
 		)
 	}
@@ -308,6 +311,7 @@ internal class AsuraScansParser(context: MangaLoaderContext) :
 	}
 
 	private companion object {
+		private const val CHAPTER_HIDE_WINDOW_MS = 6L * 60L * 60L * 1000L
 		private val chapterNumberRegex = Regex("""Chapter\s+(\d+(?:\.\d+)?)""", RegexOption.IGNORE_CASE)
 		private val pageUrlRegex = Regex(""""url":\s*\[0,\s*"([^"]+)"""")
 		private val ASURA_GENRES = listOf(
