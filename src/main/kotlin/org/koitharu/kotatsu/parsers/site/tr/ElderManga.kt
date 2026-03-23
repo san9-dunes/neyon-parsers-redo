@@ -221,13 +221,13 @@ internal class ElderManga(context: MangaLoaderContext):
         val response = runCatching { webClient.httpGet(url) }.getOrNull() ?: return null
         return response.use { res ->
             val doc = runCatching { res.parseHtml() }.getOrNull() ?: return HttpDocumentResult.Failed
-            if (hasValidElderContent(doc)) {
-                return HttpDocumentResult.Success(doc)
-            }
             if (isShieldVerificationPage(doc)) {
                 return HttpDocumentResult.SecondaryVerification
             }
-            HttpDocumentResult.CloudflareChallenge
+            if (isCloudflareChallengePage(doc)) {
+                return HttpDocumentResult.CloudflareChallenge
+            }
+            HttpDocumentResult.Success(doc)
         }
     }
 
@@ -244,8 +244,11 @@ internal class ElderManga(context: MangaLoaderContext):
         if (isShieldVerificationPage(doc)) {
             return null
         }
-        context.requestBrowserAction(this, url)
-        return null
+        if (isCloudflareChallengePage(doc)) {
+            context.requestBrowserAction(this, url)
+            return null
+        }
+        return doc
     }
 
     private fun decodeWebViewHtml(raw: String): String {
@@ -336,6 +339,7 @@ internal class ElderManga(context: MangaLoaderContext):
 
                 return new Promise(resolve => {
                     let observer = null;
+                    let stableTimer = null;
 
                     const isVerificationPage = () => {
                         const html = (document.documentElement ? document.documentElement.outerHTML : '').toLowerCase();
@@ -373,14 +377,31 @@ internal class ElderManga(context: MangaLoaderContext):
                     };
 
                     const finish = () => {
+                        if (stableTimer) {
+                            clearTimeout(stableTimer);
+                            stableTimer = null;
+                        }
                         if (observer) {
                             observer.disconnect();
                         }
                         resolve(document.documentElement ? document.documentElement.outerHTML : '');
                     };
 
+                    const scheduleStableFinish = () => {
+                        if (stableTimer) {
+                            clearTimeout(stableTimer);
+                        }
+                        stableTimer = setTimeout(() => {
+                            if (hasElderContent() && !isVerificationPage()) {
+                                finish();
+                            }
+                        }, 1200);
+                    };
+
                     const waitForContent = start => {
-                        if ((hasElderContent() && !isVerificationPage()) || Date.now() - start > 4000) {
+                        if (hasElderContent() && !isVerificationPage()) {
+                            scheduleStableFinish();
+                        } else if (Date.now() - start > 5000) {
                             finish();
                         } else {
                             setTimeout(() => waitForContent(start), 200);
@@ -398,7 +419,7 @@ internal class ElderManga(context: MangaLoaderContext):
 
                     observer = new MutationObserver(() => {
                         if (hasElderContent() && !isVerificationPage()) {
-                            finish();
+                            scheduleStableFinish();
                         }
                     });
                     if (document.documentElement) {

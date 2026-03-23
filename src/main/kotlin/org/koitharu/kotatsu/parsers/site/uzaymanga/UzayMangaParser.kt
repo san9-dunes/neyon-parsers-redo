@@ -462,13 +462,13 @@ internal abstract class UzayMangaParser(
 		val response = runCatching { webClient.httpGet(url, extraHeaders = siteHeaders()) }.getOrNull() ?: return null
 		return response.use { res ->
 			val doc = runCatching { res.parseHtml() }.getOrNull() ?: return HttpDocumentResult.Failed
-			if (hasValidUzayContent(doc)) {
-				return HttpDocumentResult.Success(doc)
-			}
 			if (isShieldVerificationPage(doc)) {
 				return HttpDocumentResult.SecondaryVerification
 			}
-			HttpDocumentResult.CloudflareChallenge
+			if (isCloudflareChallengePage(doc)) {
+				return HttpDocumentResult.CloudflareChallenge
+			}
+			HttpDocumentResult.Success(doc)
 		}
 	}
 
@@ -485,15 +485,18 @@ internal abstract class UzayMangaParser(
 		if (isShieldVerificationPage(doc)) {
 			return null
 		}
-		context.requestBrowserAction(this, url)
-		return null
+		if (isCloudflareChallengePage(doc)) {
+			context.requestBrowserAction(this, url)
+			return null
+		}
+		return doc
 	}
 
 	private suspend fun fetchApiRaw(url: String): String {
 		val raw = runCatching {
 			webClient.httpGet(url = url, extraHeaders = siteHeaders()).parseRaw()
 		}.getOrNull()
-		if (!raw.isNullOrBlank() && !isShieldVerificationPage(raw)) {
+		if (!raw.isNullOrBlank() && !isShieldVerificationPage(raw) && !isCloudflareChallengePage(raw)) {
 			return raw
 		}
 		loadSiteDocument("https://$domain/search")
@@ -597,6 +600,7 @@ internal abstract class UzayMangaParser(
 
 				return new Promise(resolve => {
 					let observer = null;
+					let stableTimer = null;
 
 					const isVerificationPage = () => {
 						const html = (document.documentElement ? document.documentElement.outerHTML : '').toLowerCase();
@@ -634,14 +638,31 @@ internal abstract class UzayMangaParser(
 					};
 
 					const finish = () => {
+						if (stableTimer) {
+							clearTimeout(stableTimer);
+							stableTimer = null;
+						}
 						if (observer) {
 							observer.disconnect();
 						}
 						resolve(document.documentElement ? document.documentElement.outerHTML : '');
 					};
 
+					const scheduleStableFinish = () => {
+						if (stableTimer) {
+							clearTimeout(stableTimer);
+						}
+						stableTimer = setTimeout(() => {
+							if (hasUzayContent() && !isVerificationPage()) {
+								finish();
+							}
+						}, 1200);
+					};
+
 					const waitForContent = start => {
-						if ((hasUzayContent() && !isVerificationPage()) || Date.now() - start > 4000) {
+						if (hasUzayContent() && !isVerificationPage()) {
+							scheduleStableFinish();
+						} else if (Date.now() - start > 5000) {
 							finish();
 						} else {
 							setTimeout(() => waitForContent(start), 200);
@@ -659,7 +680,7 @@ internal abstract class UzayMangaParser(
 
 					observer = new MutationObserver(() => {
 						if (hasUzayContent() && !isVerificationPage()) {
-							finish();
+							scheduleStableFinish();
 						}
 					});
 					if (document.documentElement) {
