@@ -129,14 +129,16 @@ internal class MangaCloud(context: MangaLoaderContext) :
 					else -> {}
 				}
 			}
-			order?.let {
-				when (it) {
-					SortOrder.NEWEST -> put("sort", "created_date-DESC")
-					SortOrder.ALPHABETICAL -> put("sort", "title-ASC")
-					SortOrder.ALPHABETICAL_DESC -> put("sort", "title-DESC")
-					SortOrder.UPDATED -> put("sort", "updated_date-DESC")
-					SortOrder.RATING -> put("sort", "rating")
-					else -> {}
+			if (filter.query.isNullOrEmpty()) {
+				order?.let {
+					when (it) {
+						SortOrder.NEWEST -> put("sort", "created_date-DESC")
+						SortOrder.ALPHABETICAL -> put("sort", "title-ASC")
+						SortOrder.ALPHABETICAL_DESC -> put("sort", "title-DESC")
+						SortOrder.UPDATED -> put("sort", "updated_date-DESC")
+						SortOrder.RATING -> put("sort", "rating")
+						else -> {}
+					}
 				}
 			}
 			filter.states.firstOrNull()?.let { state ->
@@ -217,10 +219,6 @@ internal class MangaCloud(context: MangaLoaderContext) :
 				val chapterTitle = buildString {
 					append("Chapter ")
 					append(number.toString().substringBefore(".0"))
-					name?.let {
-						append(" ")
-						append(it)
-					}
 				}
 
 				chapters.add(

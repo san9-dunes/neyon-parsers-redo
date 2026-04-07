@@ -337,7 +337,7 @@ internal class Mangadotnet(context: MangaLoaderContext) :
 			chaptersByTeam.getOrPut(teamName) { mutableListOf() }.add(chapter)
 		}
 
-		val allChapterNumbers = allChapters.map { it.optDouble("chapter_number", 0.0).toFloat() }.toSet()
+		val allChapterNumbers = allChapters.map { it.optDouble("chapter_number", 0.0).toFloat() }.toSet().sorted()
 
 		val chaptersBuilder = ChaptersListBuilder(allChapters.size * chaptersByTeam.size)
 
