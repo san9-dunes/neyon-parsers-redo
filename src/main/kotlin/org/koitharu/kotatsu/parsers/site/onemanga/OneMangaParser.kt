@@ -28,8 +28,9 @@ internal abstract class OneMangaParser(
 	override suspend fun getFilterOptions() = MangaListFilterOptions()
 
 	override suspend fun getList(order: SortOrder, filter: MangaListFilter): List<Manga> {
-		val url = "https://$domain"
-		val doc = webClient.httpGet(url).parseHtml()
+		val fullUrl = "https://$domain"
+		val doc = webClient.httpGet(fullUrl).parseHtml()
+		val url = "/"
 		val manga = ArrayList<Manga>()
 		val author = doc.selectFirst("div.elementor-widget-text-editor ul li:contains(Auteur(s))")?.text()
 			?.replace("Auteur(s): ", "").orEmpty()
@@ -37,7 +38,7 @@ internal abstract class OneMangaParser(
 			Manga(
 				id = generateUid(url),
 				url = url,
-				publicUrl = url,
+				publicUrl = fullUrl,
 				coverUrl = doc.selectFirst("div.elementor-widget-container img")?.src(),
 				title = doc.selectFirst("ul.elementor-nav-menu li a")?.text().orEmpty(),
 				altTitles = setOfNotNull(
@@ -46,7 +47,7 @@ internal abstract class OneMangaParser(
 				),
 				rating = RATING_UNKNOWN,
 				tags = emptySet(),
-				authors = setOf(author),
+				authors = setOfNotNull(author.nullIfEmpty()),
 				description = doc.selectLast("div.elementor-widget-text-editor ul li")?.text().orEmpty(),
 				state = null,
 				source = source,

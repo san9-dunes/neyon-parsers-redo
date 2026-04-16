@@ -136,13 +136,15 @@ internal abstract class FmreaderParser(
 	protected open fun parseMangaList(doc: Document): List<Manga> {
 		return doc.select("div.thumb-item-flow").map { div ->
 			val href = div.selectFirstOrThrow("div.series-title a").attrAsRelativeUrl("href")
+			val styleCover = div.selectFirst("div.img-in-ratio")?.attr("style")
+			val rawCover = div.selectFirst("div.img-in-ratio")?.attr("data-bg")
+				?: styleCover?.substringAfter("url(", "")?.substringBefore(')')
+				?.trim(' ', '\'', '"')
 			Manga(
 				id = generateUid(href),
 				url = href,
 				publicUrl = href.toAbsoluteUrl(div.host ?: domain),
-				coverUrl = (div.selectFirst("div.img-in-ratio")?.attr("data-bg")
-					?: div.selectFirst("div.img-in-ratio")?.attr("style")?.substringAfter("(")
-						?.substringBefore(")"))?.toAbsoluteUrl(domain),
+				coverUrl = rawCover?.takeIf { it.isNotBlank() }?.toAbsoluteUrl(domain),
 				title = div.selectFirst("div.series-title")?.text().orEmpty(),
 				altTitles = emptySet(),
 				rating = RATING_UNKNOWN,

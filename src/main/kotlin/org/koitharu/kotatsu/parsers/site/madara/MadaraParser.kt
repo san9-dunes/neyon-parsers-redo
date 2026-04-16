@@ -674,25 +674,47 @@ internal abstract class MadaraParser(
 
 	override suspend fun getRelatedManga(seed: Manga): List<Manga> {
 		val doc = webClient.httpGet(seed.url.toAbsoluteUrl(domain)).parseHtml()
-		val root = doc.body().selectFirstOrThrow(".related-manga")
-		return root.select("div.related-reading-wrap").mapNotNull { div ->
-			val a = div.selectFirst("a") ?: return@mapNotNull null
-			val href = a.attrAsRelativeUrl("href")
+		val body = doc.body()
+		val root = body.selectFirst(
+			".related-manga, #manga-related, .manga-related, .related-posts, .post-recommendation, .recommendations",
+		) ?: body.selectFirst("h1,h2,h3,h4,h5:matchesOwn((?i)related)")?.parent()
+
+		if (root == null) {
+			return emptyList()
+		}
+
+		val seedUrl = seed.url.toRelativeUrl(domain)
+		val cards = root.select(
+			"div.related-reading-wrap, div.page-item-detail, div.c-tabs-item__content, article, li, .post-content_item",
+		)
+
+		return cards.mapNotNull { card ->
+			val a = card.selectFirst("a[href*=/manga/]") ?: card.selectFirst("a") ?: return@mapNotNull null
+			val href = a.attrAsRelativeUrlOrNull("href") ?: return@mapNotNull null
+			if (href == seedUrl) {
+				return@mapNotNull null
+			}
+
+			val title = card.selectFirst(".widget-title, .post-title, h3, h4, h5")?.textOrNull()
+				?: a.attrOrNull("title")
+				?: a.textOrNull()
+				?: return@mapNotNull null
+
 			Manga(
 				id = generateUid(href),
 				url = href,
 				publicUrl = href.toAbsoluteUrl(a.host ?: domain),
 				altTitles = emptySet(),
-				title = div.selectFirstOrThrow(".widget-title").text(),
+				title = title,
 				authors = emptySet(),
-				coverUrl = div.selectFirst("img")?.src(),
+				coverUrl = card.selectFirst("img")?.src() ?: a.selectFirst("img")?.src(),
 				tags = emptySet(),
 				rating = RATING_UNKNOWN,
 				state = null,
 				contentRating = if (isNsfwSource) ContentRating.ADULT else null,
 				source = source,
 			)
-		}
+		}.distinctBy { it.id }
 	}
 
 	protected open val selectBodyPage = "div.main-col-inner div.reading-content"

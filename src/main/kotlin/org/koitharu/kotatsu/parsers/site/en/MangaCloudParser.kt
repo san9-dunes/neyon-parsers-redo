@@ -91,10 +91,18 @@ internal class MangaCloud(context: MangaLoaderContext) :
 	}
 
 	private suspend fun getSearchManga(query: String): List<Manga> {
-		val jsonBody = JSONObject().apply { put("terms", query) }
-		val response = webClient.httpPost("$apiUrl/search".toHttpUrl(), jsonBody).parseJson()
-		val data = response.getJSONArray("data")
-		return (0 until data.length()).map { parseMangaFromSearch(data.getJSONObject(it)) }
+		val normalizedQuery = query.trim()
+		if (normalizedQuery.length < 3) {
+			return emptyList()
+		}
+		return try {
+			val jsonBody = JSONObject().apply { put("terms", normalizedQuery) }
+			val response = webClient.httpPost("$apiUrl/search".toHttpUrl(), jsonBody).parseJson()
+			val data = response.getJSONArray("data")
+			(0 until data.length()).map { parseMangaFromSearch(data.getJSONObject(it)) }
+		} catch (_: Exception) {
+			emptyList()
+		}
 	}
 
 	private suspend fun getPopularManga(page: Int): List<Manga> {

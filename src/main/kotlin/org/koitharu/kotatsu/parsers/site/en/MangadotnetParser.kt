@@ -387,7 +387,8 @@ internal class Mangadotnet(context: MangaLoaderContext) :
 			}
 		}
 
-		return chaptersBuilder.toList()
+		// Keep newest chapters first so consumers that pick the first chapter hit fresh entries.
+		return chaptersBuilder.toList().reversed()
 	}
 
 	// endregion

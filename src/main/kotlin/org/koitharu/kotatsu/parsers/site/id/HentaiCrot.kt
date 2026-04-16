@@ -61,12 +61,12 @@ internal class HentaiCrot(context: MangaLoaderContext) :
 
 		val doc = webClient.httpGet(url).parseHtml()
 		return doc.select("div#content article").mapNotNull { div ->
-			val href = div.selectFirst("a")?.attr("href") ?: return@mapNotNull null
+			val href = div.selectFirst("a")?.attrAsRelativeUrlOrNull("href") ?: return@mapNotNull null
 			Manga(
 				id = generateUid(href),
 				url = href,
 				publicUrl = href.toAbsoluteUrl(div.host ?: domain),
-				coverUrl = div.selectFirst("img")?.src()?.replace("-200x285", ""),
+				coverUrl = div.selectFirst("img")?.src()?.replace("-200x285", "")?.toAbsoluteUrl(div.host ?: domain),
 				title = div.selectFirst("h2")?.text().orEmpty(),
 				altTitles = emptySet(),
 				rating = RATING_UNKNOWN,
