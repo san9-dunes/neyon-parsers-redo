@@ -30,9 +30,28 @@ import java.util.Locale
 
 @MangaSourceParser("YAOIMANGAONLINE", "YaoiMangaOnline", "en", ContentType.HENTAI)
 internal class YaoiMangaOnline(context: MangaLoaderContext) :
-	PagedMangaParser(context, MangaParserSource.YAOIMANGAONLINE, 12) {
+	YaoiMangaOnlineParser(context, MangaParserSource.YAOIMANGAONLINE, "yaoimangaonline.com")
 
-	override val configKeyDomain = ConfigKey.Domain("yaoimangaonline.com")
+@MangaSourceParser("BARAMANGAONLINE", "BaraMangaOnline", "en", ContentType.HENTAI)
+internal class BaraMangaOnline(context: MangaLoaderContext) :
+	YaoiMangaOnlineParser(context, MangaParserSource.BARAMANGAONLINE, "baramangaonline.com")
+
+@MangaSourceParser("MANGALOTUS", "MangaLotus", "en", ContentType.HENTAI)
+internal class MangaLotus(context: MangaLoaderContext) :
+	YaoiMangaOnlineParser(context, MangaParserSource.MANGALOTUS, "mangalotus.com")
+
+internal abstract class YaoiMangaOnlineParser(
+	context: MangaLoaderContext,
+	source: MangaParserSource,
+	defaultDomain: String,
+) : PagedMangaParser(context, source, 12) {
+
+	override val configKeyDomain = ConfigKey.Domain(
+		defaultDomain,
+		"yaoimangaonline.com",
+		"baramangaonline.com",
+		"mangalotus.com",
+	)
 
 	private val listPath = "yaoi-manga"
 

@@ -280,6 +280,9 @@ internal abstract class WebtoonsParser(
 	@MangaSourceParser("WEBTOONS_EN", "Webtoons English", "en", type = ContentType.MANGA)
 	class English(context: MangaLoaderContext) : WebtoonsParser(context, MangaParserSource.WEBTOONS_EN)
 
+	@MangaSourceParser("WEBTOONS", "Webtoons official", "en", type = ContentType.MANGA)
+	class Global(context: MangaLoaderContext) : WebtoonsParser(context, MangaParserSource.WEBTOONS)
+
 	@MangaSourceParser("WEBTOONS_ID", "Webtoons Indonesia", "id", type = ContentType.MANGA)
 	class Indonesian(context: MangaLoaderContext) : WebtoonsParser(context, MangaParserSource.WEBTOONS_ID)
 

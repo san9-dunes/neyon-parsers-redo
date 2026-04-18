@@ -22,9 +22,19 @@ import java.util.*
 
 @MangaSourceParser("KOHARU", "Schale.network", type = ContentType.HENTAI)
 internal class Koharu(context: MangaLoaderContext) :
-	PagedMangaParser(context, MangaParserSource.KOHARU, 24) {
+	KoharuParser(context, MangaParserSource.KOHARU, "niyaniya.moe")
 
-	override val configKeyDomain = ConfigKey.Domain("niyaniya.moe")
+@MangaSourceParser("SCHALENETWORK", "Schale Network", type = ContentType.HENTAI)
+internal class SchaleNetwork(context: MangaLoaderContext) :
+	KoharuParser(context, MangaParserSource.SCHALENETWORK, "schale.network")
+
+internal abstract class KoharuParser(
+	context: MangaLoaderContext,
+	source: MangaParserSource,
+	defaultDomain: String,
+) : PagedMangaParser(context, source, 24) {
+
+	override val configKeyDomain = ConfigKey.Domain(defaultDomain, "niyaniya.moe", "schale.network", "schalenetwork.com")
 	private val apiSuffix = "api.schale.network"
 
 	override val userAgentKey = ConfigKey.UserAgent(

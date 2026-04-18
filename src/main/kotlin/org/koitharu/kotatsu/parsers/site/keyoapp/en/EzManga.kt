@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.parsers.site.keyoapp.en
 
+import org.koitharu.kotatsu.parsers.Broken
 import org.json.JSONArray
 import org.json.JSONObject
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
@@ -34,6 +35,7 @@ import java.text.SimpleDateFormat
 import java.util.EnumSet
 import java.util.Locale
 
+@Broken
 @MangaSourceParser("EZMANGA", "EzManga", "en")
 internal class EzManga(context: MangaLoaderContext) :
 	IkenParser(context, MangaParserSource.EZMANGA, "ezmanga.org", 18, useAPI = true) {

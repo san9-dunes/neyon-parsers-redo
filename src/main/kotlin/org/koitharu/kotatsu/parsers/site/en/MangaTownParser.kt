@@ -10,11 +10,14 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
-@MangaSourceParser("MANGATOWN", "MangaTown", "en")
-internal class MangaTownParser(context: MangaLoaderContext) :
-	PagedMangaParser(context, MangaParserSource.MANGATOWN, 30) {
+internal abstract class MangaTownParser(
+	context: MangaLoaderContext,
+	source: MangaParserSource,
+	defaultDomain: String,
+	vararg domains: String,
+) : PagedMangaParser(context, source, 30) {
 
-	override val configKeyDomain = ConfigKey.Domain("www.mangatown.com")
+	override val configKeyDomain = ConfigKey.Domain(defaultDomain, *domains)
 
 	override fun onCreateConfig(keys: MutableCollection<ConfigKey<*>>) {
 		super.onCreateConfig(keys)
@@ -117,7 +120,7 @@ internal class MangaTownParser(context: MangaLoaderContext) :
 				id = generateUid(href),
 				title = a.attr("title"),
 				coverUrl = a.selectFirst("img")?.attrAsAbsoluteUrlOrNull("src"),
-				source = MangaParserSource.MANGATOWN,
+				source = source,
 				altTitles = emptySet(),
 				rating = li.selectFirst("p.score")?.selectFirst("b")
 					?.ownText()?.toFloatOrNull()?.div(5f) ?: RATING_UNKNOWN,
@@ -131,7 +134,7 @@ internal class MangaTownParser(context: MangaLoaderContext) :
 					MangaTag(
 						title = x.attr("title").toTitleCase(),
 						key = x.attr("href").substringAfter("/directory/0-").substringBefore("-0-"),
-						source = MangaParserSource.MANGATOWN,
+						source = source,
 					)
 				}.orEmpty(),
 				url = href,
@@ -156,7 +159,7 @@ internal class MangaTownParser(context: MangaLoaderContext) :
 				MangaTag(
 					title = a.attr("title").toTitleCase(),
 					key = a.attr("href").substringAfter("/directory/0-").substringBefore("-0-"),
-					source = MangaParserSource.MANGATOWN,
+					source = source,
 				)
 			}.orEmpty(),
 			description = info?.getElementById("show")?.ownText(),
@@ -169,7 +172,7 @@ internal class MangaTownParser(context: MangaLoaderContext) :
 				MangaChapter(
 					id = generateUid(href),
 					url = href,
-					source = MangaParserSource.MANGATOWN,
+					source = source,
 					number = i + 1f,
 					volume = 0,
 					uploadDate = parseChapterDate(
@@ -198,7 +201,7 @@ internal class MangaTownParser(context: MangaLoaderContext) :
 					id = generateUid(href),
 					url = href,
 					preview = null,
-					source = MangaParserSource.MANGATOWN,
+					source = source,
 				)
 
 			}
@@ -212,7 +215,7 @@ internal class MangaTownParser(context: MangaLoaderContext) :
 					id = generateUid(href),
 					url = href,
 					preview = null,
-					source = MangaParserSource.MANGATOWN,
+					source = source,
 				)
 			}
 		}
@@ -237,7 +240,7 @@ internal class MangaTownParser(context: MangaLoaderContext) :
 			val a = li.selectFirst("a") ?: return@mapNotNullToSet null
 			val key = a.attr("href").substringAfter("/directory/0-").substringBefore("-0-")
 			MangaTag(
-				source = MangaParserSource.MANGATOWN,
+				source = source,
 				key = key,
 				title = a.text().toTitleCase(),
 			)
@@ -266,7 +269,7 @@ internal class MangaTownParser(context: MangaLoaderContext) :
 			MangaChapter(
 				id = generateUid(href),
 				url = href,
-				source = MangaParserSource.MANGATOWN,
+				source = source,
 				number = i + 1f,
 				volume = 0,
 				uploadDate = parseChapterDate(
@@ -280,3 +283,15 @@ internal class MangaTownParser(context: MangaLoaderContext) :
 		}
 	}
 }
+
+@MangaSourceParser("MANGATOWN", "MangaTown", "en")
+internal class MangaTown(context: MangaLoaderContext) :
+	MangaTownParser(context, MangaParserSource.MANGATOWN, "www.mangatown.com", "mangatown.com")
+
+@MangaSourceParser("FANFOX", "MangaFox", "en")
+internal class FanFox(context: MangaLoaderContext) :
+	MangaTownParser(context, MangaParserSource.FANFOX, "fanfox.net", "www.fanfox.net")
+
+@MangaSourceParser("MANGAHOME", "MangaHome", "en")
+internal class MangaHome(context: MangaLoaderContext) :
+	MangaTownParser(context, MangaParserSource.MANGAHOME, "www.mangahome.com", "mangahome.com")

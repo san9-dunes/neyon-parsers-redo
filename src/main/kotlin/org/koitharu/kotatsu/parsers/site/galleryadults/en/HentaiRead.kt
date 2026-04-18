@@ -8,6 +8,7 @@ import org.json.JSONObject
 import org.jsoup.nodes.Document
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.MangaSourceParser
+import org.koitharu.kotatsu.parsers.config.ConfigKey
 import org.koitharu.kotatsu.parsers.model.ContentRating
 import org.koitharu.kotatsu.parsers.model.ContentType
 import org.koitharu.kotatsu.parsers.model.Manga
@@ -40,6 +41,11 @@ import java.util.Locale
 @MangaSourceParser("HENTAIREAD", "HentaiRead", "en", type = ContentType.HENTAI)
 internal class HentaiRead(context: MangaLoaderContext) :
 	GalleryAdultsParser(context, MangaParserSource.HENTAIREAD, "hentairead.com", 24) {
+	override val configKeyDomain = ConfigKey.Domain(
+		"hentairead.com",
+		"myhentaicomics.com",
+		"myhentaigallery.com",
+	)
 
 
 	override fun getRequestHeaders(): Headers {

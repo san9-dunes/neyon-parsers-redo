@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.parsers.site.galleryadults.all
 import org.jsoup.internal.StringUtil
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.MangaSourceParser
+import org.koitharu.kotatsu.parsers.config.ConfigKey
 import org.koitharu.kotatsu.parsers.model.*
 import org.koitharu.kotatsu.parsers.site.galleryadults.GalleryAdultsParser
 import org.koitharu.kotatsu.parsers.util.*
@@ -10,7 +11,23 @@ import java.util.*
 
 @MangaSourceParser("HENTAIFORCE", "HentaiForce", type = ContentType.HENTAI)
 internal class HentaiForce(context: MangaLoaderContext) :
-	GalleryAdultsParser(context, MangaParserSource.HENTAIFORCE, "hentaiforce.net", pageSize = 30) {
+	HentaiForceParser(context, MangaParserSource.HENTAIFORCE, "hentaiforce.net")
+
+@MangaSourceParser("HENTAIFC", "HentaiFC", type = ContentType.HENTAI)
+internal class HentaiFc(context: MangaLoaderContext) :
+	HentaiForceParser(context, MangaParserSource.HENTAIFC, "hentaifc.com")
+
+@MangaSourceParser("FHENTAI", "FHentai", type = ContentType.HENTAI)
+internal class FHentai(context: MangaLoaderContext) :
+	HentaiForceParser(context, MangaParserSource.FHENTAI, "fhentai.net")
+
+internal abstract class HentaiForceParser(
+	context: MangaLoaderContext,
+	source: MangaParserSource,
+	defaultDomain: String,
+) : GalleryAdultsParser(context, source, defaultDomain, pageSize = 30) {
+	override val configKeyDomain = ConfigKey.Domain(defaultDomain, "hentaiforce.net", "hentaifc.com", "fhentai.net")
+
 	override val selectGallery = ".gallery"
 	override val selectGalleryLink = "a.gallery-thumb"
 	override val pathTagUrl = "/tags/popular/"

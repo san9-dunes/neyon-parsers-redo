@@ -38,11 +38,13 @@ import java.text.SimpleDateFormat
 import java.util.EnumSet
 import java.util.LinkedHashSet
 
-@MangaSourceParser("KDTSCANS", "KdtScans", "en")
-internal class KdtScans(context: MangaLoaderContext) :
-    PagedMangaParser(context, MangaParserSource.KDTSCANS, 20) {
+internal abstract class KdtScansParser(
+    context: MangaLoaderContext,
+    source: MangaParserSource,
+    defaultDomain: String,
+) : PagedMangaParser(context, source, 20) {
 
-    override val configKeyDomain = ConfigKey.Domain("www.silentquill.net")
+    override val configKeyDomain = ConfigKey.Domain(defaultDomain, "www.silentquill.net", "silentquill.com")
 
     override fun getRequestHeaders() = super.getRequestHeaders().newBuilder()
         .add("Referer", "https://$domain/")
@@ -364,3 +366,11 @@ internal class KdtScans(context: MangaLoaderContext) :
         val PAGE_NUMBER_REGEX = Regex("""^(\d+)_out\.(?:webp|jpg|jpeg|png)$""", RegexOption.IGNORE_CASE)
     }
 }
+
+@MangaSourceParser("KDTSCANS", "KdtScans", "en")
+internal class KdtScans(context: MangaLoaderContext) :
+    KdtScansParser(context, MangaParserSource.KDTSCANS, "www.silentquill.net")
+
+@MangaSourceParser("SILENTQUILL", "Armageddon", "en")
+internal class SilentQuill(context: MangaLoaderContext) :
+    KdtScansParser(context, MangaParserSource.SILENTQUILL, "silentquill.com")

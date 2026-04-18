@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.parsers.site.heancms.en
 
+import org.koitharu.kotatsu.parsers.Broken
 import org.json.JSONObject
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.MangaSourceParser
@@ -13,9 +14,11 @@ import org.koitharu.kotatsu.parsers.util.parseSafe
 import java.text.SimpleDateFormat
 import java.util.*
 
-@MangaSourceParser("LUACOMIC_COM", "Lua Scans", "en")
-internal class LuaScans(context: MangaLoaderContext) :
-    HeanCms(context, MangaParserSource.LUACOMIC_COM, "luacomic.com") {
+@Broken
+internal abstract class LuaScansParser(
+    context: MangaLoaderContext,
+    source: MangaParserSource,
+) : HeanCms(context, source, "luacomic.com") {
 
     override val datePattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
 
@@ -45,3 +48,13 @@ internal class LuaScans(context: MangaLoaderContext) :
         )
     }
 }
+
+@Broken
+@MangaSourceParser("LUACOMIC_COM", "Lua Scans", "en")
+internal class LuaScans(context: MangaLoaderContext) :
+    LuaScansParser(context, MangaParserSource.LUACOMIC_COM)
+
+@Broken
+@MangaSourceParser("LUACOMIC", "Lua Comic SCAN", "en")
+internal class LuaComic(context: MangaLoaderContext) :
+    LuaScansParser(context, MangaParserSource.LUACOMIC)

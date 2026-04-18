@@ -1,72 +1,46 @@
 package org.koitharu.kotatsu.parsers.model.search
 
-import org.junit.jupiter.api.Assertions.assertDoesNotThrow
-import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import org.koitharu.kotatsu.parsers.model.MangaParserSource
-import org.koitharu.kotatsu.parsers.model.MangaState
-import org.koitharu.kotatsu.parsers.model.MangaTag
-import org.koitharu.kotatsu.parsers.model.search.QueryCriteria.*
-import org.koitharu.kotatsu.parsers.model.search.SearchableField.*
-import java.util.*
+import org.koitharu.kotatsu.parsers.model.MangaListFilterCapabilities
 
-class MangaSearchQueryCapabilitiesTest {
-
-    private val capabilities = MangaSearchQueryCapabilities(
-        capabilities = setOf(
-            SearchCapability(TITLE_NAME, setOf(Match::class), isMultiple = false, isExclusive = true),
-            SearchCapability(TAG, setOf(Include::class, Exclude::class), isMultiple = true, isExclusive = false),
-            SearchCapability(PUBLICATION_YEAR, setOf(Range::class), isMultiple = false, isExclusive = false),
-            SearchCapability(STATE, setOf(Include::class), isMultiple = false, isExclusive = false),
-        ),
-    )
+class MangaListFilterCapabilitiesTest {
 
     @Test
-    fun validateValidSingleCriterionQuery() {
-        val query = MangaSearchQuery.Builder()
-            .criterion(Match(TITLE_NAME, "title"))
-            .build()
+    fun defaultsAreDisabled() {
+        val capabilities = MangaListFilterCapabilities()
 
-        assertDoesNotThrow { capabilities.validate(query) }
+        assertFalse(capabilities.isMultipleTagsSupported)
+        assertFalse(capabilities.isTagsExclusionSupported)
+        assertFalse(capabilities.isSearchSupported)
+        assertFalse(capabilities.isSearchWithFiltersSupported)
+        assertFalse(capabilities.isYearSupported)
+        assertFalse(capabilities.isYearRangeSupported)
+        assertFalse(capabilities.isOriginalLocaleSupported)
+        assertFalse(capabilities.isAuthorSearchSupported)
     }
 
     @Test
-    fun validateUnsupportedFieldThrowsException() {
-        val query = MangaSearchQuery.Builder()
-            .criterion(Include(ORIGINAL_LANGUAGE, setOf(Locale.ENGLISH)))
-            .build()
+    fun explicitFlagsAreApplied() {
+        val capabilities = MangaListFilterCapabilities(
+            isMultipleTagsSupported = true,
+            isTagsExclusionSupported = true,
+            isSearchSupported = true,
+            isSearchWithFiltersSupported = true,
+            isYearSupported = true,
+            isYearRangeSupported = true,
+            isOriginalLocaleSupported = true,
+            isAuthorSearchSupported = true,
+        )
 
-        assertThrows(IllegalArgumentException::class.java) { capabilities.validate(query) }
+        assertTrue(capabilities.isMultipleTagsSupported)
+        assertTrue(capabilities.isTagsExclusionSupported)
+        assertTrue(capabilities.isSearchSupported)
+        assertTrue(capabilities.isSearchWithFiltersSupported)
+        assertTrue(capabilities.isYearSupported)
+        assertTrue(capabilities.isYearRangeSupported)
+        assertTrue(capabilities.isOriginalLocaleSupported)
+        assertTrue(capabilities.isAuthorSearchSupported)
     }
-
-    @Test
-    fun validateUnsupportedMultiValueThrowsException() {
-        val query = MangaSearchQuery.Builder()
-            .criterion(Include(STATE, setOf(MangaState.ONGOING, MangaState.FINISHED)))
-            .build()
-
-        assertThrows(IllegalArgumentException::class.java) { capabilities.validate(query) }
-    }
-
-    @Test
-    fun validateMultipleCriteriaWithOtherCriteriaAllowed() {
-        val query = MangaSearchQuery.Builder()
-            .criterion(Include(TAG, setOf(buildTag("tag1"), buildTag("tag2"))))
-            .criterion(Exclude(TAG, setOf(buildTag("tag3"))))
-            .build()
-
-        assertDoesNotThrow { capabilities.validate(query) }
-    }
-
-    @Test
-    fun validateMultipleCriteriaWithStrictCapabilityThrowsException() {
-        val query = MangaSearchQuery.Builder()
-            .criterion(Match(TITLE_NAME, "title"))
-            .criterion(Range(PUBLICATION_YEAR, 1990, 2000))
-            .build()
-
-        assertThrows(IllegalArgumentException::class.java) { capabilities.validate(query) }
-    }
-
-    private fun buildTag(name: String) = MangaTag(title = name, key = "${name}Key", source = MangaParserSource.MANGADEX)
 }

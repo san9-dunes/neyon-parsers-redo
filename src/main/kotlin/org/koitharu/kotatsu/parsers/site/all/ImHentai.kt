@@ -20,7 +20,7 @@ internal class ImHentai(context: MangaLoaderContext) :
 	override val availableSortOrders: Set<SortOrder> =
 		EnumSet.of(SortOrder.UPDATED, SortOrder.POPULARITY, SortOrder.RATING)
 
-	override val configKeyDomain = ConfigKey.Domain("imhentai.xxx")
+	override val configKeyDomain = ConfigKey.Domain("imhentai.xxx", "imhentai.com")
 
 	override val filterCapabilities: MangaListFilterCapabilities
 		get() = MangaListFilterCapabilities(

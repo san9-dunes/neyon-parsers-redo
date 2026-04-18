@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.parsers.site.vi
 
+import org.koitharu.kotatsu.parsers.Broken
 import androidx.collection.arraySetOf
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
@@ -307,10 +308,12 @@ internal abstract class YuriGardenParser(
 	}
 }
 
+@Broken
 @MangaSourceParser("YURIGARDEN", "Yuri Garden", "vi")
 internal class YuriGarden(context: MangaLoaderContext) :
     YuriGardenParser(context, MangaParserSource.YURIGARDEN, "yurigarden.com", false)
 
+@Broken
 @MangaSourceParser("YURIGARDEN_R18", "Yuri Garden (18+)", "vi", type = ContentType.HENTAI)
 internal class YuriGardenR18(context: MangaLoaderContext) :
     YuriGardenParser(context, MangaParserSource.YURIGARDEN_R18, "yurigarden.com", true)

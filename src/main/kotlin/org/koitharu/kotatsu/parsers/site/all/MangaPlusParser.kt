@@ -274,6 +274,13 @@ internal abstract class MangaPlusParser(
 		"ENGLISH",
 	)
 
+	@MangaSourceParser("MANGAPLUS", "MANGA Plus", "en")
+	class Global(context: MangaLoaderContext) : MangaPlusParser(
+		context,
+		MangaParserSource.MANGAPLUS,
+		"ENGLISH",
+	)
+
 	@MangaSourceParser("MANGAPLUSPARSER_ES", "MANGA Plus Spanish", "es")
 	class Spanish(context: MangaLoaderContext) : MangaPlusParser(
 		context,

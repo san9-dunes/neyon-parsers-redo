@@ -1,5 +1,7 @@
 package org.koitharu.kotatsu.parsers.site.natsu.id
 
+import org.koitharu.kotatsu.parsers.Broken
+
 import okhttp3.Headers
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.MangaSourceParser
@@ -11,6 +13,7 @@ import org.koitharu.kotatsu.parsers.util.attrAsRelativeUrl
 import org.koitharu.kotatsu.parsers.util.generateUid
 import org.koitharu.kotatsu.parsers.util.parseHtml
 
+@Broken
 @MangaSourceParser("KIRYUU", "Kiryuu", "id")
 internal class Kiryuu(context: MangaLoaderContext) :
     NatsuParser(context, MangaParserSource.KIRYUU, pageSize = 24) {

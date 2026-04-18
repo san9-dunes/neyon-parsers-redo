@@ -600,6 +600,9 @@ internal abstract class MangaFireParser(
     @MangaSourceParser("MANGAFIRE_EN", "MangaFire English", "en")
     class English(context: MangaLoaderContext) : MangaFireParser(context, MangaParserSource.MANGAFIRE_EN, "en")
 
+    @MangaSourceParser("MANGAFIRE", "MangaFire", "en")
+    class Global(context: MangaLoaderContext) : MangaFireParser(context, MangaParserSource.MANGAFIRE, "en")
+
     @MangaSourceParser("MANGAFIRE_ES", "MangaFire Spanish", "es")
     class Spanish(context: MangaLoaderContext) : MangaFireParser(context, MangaParserSource.MANGAFIRE_ES, "es")
 

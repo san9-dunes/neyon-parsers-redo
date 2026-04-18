@@ -38,9 +38,23 @@ import java.util.TimeZone
 
 @MangaSourceParser("LUNARANIME", "Lunar Manga")
 internal class LunarAnime(context: MangaLoaderContext) :
-	PagedMangaParser(context, MangaParserSource.LUNARANIME, pageSize = 30) {
+	LunarAnimeParser(context, MangaParserSource.LUNARANIME, "lunaranime.ru")
 
-	override val configKeyDomain = org.koitharu.kotatsu.parsers.config.ConfigKey.Domain("lunaranime.ru")
+@MangaSourceParser("LUNARANIMEMANGA", "Lunar Animes Manga")
+internal class LunarAnimeManga(context: MangaLoaderContext) :
+	LunarAnimeParser(context, MangaParserSource.LUNARANIMEMANGA, "lunaranimemanga.com")
+
+internal abstract class LunarAnimeParser(
+	context: MangaLoaderContext,
+	source: MangaParserSource,
+	defaultDomain: String,
+) : PagedMangaParser(context, source, pageSize = 30) {
+
+	override val configKeyDomain = org.koitharu.kotatsu.parsers.config.ConfigKey.Domain(
+		defaultDomain,
+		"lunaranime.ru",
+		"lunaranimemanga.com",
+	)
 
 	override val defaultSortOrder: SortOrder = SortOrder.UPDATED
 

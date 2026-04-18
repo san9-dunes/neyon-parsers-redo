@@ -5,7 +5,6 @@ import androidx.collection.SparseArrayCompat
 import okhttp3.HttpUrl
 import org.json.JSONArray
 import org.json.JSONObject
-import org.koitharu.kotatsu.parsers.Broken
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.MangaSourceParser
 import org.koitharu.kotatsu.parsers.config.ConfigKey

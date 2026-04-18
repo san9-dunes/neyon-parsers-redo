@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.parsers.site.hotcomics.en
 import okhttp3.Headers
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.MangaSourceParser
+import org.koitharu.kotatsu.parsers.config.ConfigKey
 import org.koitharu.kotatsu.parsers.site.hotcomics.HotComicsParser
 import org.koitharu.kotatsu.parsers.model.*
 import org.koitharu.kotatsu.parsers.util.*
@@ -11,6 +12,13 @@ import java.text.SimpleDateFormat
 @MangaSourceParser("HOTCOMICS", "HotComics", "en")
 internal class HotComics(context: MangaLoaderContext) :
 	HotComicsParser(context, MangaParserSource.HOTCOMICS, "hotcomics.me/en") {
+	override val configKeyDomain = ConfigKey.Domain(
+		"hotcomics.me/en",
+		"hotcomics.org/en",
+		"honeytoon.com/en",
+		"welcomix.com/en",
+		"jabcomix.com/en",
+	)
 	
 	override suspend fun getDetails(manga: Manga): Manga {
 		val mangaUrl = manga.url.toAbsoluteUrl(domain)

@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.parsers.site.es
 
+import org.koitharu.kotatsu.parsers.Broken
 import okhttp3.Headers
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.jsoup.nodes.Document
@@ -13,6 +14,7 @@ import org.koitharu.kotatsu.parsers.util.*
 import java.text.SimpleDateFormat
 import java.util.*
 
+@Broken
 @MangaSourceParser("TUMANGAONLINE", "TuMangaOnline", "es")
 internal class TuMangaOnlineParser(context: MangaLoaderContext) : PagedMangaParser(
 	context,

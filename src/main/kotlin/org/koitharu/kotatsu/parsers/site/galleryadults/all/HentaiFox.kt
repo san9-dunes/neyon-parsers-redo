@@ -4,6 +4,7 @@ import org.jsoup.internal.StringUtil
 import org.jsoup.nodes.Element
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.MangaSourceParser
+import org.koitharu.kotatsu.parsers.config.ConfigKey
 import org.koitharu.kotatsu.parsers.model.*
 import org.koitharu.kotatsu.parsers.site.galleryadults.GalleryAdultsParser
 import org.koitharu.kotatsu.parsers.util.*
@@ -11,7 +12,19 @@ import java.util.*
 
 @MangaSourceParser("HENTAIFOX", "HentaiFox", type = ContentType.HENTAI)
 internal class HentaiFox(context: MangaLoaderContext) :
-	GalleryAdultsParser(context, MangaParserSource.HENTAIFOX, "hentaifox.com") {
+	HentaiFoxParser(context, MangaParserSource.HENTAIFOX, "hentaifox.com")
+
+@MangaSourceParser("HENTAIVOX", "HentaiVox", type = ContentType.HENTAI)
+internal class HentaiVox(context: MangaLoaderContext) :
+	HentaiFoxParser(context, MangaParserSource.HENTAIVOX, "hentaivox.com")
+
+internal abstract class HentaiFoxParser(
+	context: MangaLoaderContext,
+	source: MangaParserSource,
+	defaultDomain: String,
+) : GalleryAdultsParser(context, source, defaultDomain) {
+	override val configKeyDomain = ConfigKey.Domain(defaultDomain, "hentaifox.com", "hentaivox.com")
+
 	override val selectGallery = ".lc_galleries .thumb, .related_galleries .thumb"
 	override val pathTagUrl = "/tags/popular/pag/"
 	override val selectTags = ".list_tags"

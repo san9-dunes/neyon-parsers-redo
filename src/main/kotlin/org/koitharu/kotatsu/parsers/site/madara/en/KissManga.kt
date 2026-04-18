@@ -11,3 +11,10 @@ internal class KissManga(context: MangaLoaderContext) :
 	override val datePattern = "MMMM dd, yyyy"
 	override val listUrl = "mangalist/"
 }
+
+@MangaSourceParser("KISSMANGAIN", "Kissmanga.in", "en")
+internal class KissMangaIn(context: MangaLoaderContext) :
+	MadaraParser(context, MangaParserSource.KISSMANGAIN, "kissmanga.in") {
+	override val datePattern = "MMMM dd, yyyy"
+	override val listUrl = "mangalist/"
+}

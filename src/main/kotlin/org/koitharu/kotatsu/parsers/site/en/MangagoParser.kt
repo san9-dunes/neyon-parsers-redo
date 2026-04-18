@@ -18,11 +18,13 @@ import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
 import kotlin.math.min
 
-@MangaSourceParser("MANGAGO", "Mangago", "en")
-internal class MangagoParser(context: MangaLoaderContext) :
-    PagedMangaParser(context, MangaParserSource.MANGAGO, pageSize = 20), Interceptor {
+internal open class MangagoParser(
+    context: MangaLoaderContext,
+    source: MangaParserSource = MangaParserSource.MANGAGO,
+    defaultDomain: String = "www.mangago.me",
+) : PagedMangaParser(context, source, pageSize = 20), Interceptor {
 
-    override val configKeyDomain = ConfigKey.Domain("www.mangago.me")
+    override val configKeyDomain = ConfigKey.Domain(defaultDomain, "www.mangago.me", "mangago.io")
 
     override val availableSortOrders: Set<SortOrder> = EnumSet.of(
         SortOrder.POPULARITY,
@@ -727,3 +729,11 @@ internal class MangagoParser(context: MangaLoaderContext) :
         private val JS_FILTERS = listOf("jQuery", "document", "getContext", "toDataURL", "getImageData", "width", "height")
     }
 }
+
+@MangaSourceParser("MANGAGO", "Mangago", "en")
+internal class Mangago(context: MangaLoaderContext) :
+    MangagoParser(context, MangaParserSource.MANGAGO, "www.mangago.me")
+
+@MangaSourceParser("MANGAGOIO", "Mangago.io", "en")
+internal class MangagoIo(context: MangaLoaderContext) :
+    MangagoParser(context, MangaParserSource.MANGAGOIO, "mangago.io")

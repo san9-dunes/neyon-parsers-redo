@@ -22,9 +22,19 @@ private const val SERVER_DATA = ""
 
 @MangaSourceParser("HENTALK", "Hentalk", "en", type = ContentType.HENTAI)
 internal class Hentalk(context: MangaLoaderContext) :
-	PagedMangaParser(context, MangaParserSource.HENTALK, 24) {
+	HentalkBaseParser(context, MangaParserSource.HENTALK, "hentalk.pw")
 
-	override val configKeyDomain = ConfigKey.Domain("hentalk.pw", "fakku.cc")
+@MangaSourceParser("FAKKU", "FAKKU", "en", type = ContentType.HENTAI)
+internal class Fakku(context: MangaLoaderContext) :
+	HentalkBaseParser(context, MangaParserSource.FAKKU, "fakku.net")
+
+internal abstract class HentalkBaseParser(
+	context: MangaLoaderContext,
+	source: MangaParserSource,
+	defaultDomain: String,
+) : PagedMangaParser(context, source, 24) {
+
+	override val configKeyDomain = ConfigKey.Domain(defaultDomain, "hentalk.pw", "fakku.cc", "fakku.net")
 	override val userAgentKey = ConfigKey.UserAgent(UserAgents.KOTATSU)
 
 	private val preferredServerKey = ConfigKey.PreferredImageServer(

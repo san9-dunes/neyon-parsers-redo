@@ -32,7 +32,17 @@ private const val BANNED_RESPONSE_LENGTH = 256L
 @MangaSourceParser("EXHENTAI", "ExHentai", type = ContentType.HENTAI)
 internal class ExHentaiParser(
     context: MangaLoaderContext,
-) : PagedMangaParser(context, MangaParserSource.EXHENTAI, pageSize = 25), MangaParserAuthProvider, Interceptor {
+) : ExHentaiBaseParser(context, MangaParserSource.EXHENTAI)
+
+@MangaSourceParser("EHENTAI", "e-hentai", type = ContentType.HENTAI)
+internal class EHentaiParser(
+    context: MangaLoaderContext,
+) : ExHentaiBaseParser(context, MangaParserSource.EHENTAI)
+
+internal abstract class ExHentaiBaseParser(
+    context: MangaLoaderContext,
+    source: MangaParserSource,
+) : PagedMangaParser(context, source, pageSize = 25), MangaParserAuthProvider, Interceptor {
 
     override val availableSortOrders: Set<SortOrder> = setOf(SortOrder.NEWEST)
 

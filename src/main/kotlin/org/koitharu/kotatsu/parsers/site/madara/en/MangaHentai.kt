@@ -8,7 +8,17 @@ import org.koitharu.kotatsu.parsers.site.madara.MadaraParser
 
 @MangaSourceParser("MANGAHENTAI", "MangaHentai", "en", ContentType.HENTAI)
 internal class MangaHentai(context: MangaLoaderContext) :
-	MadaraParser(context, MangaParserSource.MANGAHENTAI, "mangahentai.me", 20) {
+	MangaHentaiParser(context, MangaParserSource.MANGAHENTAI, "mangahentai.me")
+
+@MangaSourceParser("MANGAHEN", "MangaHen", "en", ContentType.HENTAI)
+internal class MangaHen(context: MangaLoaderContext) :
+	MangaHentaiParser(context, MangaParserSource.MANGAHEN, "mangahen.com")
+
+internal abstract class MangaHentaiParser(
+	context: MangaLoaderContext,
+	source: MangaParserSource,
+	defaultDomain: String,
+) : MadaraParser(context, source, defaultDomain, 20) {
 
 	override val tagPrefix = "manga-hentai-genre/"
 	override val listUrl = "manga-hentai/"

@@ -5,6 +5,7 @@ import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.MangaSourceParser
+import org.koitharu.kotatsu.parsers.config.ConfigKey
 import org.koitharu.kotatsu.parsers.model.*
 import org.koitharu.kotatsu.parsers.site.galleryadults.GalleryAdultsParser
 import org.koitharu.kotatsu.parsers.util.*
@@ -13,7 +14,9 @@ import java.util.*
 @MangaSourceParser("NHENTAI", "NHentai.net", type = ContentType.HENTAI)
 internal class NHentaiParser(context: MangaLoaderContext) :
 	GalleryAdultsParser(context, MangaParserSource.NHENTAI, "nhentai.net", 25) {
-	override val selectGallery = "div.index-container:not(.index-popular) .gallery, #related-container .gallery"
+	override val configKeyDomain = ConfigKey.Domain("nhentai.net", "nhentai.com")
+
+	override val selectGallery = "div.index-container:not(.index-popular) .gallery, #related-container .gallery, .gallery"
 	override val selectGalleryLink = "a"
 	override val selectGalleryTitle = ".caption"
 	override val pathTagUrl = "/tags/popular?page="

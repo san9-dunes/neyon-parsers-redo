@@ -16,9 +16,10 @@ import java.security.MessageDigest
 import java.text.SimpleDateFormat
 import java.util.*
 
-@MangaSourceParser("KLZ9", "Klz9", "ja")
-internal class Klz9(context: MangaLoaderContext) :
-	FmreaderParser(context, MangaParserSource.KLZ9, "klz9.com") {
+internal abstract class Klz9Parser(
+	context: MangaLoaderContext,
+	source: MangaParserSource,
+) : FmreaderParser(context, source, "klz9.com") {
 
 	override val selectDesc = "div.row:contains(Description) p"
 	override val selectState = "ul.manga-info li:contains(Status) a"
@@ -308,3 +309,9 @@ internal class Klz9(context: MangaLoaderContext) :
 			.build()
 	}
 }
+
+@MangaSourceParser("KLZ9", "Klz9", "ja")
+internal class Klz9(context: MangaLoaderContext) : Klz9Parser(context, MangaParserSource.KLZ9)
+
+@MangaSourceParser("KLTO9", "KT9", "en")
+internal class Klto9(context: MangaLoaderContext) : Klz9Parser(context, MangaParserSource.KLTO9)

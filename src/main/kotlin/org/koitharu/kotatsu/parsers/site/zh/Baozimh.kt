@@ -16,9 +16,19 @@ import java.util.*
 
 @MangaSourceParser("BAOZIMH", "Baozimh", "zh")
 internal class Baozimh(context: MangaLoaderContext) :
-	PagedMangaParser(context, MangaParserSource.BAOZIMH, pageSize = 36) {
+	BaozimhParser(context, MangaParserSource.BAOZIMH, "www.baozimh.com")
 
-	override val configKeyDomain = ConfigKey.Domain("www.baozimh.com")
+@MangaSourceParser("BAOZIMHORG", "Baozi Manhua RAW", "zh")
+internal class BaozimhOrg(context: MangaLoaderContext) :
+	BaozimhParser(context, MangaParserSource.BAOZIMHORG, "www.baozimh.org")
+
+internal abstract class BaozimhParser(
+	context: MangaLoaderContext,
+	source: MangaParserSource,
+	defaultDomain: String,
+) : PagedMangaParser(context, source, pageSize = 36) {
+
+	override val configKeyDomain = ConfigKey.Domain(defaultDomain, "www.baozimh.com", "www.baozimh.org")
 
 	override fun onCreateConfig(keys: MutableCollection<ConfigKey<*>>) {
 		super.onCreateConfig(keys)

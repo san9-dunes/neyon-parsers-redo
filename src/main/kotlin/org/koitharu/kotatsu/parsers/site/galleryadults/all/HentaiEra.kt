@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.parsers.site.galleryadults.all
 import org.jsoup.nodes.Element
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.MangaSourceParser
+import org.koitharu.kotatsu.parsers.config.ConfigKey
 import org.koitharu.kotatsu.parsers.model.*
 import org.koitharu.kotatsu.parsers.site.galleryadults.GalleryAdultsParser
 import org.koitharu.kotatsu.parsers.util.*
@@ -10,7 +11,75 @@ import java.util.*
 
 @MangaSourceParser("HENTAIERA", "HentaiEra", type = ContentType.HENTAI)
 internal class HentaiEra(context: MangaLoaderContext) :
-	GalleryAdultsParser(context, MangaParserSource.HENTAIERA, "hentaiera.com", 25) {
+	HentaiEraParser(context, MangaParserSource.HENTAIERA, "hentaiera.com")
+
+@MangaSourceParser("HENTAIHAND", "HentaiHand", type = ContentType.HENTAI)
+internal class HentaiHand(context: MangaLoaderContext) :
+	HentaiEraParser(context, MangaParserSource.HENTAIHAND, "hentaihand.com")
+
+@MangaSourceParser("HENTAIHERE", "HentaiHere", type = ContentType.HENTAI)
+internal class HentaiHere(context: MangaLoaderContext) :
+	HentaiEraParser(context, MangaParserSource.HENTAIHERE, "hentaihere.com")
+
+@MangaSourceParser("HENTAIZAP", "HentaiZap", type = ContentType.HENTAI)
+internal class HentaiZap(context: MangaLoaderContext) :
+	HentaiEraParser(context, MangaParserSource.HENTAIZAP, "hentaizap.com")
+
+@MangaSourceParser("SIMPLYHENTAI", "SimplyHentai", type = ContentType.HENTAI)
+internal class SimplyHentai(context: MangaLoaderContext) :
+	HentaiEraParser(context, MangaParserSource.SIMPLYHENTAI, "simplyhentai.com")
+
+@MangaSourceParser("MHENTAI", "MHentai", type = ContentType.HENTAI)
+internal class Mhentai(context: MangaLoaderContext) :
+	HentaiEraParser(context, MangaParserSource.MHENTAI, "m-hentai.net")
+
+@MangaSourceParser("HENTAILAND", "HentaiLand", type = ContentType.HENTAI)
+internal class HentaiLand(context: MangaLoaderContext) :
+	HentaiEraParser(context, MangaParserSource.HENTAILAND, "hentailand.com")
+
+@MangaSourceParser("HENTAIPAW", "HentaiPaw", type = ContentType.HENTAI)
+internal class HentaiPaw(context: MangaLoaderContext) :
+	HentaiEraParser(context, MangaParserSource.HENTAIPAW, "hentaipaw.com")
+
+@MangaSourceParser("HENTAIHUG", "HentaiHug", type = ContentType.HENTAI)
+internal class HentaiHug(context: MangaLoaderContext) :
+	HentaiEraParser(context, MangaParserSource.HENTAIHUG, "hentaihug.com")
+
+@MangaSourceParser("HENTAINAME", "Hentai.name", type = ContentType.HENTAI)
+internal class HentaiName(context: MangaLoaderContext) :
+	HentaiEraParser(context, MangaParserSource.HENTAINAME, "hentai.name")
+
+@MangaSourceParser("HENTAIKISU", "HentaiKisu", type = ContentType.HENTAI)
+internal class HentaiKisu(context: MangaLoaderContext) :
+	HentaiEraParser(context, MangaParserSource.HENTAIKISU, "hentaikisu.com")
+
+@MangaSourceParser("HENTAILOOP", "HentaiLoop", type = ContentType.HENTAI)
+internal class HentaiLoop(context: MangaLoaderContext) :
+	HentaiEraParser(context, MangaParserSource.HENTAILOOP, "hentailoop.com")
+
+internal abstract class HentaiEraParser(
+	context: MangaLoaderContext,
+	source: MangaParserSource,
+	defaultDomain: String,
+) : GalleryAdultsParser(context, source, defaultDomain, 25) {
+	override val configKeyDomain = ConfigKey.Domain(
+		defaultDomain,
+		"hentaiera.com",
+		"hentaiclap.com",
+		"hentaihand.com",
+		"hentaihere.com",
+		"hentaizap.com",
+		"simplyhentai.com",
+		"simply-hentai.com",
+		"m-hentai.net",
+		"hentailand.com",
+		"hentaipaw.com",
+		"hentaihug.com",
+		"hentai.name",
+		"hentaikisu.com",
+		"hentailoop.com",
+	)
+
 	override val selectTags = ".tags_section"
 	override val selectTag = ".galleries_info li:contains(Tags) div.info_tags"
 	override val selectAuthor = ".galleries_info li:contains(Artists) span.item_name"

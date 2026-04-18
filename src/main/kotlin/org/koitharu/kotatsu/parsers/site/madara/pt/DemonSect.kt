@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.parsers.site.madara.pt
 
+import org.koitharu.kotatsu.parsers.Broken
 import okhttp3.Headers.Companion.headersOf
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.jsoup.nodes.Document
@@ -12,6 +13,7 @@ import org.koitharu.kotatsu.parsers.util.*
 import java.text.SimpleDateFormat
 import java.util.*
 
+@Broken
 @MangaSourceParser("DEMONSECT", "DemonSect", "pt")
 internal class DemonSect(context: MangaLoaderContext) :
 	PagedMangaParser(context, MangaParserSource.DEMONSECT, pageSize = 20) {

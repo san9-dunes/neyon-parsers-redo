@@ -1,5 +1,7 @@
 package org.koitharu.kotatsu.parsers.site.mangareader.id
 
+import org.koitharu.kotatsu.parsers.Broken
+
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -12,6 +14,7 @@ import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.site.mangareader.MangaReaderParser
 import org.koitharu.kotatsu.parsers.util.*
 
+@Broken
 @MangaSourceParser("MANHWAINDO", "ManhwaIndo", "id")
 internal class ManhwaIndoParser(context: MangaLoaderContext) :
 	MangaReaderParser(context, MangaParserSource.MANHWAINDO, "manhwaindo.one", pageSize = 30, searchPageSize = 10) {

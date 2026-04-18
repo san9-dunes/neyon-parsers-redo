@@ -2,7 +2,6 @@ package org.koitharu.kotatsu.parsers.site.mangabox.en
 
 import okhttp3.Interceptor
 import okhttp3.Response
-import org.koitharu.kotatsu.parsers.Broken
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.MangaSourceParser
 import org.koitharu.kotatsu.parsers.config.ConfigKey
@@ -22,9 +21,19 @@ import kotlin.collections.set
 
 @MangaSourceParser("HMANGABAT", "MangaBat", "en")
 internal class Mangabat(context: MangaLoaderContext) :
-	MangaboxParser(context, MangaParserSource.HMANGABAT) {
+	MangabatParser(context, MangaParserSource.HMANGABAT, "mangabats.com")
 
-	override val configKeyDomain = ConfigKey.Domain("mangabats.com")
+@MangaSourceParser("MANGABTT", "MangaBTT", "en")
+internal class MangaBtt(context: MangaLoaderContext) :
+	MangabatParser(context, MangaParserSource.MANGABTT, "mangabtt.com")
+
+internal abstract class MangabatParser(
+	context: MangaLoaderContext,
+	source: MangaParserSource,
+	defaultDomain: String,
+) : MangaboxParser(context, source) {
+
+	override val configKeyDomain = ConfigKey.Domain(defaultDomain, "mangabats.com", "mangabtt.com")
 
 	// Use custom implementation instead of base class URL handling
 	override val listUrl = "/genre/all"

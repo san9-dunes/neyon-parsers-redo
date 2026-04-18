@@ -10,7 +10,17 @@ import java.util.*
 
 @MangaSourceParser("HENTAI3", "3Hentai", type = ContentType.HENTAI)
 internal class Hentai3(context: MangaLoaderContext) :
-	GalleryAdultsParser(context, MangaParserSource.HENTAI3, "3hentai.net", pageSize = 30) {
+	Hentai3Parser(context, MangaParserSource.HENTAI3, "3hentai.net")
+
+@MangaSourceParser("SRC_3HENTAI", "3Hentai", type = ContentType.HENTAI)
+internal class Src3Hentai(context: MangaLoaderContext) :
+	Hentai3Parser(context, MangaParserSource.SRC_3HENTAI, "3hentai.com")
+
+internal abstract class Hentai3Parser(
+	context: MangaLoaderContext,
+	source: MangaParserSource,
+	defaultDomain: String,
+) : GalleryAdultsParser(context, source, defaultDomain, pageSize = 30) {
 
 	override val selectGallery = ".doujin "
 	override val selectGalleryLink = "a"

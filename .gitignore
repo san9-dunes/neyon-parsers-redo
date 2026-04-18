@@ -96,3 +96,8 @@ local.properties
 /.idea/copilot.data.migration.ask.xml
 /.idea/copilot.data.migration.ask2agent.xml
 /.idea/copilot.data.migration.edit.xml
+
+# Local health-check artifacts
+/domains.csv
+/step1-output.csv
+/step1-console.log

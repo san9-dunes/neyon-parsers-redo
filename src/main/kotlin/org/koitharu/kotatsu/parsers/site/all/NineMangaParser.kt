@@ -19,9 +19,10 @@ internal abstract class NineMangaParser(
     context: MangaLoaderContext,
     source: MangaParserSource,
     defaultDomain: String,
+    vararg domains: String,
 ) : PagedMangaParser(context, source, pageSize = 26), Interceptor {
 
-    override val configKeyDomain = ConfigKey.Domain(defaultDomain)
+    override val configKeyDomain = ConfigKey.Domain(defaultDomain, *domains)
 
     override fun onCreateConfig(keys: MutableCollection<ConfigKey<*>>) {
         super.onCreateConfig(keys)
@@ -313,5 +314,13 @@ internal abstract class NineMangaParser(
         context,
         MangaParserSource.NINEMANGA_FR,
         "fr.ninemanga.com",
+    )
+
+    @MangaSourceParser("TAADD", "NineManga / TAADD", "en")
+    class Taadd(context: MangaLoaderContext) : NineMangaParser(
+        context,
+        MangaParserSource.TAADD,
+        "www.taadd.com",
+        "taadd.com",
     )
 }

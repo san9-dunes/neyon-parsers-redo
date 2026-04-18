@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.parsers.site.fr
 
+import org.koitharu.kotatsu.parsers.Broken
 import okhttp3.HttpUrl
 import org.json.JSONObject
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
@@ -13,6 +14,7 @@ import org.koitharu.kotatsu.parsers.util.json.mapJSON
 import java.text.SimpleDateFormat
 import java.util.*
 
+@Broken
 @MangaSourceParser("INOVASCANMANGA", "InovaScanManga", "fr", type = ContentType.HENTAI)
 internal class InovaScanManga(context: MangaLoaderContext) :
 	SinglePageMangaParser(context, MangaParserSource.INOVASCANMANGA) {

@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.parsers.site.fr
 
+import org.koitharu.kotatsu.parsers.Broken
 import okhttp3.Headers
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
@@ -29,6 +30,7 @@ import org.koitharu.kotatsu.parsers.util.urlDecode
 import org.koitharu.kotatsu.parsers.util.urlEncoded
 import java.util.EnumSet
 
+@Broken
 @MangaSourceParser("ANIMESAMA", "AnimeSama", "fr")
 internal class AnimeSama(context: MangaLoaderContext) :
 	PagedMangaParser(context, source = MangaParserSource.ANIMESAMA, 96) {

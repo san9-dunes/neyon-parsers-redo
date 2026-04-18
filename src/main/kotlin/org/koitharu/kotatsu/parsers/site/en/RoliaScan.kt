@@ -1,5 +1,7 @@
 package org.koitharu.kotatsu.parsers.site.en
 
+import org.koitharu.kotatsu.parsers.Broken
+
 import androidx.collection.arraySetOf
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.MangaSourceParser
@@ -9,6 +11,7 @@ import org.koitharu.kotatsu.parsers.model.*
 import org.koitharu.kotatsu.parsers.util.*
 import java.util.*
 
+@Broken
 @MangaSourceParser("ROLIASCAN", "Rolia Scan", "en")
 internal class RoliaScan(context: MangaLoaderContext) : PagedMangaParser(context, MangaParserSource.ROLIASCAN, 25) {
 

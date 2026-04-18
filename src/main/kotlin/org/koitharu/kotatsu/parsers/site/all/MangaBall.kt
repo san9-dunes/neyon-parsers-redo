@@ -1,5 +1,7 @@
 package org.koitharu.kotatsu.parsers.site.all
 
+import org.koitharu.kotatsu.parsers.Broken
+
 import okhttp3.Headers
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl
@@ -751,6 +753,9 @@ internal abstract class MangaBallParser(
 	@MangaSourceParser("MANGABALL_EN", "Manga Ball (English)", "en")
 	class English(context: MangaLoaderContext) : MangaBallParser(context, MangaParserSource.MANGABALL_EN, setOf("en"))
 
+	@MangaSourceParser("MANGABALL", "Mangaball HUB", "en")
+	class Hub(context: MangaLoaderContext) : MangaBallParser(context, MangaParserSource.MANGABALL, setOf("en"))
+
 	@MangaSourceParser("MANGABALL_ES", "Manga Ball (Spanish)", "es")
 	class Spanish(context: MangaLoaderContext) : MangaBallParser(
 		context,
@@ -786,6 +791,7 @@ internal abstract class MangaBallParser(
 		setOf("it", "it-it"),
 	)
 
+@Broken
 	@MangaSourceParser("MANGABALL_IS", "Manga Ball (Icelandic)", "is")
 	class Icelandic(context: MangaLoaderContext) : MangaBallParser(
 		context,
@@ -799,6 +805,7 @@ internal abstract class MangaBallParser(
 	@MangaSourceParser("MANGABALL_KO", "Manga Ball (Korean)", "ko")
 	class Korean(context: MangaLoaderContext) : MangaBallParser(context, MangaParserSource.MANGABALL_KO, setOf("kr"))
 
+@Broken
 	@MangaSourceParser("MANGABALL_KN", "Manga Ball (Kannada)", "kn")
 	class Kannada(context: MangaLoaderContext) : MangaBallParser(
 		context,
@@ -806,6 +813,7 @@ internal abstract class MangaBallParser(
 		setOf("kn", "kn-in", "kn-my", "kn-sg", "kn-tw"),
 	)
 
+@Broken
 	@MangaSourceParser("MANGABALL_ML", "Manga Ball (Malayalam)", "ml")
 	class Malayalam(context: MangaLoaderContext) : MangaBallParser(
 		context,

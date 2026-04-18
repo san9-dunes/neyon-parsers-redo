@@ -7,6 +7,7 @@ import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.jsoup.nodes.Document
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.MangaSourceParser
+import org.koitharu.kotatsu.parsers.config.ConfigKey
 import org.koitharu.kotatsu.parsers.model.*
 import org.koitharu.kotatsu.parsers.site.madara.MadaraParser
 import org.koitharu.kotatsu.parsers.util.*
@@ -15,6 +16,8 @@ import java.text.SimpleDateFormat
 @MangaSourceParser("MANYTOON", "ManyToon", "en", ContentType.HENTAI)
 internal class ManyToon(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.MANYTOON, "manytoon.org", 20) {
+	override val configKeyDomain = ConfigKey.Domain("manytoon.org", "manytoon.com")
+
 	override val listUrl = "comic/"
 	override val postReq = true
 	override val withoutAjax = true

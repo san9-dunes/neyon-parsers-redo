@@ -1,24 +1,23 @@
 package org.koitharu.kotatsu.parsers.util
 
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import org.koitharu.kotatsu.parsers.model.ContentRating
 import org.koitharu.kotatsu.parsers.model.ContentType.MANGA
 import org.koitharu.kotatsu.parsers.model.ContentType.MANHUA
 import org.koitharu.kotatsu.parsers.model.Demographic.SEINEN
+import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.model.MangaTag
-import org.koitharu.kotatsu.parsers.model.search.MangaSearchQuery
-import org.koitharu.kotatsu.parsers.model.search.QueryCriteria.*
-import org.koitharu.kotatsu.parsers.model.search.SearchableField.*
-import java.util.*
+import java.util.Locale
 
-class ConvertToMangaListFilterTest {
+class MangaListFilterBuilderTest {
 
     @Test
-    fun convertToMangaListFilterTest() {
+    fun builderPopulatesAllFields() {
         val tags = setOf(buildMangaTag("tag1"), buildMangaTag("tag2"))
         val excludedTags = setOf(buildMangaTag("exclude_tag"))
         val states = setOf(MangaState.ONGOING)
@@ -26,62 +25,62 @@ class ConvertToMangaListFilterTest {
         val contentTypes = setOf(MANGA, MANHUA)
         val demographics = setOf(SEINEN)
 
-        val query = MangaSearchQuery.Builder()
-            .criterion(Match(TITLE_NAME, "title_name"))
-            .criterion(Include(TAG, tags))
-            .criterion(Exclude(TAG, excludedTags))
-            .criterion(Include(LANGUAGE, setOf(Locale.ENGLISH)))
-            .criterion(Include(ORIGINAL_LANGUAGE, setOf(Locale.JAPANESE)))
-            .criterion(Include(STATE, states))
-            .criterion(Include(CONTENT_RATING, contentRatings))
-            .criterion(Include(CONTENT_TYPE, contentTypes))
-            .criterion(Include(DEMOGRAPHIC, demographics))
-            .criterion(Range(PUBLICATION_YEAR, 1997, 2024))
-            .criterion(Match(PUBLICATION_YEAR, 2020))
+        val listFilter = MangaListFilter.Builder()
+            .query("title_name")
+            .addTags(tags)
+            .excludeTags(excludedTags)
+            .locale(Locale.ENGLISH)
+            .originalLocale(Locale.JAPANESE)
+            .addStates(states)
+            .addContentRatings(contentRatings)
+            .addTypes(contentTypes)
+            .addDemographics(demographics)
+            .yearFrom(1997)
+            .yearTo(2024)
+            .year(2020)
             .build()
 
-        val listFilter = convertToMangaListFilter(query)
-
-        assertEquals(listFilter.query, "title_name")
-        assertEquals(listFilter.tags, tags)
-        assertEquals(listFilter.tagsExclude, excludedTags)
-        assertEquals(listFilter.locale, Locale.ENGLISH)
-        assertEquals(listFilter.originalLocale, Locale.JAPANESE)
-        assertEquals(listFilter.states, states)
-        assertEquals(listFilter.contentRating, contentRatings)
-        assertEquals(listFilter.types, contentTypes)
-        assertEquals(listFilter.demographics, demographics)
-        assertEquals(listFilter.year, 2020)
-        assertEquals(listFilter.yearFrom, 1997)
-        assertEquals(listFilter.yearTo, 2024)
+        assertEquals("title_name", listFilter.query)
+        assertEquals(tags, listFilter.tags)
+        assertEquals(excludedTags, listFilter.tagsExclude)
+        assertEquals(Locale.ENGLISH, listFilter.locale)
+        assertEquals(Locale.JAPANESE, listFilter.originalLocale)
+        assertEquals(states, listFilter.states)
+        assertEquals(contentRatings, listFilter.contentRating)
+        assertEquals(contentTypes, listFilter.types)
+        assertEquals(demographics, listFilter.demographics)
+        assertEquals(2020, listFilter.year)
+        assertEquals(1997, listFilter.yearFrom)
+        assertEquals(2024, listFilter.yearTo)
     }
 
     @Test
-    fun convertToMangaListFilterWithMultipleTagsIncludeTest() {
+    fun builderMergesTagCalls() {
         val tags1 = setOf(buildMangaTag("tag1"), buildMangaTag("tag2"))
         val tags2 = setOf(buildMangaTag("tag3"), buildMangaTag("tag4"))
 
-        val query = MangaSearchQuery.Builder()
-            .criterion(Include(TAG, tags1))
-            .criterion(Include(TAG, tags2))
+        val listFilter = MangaListFilter.Builder()
+            .addTags(tags1)
+            .addTags(tags2)
             .build()
 
-        val listFilter = convertToMangaListFilter(query)
-
-        assertEquals(listFilter.tags, tags1 union tags2)
+        assertEquals(tags1 union tags2, listFilter.tags)
     }
 
     @Test
-    fun convertToMangaListFilterWithUnsupportedFieldTest() {
-        val query = MangaSearchQuery.Builder()
-            .criterion(Include(AUTHOR, setOf(buildMangaTag("author"))))
-            .build()
+    fun emptyStateHelpers() {
+        assertTrue(MangaListFilter.EMPTY.isEmpty())
+        assertFalse(MangaListFilter.EMPTY.isNotEmpty())
+        assertFalse(MangaListFilter.EMPTY.hasNonSearchOptions())
 
-        val exception = assertThrows<IllegalArgumentException> {
-            convertToMangaListFilter(query)
-        }
+        val onlyQuery = MangaListFilter(query = "naruto")
+        assertFalse(onlyQuery.isEmpty())
+        assertTrue(onlyQuery.isNotEmpty())
+        assertFalse(onlyQuery.hasNonSearchOptions())
 
-        assert(exception.message!!.contains("Unsupported field for Include criterion: AUTHOR"))
+        val withTag = MangaListFilter(tags = setOf(buildMangaTag("action")))
+        assertTrue(withTag.isNotEmpty())
+        assertTrue(withTag.hasNonSearchOptions())
     }
 
     private fun buildMangaTag(name: String): MangaTag {
