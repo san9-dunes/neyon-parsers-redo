@@ -14,4 +14,4 @@ internal class DivaScans(context: MangaLoaderContext) :
 
 @MangaSourceParser("DIVASCANS_COM", "Diva Scans (.com)", "en")
 internal class DivaScansCom(context: MangaLoaderContext) :
-    IkenParser(context, MangaParserSource.DIVASCANS_COM, "divascans.com", 18, true)
+    IkenParser(context, MangaParserSource.DIVASCANS_COM, "divatoon.com", 18, true)

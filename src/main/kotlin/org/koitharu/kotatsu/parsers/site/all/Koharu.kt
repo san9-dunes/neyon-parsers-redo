@@ -26,7 +26,7 @@ internal class Koharu(context: MangaLoaderContext) :
 
 @MangaSourceParser("SCHALENETWORK", "Schale Network", type = ContentType.HENTAI)
 internal class SchaleNetwork(context: MangaLoaderContext) :
-	KoharuParser(context, MangaParserSource.SCHALENETWORK, "schale.network")
+	KoharuParser(context, MangaParserSource.SCHALENETWORK, "anchira.to")
 
 internal abstract class KoharuParser(
 	context: MangaLoaderContext,
@@ -35,7 +35,7 @@ internal abstract class KoharuParser(
 ) : PagedMangaParser(context, source, 24) {
 
 	override val configKeyDomain = ConfigKey.Domain(defaultDomain)
-	private val apiSuffix = "api.schale.network"
+	private val apiSuffix = "api.anchira.to"
 
 	override val userAgentKey = ConfigKey.UserAgent(
 		"Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.7204.46 Mobile Safari/537.36",

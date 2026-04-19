@@ -7,4 +7,4 @@ import org.koitharu.kotatsu.parsers.site.mangareader.MangaReaderParser
 
 @MangaSourceParser("MANGAREADORG", "MangaRead", "en")
 internal class MangaReadOrg(context: MangaLoaderContext) :
-	MangaReaderParser(context, MangaParserSource.MANGAREADORG, "mangaread.org", pageSize = 20, searchPageSize = 10)
+	MangaReaderParser(context, MangaParserSource.MANGAREADORG, "www.mangaread.org", pageSize = 20, searchPageSize = 10)

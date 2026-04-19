@@ -15,7 +15,7 @@ internal class Hentai3(context: MangaLoaderContext) :
 @Broken
 @MangaSourceParser("SRC_3HENTAI", "3Hentai", type = ContentType.HENTAI)
 internal class Src3Hentai(context: MangaLoaderContext) :
-	Hentai3Parser(context, MangaParserSource.SRC_3HENTAI, "3hentai.com")
+	Hentai3Parser(context, MangaParserSource.SRC_3HENTAI, "3hentai.net")
 
 internal abstract class Hentai3Parser(
 	context: MangaLoaderContext,

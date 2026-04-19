@@ -34,7 +34,7 @@ internal class Hentai2ReadParser(context: MangaLoaderContext) :
 
 @MangaSourceParser("HENTAI2NET", "Hentai2", "en", ContentType.HENTAI)
 internal class Hentai2NetParser(context: MangaLoaderContext) :
-	Hentai2ReadBaseParser(context, MangaParserSource.HENTAI2NET, "hentai2.net")
+	Hentai2ReadBaseParser(context, MangaParserSource.HENTAI2NET, "www2.hentai2.net")
 
 internal abstract class Hentai2ReadBaseParser(
 	context: MangaLoaderContext,

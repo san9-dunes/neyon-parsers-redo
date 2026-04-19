@@ -7,8 +7,8 @@ import org.koitharu.kotatsu.parsers.site.madara.MadaraParser
 
 @MangaSourceParser("COFFEE_MANGA", "CoffeeManga", "en")
 internal class CoffeeManga(context: MangaLoaderContext) :
-	MadaraParser(context, MangaParserSource.COFFEE_MANGA, "coffeemanga.io")
+	MadaraParser(context, MangaParserSource.COFFEE_MANGA, "coffeemanga.ink")
 
 @MangaSourceParser("COFFEEMANGA", "CoffeeManga", "en")
 internal class CoffeeMangaIo(context: MangaLoaderContext) :
-	MadaraParser(context, MangaParserSource.COFFEEMANGA, "coffeemanga.io")
+	MadaraParser(context, MangaParserSource.COFFEEMANGA, "coffeemanga.ink")

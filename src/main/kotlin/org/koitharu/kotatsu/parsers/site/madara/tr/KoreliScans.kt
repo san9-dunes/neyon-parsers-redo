@@ -7,6 +7,6 @@ import org.koitharu.kotatsu.parsers.site.madara.MadaraParser
 
 @MangaSourceParser("KORELISCANS", "KoreliScans", "tr")
 internal class KoreliScans(context: MangaLoaderContext) :
-	MadaraParser(context, MangaParserSource.KORELISCANS, "koreliscans.com", 10) {
+	MadaraParser(context, MangaParserSource.KORELISCANS, "www.koreliscans.com", 10) {
 	override val datePattern = "d MMMM"
 }

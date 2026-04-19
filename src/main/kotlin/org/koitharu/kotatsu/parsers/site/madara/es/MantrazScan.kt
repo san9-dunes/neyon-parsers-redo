@@ -7,7 +7,7 @@ import org.koitharu.kotatsu.parsers.site.madara.MadaraParser
 
 @MangaSourceParser("MANTRAZSCAN", "MantrazScan", "es")
 internal class MantrazScan(context: MangaLoaderContext) :
-	MadaraParser(context, MangaParserSource.MANTRAZSCAN, "mantrazscan.org") {
+	MadaraParser(context, MangaParserSource.MANTRAZSCAN, "manhwascan.cv") {
 	override val datePattern = "dd/MM/yyyy"
 	override val tagPrefix = "generos-de-manga/"
 }

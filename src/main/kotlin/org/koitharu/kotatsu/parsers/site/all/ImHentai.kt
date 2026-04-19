@@ -19,7 +19,7 @@ internal class ImHentai(context: MangaLoaderContext) :
 
 @MangaSourceParser("IMHENTAI_COM", "ImHentai.com", type = ContentType.HENTAI)
 internal class ImHentaiCom(context: MangaLoaderContext) :
-        ImHentaiParser(context, MangaParserSource.IMHENTAI_COM, "imhentai.com")
+        ImHentaiParser(context, MangaParserSource.IMHENTAI_COM, "imhentai.xxx")
 internal abstract class ImHentaiParser(
         context: MangaLoaderContext,
         source: MangaParserSource,
