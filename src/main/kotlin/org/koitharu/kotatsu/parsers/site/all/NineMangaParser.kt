@@ -1,5 +1,7 @@
 package org.koitharu.kotatsu.parsers.site.all
 
+import org.koitharu.kotatsu.parsers.Broken
+
 import androidx.collection.ArrayMap
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock

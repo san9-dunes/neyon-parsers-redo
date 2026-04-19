@@ -1,5 +1,7 @@
 package org.koitharu.kotatsu.parsers.site.ru.multichan
 
+import org.koitharu.kotatsu.parsers.Broken
+
 import okhttp3.HttpUrl
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.MangaSourceParser

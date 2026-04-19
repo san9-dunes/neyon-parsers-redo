@@ -1,5 +1,7 @@
 package org.koitharu.kotatsu.parsers.site.wpcomics.vi
 
+import org.koitharu.kotatsu.parsers.Broken
+
 import androidx.collection.ArraySet
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope

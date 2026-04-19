@@ -1,5 +1,7 @@
 package org.koitharu.kotatsu.parsers.site.all
 
+import org.koitharu.kotatsu.parsers.Broken
+
 import androidx.collection.MutableIntObjectMap
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.Interceptor

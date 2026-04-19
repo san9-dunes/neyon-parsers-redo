@@ -1,5 +1,7 @@
 package org.koitharu.kotatsu.parsers.site.ru
 
+import org.koitharu.kotatsu.parsers.Broken
+
 import androidx.collection.ArrayMap
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope

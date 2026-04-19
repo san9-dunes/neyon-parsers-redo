@@ -1,5 +1,7 @@
 package org.koitharu.kotatsu.parsers.site.mangabox.en
 
+import org.koitharu.kotatsu.parsers.Broken
+
 import okhttp3.Interceptor
 import okhttp3.Response
 import org.koitharu.kotatsu.parsers.MangaLoaderContext

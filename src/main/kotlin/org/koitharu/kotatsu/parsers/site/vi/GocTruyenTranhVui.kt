@@ -1,5 +1,7 @@
 package org.koitharu.kotatsu.parsers.site.vi
 
+import org.koitharu.kotatsu.parsers.Broken
+
 import androidx.collection.arraySetOf
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.sync.Mutex

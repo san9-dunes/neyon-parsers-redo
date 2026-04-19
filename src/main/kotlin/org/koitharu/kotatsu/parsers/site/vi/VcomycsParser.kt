@@ -1,5 +1,7 @@
 package org.koitharu.kotatsu.parsers.site.vi
 
+import org.koitharu.kotatsu.parsers.Broken
+
 import org.json.JSONObject
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document

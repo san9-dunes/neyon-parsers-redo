@@ -6,7 +6,6 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.EnumSource
 import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaParserSource
-import org.koitharu.kotatsu.test_util.isUrlAbsolute
 import kotlin.time.Duration.Companion.minutes
 
 internal class FocusedParserSmokeTest {
@@ -17,24 +16,28 @@ internal class FocusedParserSmokeTest {
     @EnumSource(
         value = MangaParserSource::class,
         names = [
-            "GUYACUBARI",
-            "HACHIRUMI",
-            "DANKE",
-            "MAHOUSHOUJOBU",
-            "DANDADAN",
-            "KAIJUNO8",
-            "WELOMA",
-            "HENTAISLAYER",
-            "LELSCANVF",
-            "PIXHENTAI",
-            "HENTAICROT",
+            "HENTAI2NET", "MANGAREADORG", "GOCTRUYENTRANH", "KORELISCANS", "OPIATOON",
+            "JIANGZAITOON", "LAVINIAFANSUB", "KLIKMANGA", "MANGASPARK", "LEKMANGACOM",
+            "SAMURAISCAN", "HADESNOFANSUB", "MANTRAZSCAN", "COFFEEMANGA", "KIRYUU_03",
+            "DIVASCANS_COM", "SRC_3HENTAI", "IMHENTAI_COM", "DOUJINDESUUK", "SCHALENETWORK"
         ],
         mode = EnumSource.Mode.INCLUDE,
     )
-    fun listUrlsAreRelative(source: MangaParserSource) = runTest(timeout = 2.minutes) {
+    fun checkSourceIsAlive(source: MangaParserSource) = runTest(timeout = 2.minutes) {
         val parser = context.newParserInstance(source)
-        val list = parser.getList(0, parser.availableSortOrders.first(), MangaListFilter())
-        assertTrue(list.isNotEmpty(), "Manga list for $source is empty")
-        assertTrue(list.all { !it.url.isUrlAbsolute() }, "Some manga urls are absolute for $source")
+        try {
+            val list = parser.getList(0, parser.availableSortOrders.first(), MangaListFilter())
+            println(source.name + " => FOUND " + list.size + " items")
+            if (list.isNotEmpty()) {
+                val details = parser.getDetails(list.first())
+                println(source.name + " => DETAILS chapters: " + details.chapters?.size)
+            } else {
+                throw Exception("List is empty for " + source.name)
+            }
+        } catch (e: Exception) {
+            System.err.println(source.name + " => FAILED: " + e.message)
+            e.printStackTrace()
+            throw e
+        }
     }
 }

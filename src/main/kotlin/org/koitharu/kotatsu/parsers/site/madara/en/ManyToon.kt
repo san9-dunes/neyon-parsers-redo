@@ -1,5 +1,7 @@
 package org.koitharu.kotatsu.parsers.site.madara.en
 
+import org.koitharu.kotatsu.parsers.Broken
+
 import kotlinx.coroutines.*
 import okhttp3.Headers
 import okhttp3.HttpUrl

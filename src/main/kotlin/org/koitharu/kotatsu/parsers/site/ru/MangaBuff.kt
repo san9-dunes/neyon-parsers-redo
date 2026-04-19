@@ -1,5 +1,7 @@
 package org.koitharu.kotatsu.parsers.site.ru
 
+import org.koitharu.kotatsu.parsers.Broken
+
 import okhttp3.Headers
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import org.jsoup.HttpStatusException

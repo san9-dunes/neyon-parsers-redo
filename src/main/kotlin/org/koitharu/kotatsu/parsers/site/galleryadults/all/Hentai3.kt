@@ -1,5 +1,7 @@
 package org.koitharu.kotatsu.parsers.site.galleryadults.all
 
+import org.koitharu.kotatsu.parsers.Broken
+
 import org.jsoup.internal.StringUtil
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.MangaSourceParser

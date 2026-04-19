@@ -1,5 +1,7 @@
 package org.koitharu.kotatsu.parsers.site.madara.pt
 
+import org.koitharu.kotatsu.parsers.Broken
+
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.koitharu.kotatsu.parsers.MangaLoaderContext

@@ -1,5 +1,7 @@
 package org.koitharu.kotatsu.parsers.site.pt
 
+import org.koitharu.kotatsu.parsers.Broken
+
 import okhttp3.Headers
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrl

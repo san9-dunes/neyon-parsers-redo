@@ -1,5 +1,7 @@
 package org.koitharu.kotatsu.parsers.site.tr
 
+import org.koitharu.kotatsu.parsers.Broken
+
 import org.json.JSONArray
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
