@@ -114,7 +114,7 @@ internal class GocTruyenTranh(context: MangaLoaderContext) :
 			append(page)
 		}
 
-		val json = webClient.httpGet(url) { addHeader("Accept", "application/json") }.parseJson()
+		val json = webClient.httpGet(url, okhttp3.Headers.Builder().add("Accept", "application/json").build()).parseJson()
 		val data = json.getJSONObject("comics").getJSONArray("data")
 
 		return List(data.length()) { i ->
@@ -233,7 +233,7 @@ internal class GocTruyenTranh(context: MangaLoaderContext) :
 
 	private suspend fun availableTags(): Set<MangaTag> {
 		val url = "https://$domain/baseapi/categories/getCategories"
-		val response = webClient.httpGet(url) { addHeader("Accept", "application/json") }.parseJson()
+		val response = webClient.httpGet(url, okhttp3.Headers.Builder().add("Accept", "application/json").build()).parseJson()
 		val arr = response.getJSONArray("categories")
 		return arr.mapJSONToSet { jo ->
 			MangaTag(
