@@ -21,4 +21,6 @@ internal class VerComicsPorno(context: MangaLoaderContext) :
 internal class VerComicsPornoXxx(context: MangaLoaderContext) :
     VmpParser(context, MangaParserSource.VERCOMICSPORNO_XXX, "vercomicsporno.xxx") {
     override val configKeyDomain = ConfigKey.Domain("vercomicsporno.xxx")
+    override val listUrl = "comics-porno/"
+    override val geneUrl = "etiquetas/"
 }

@@ -32,9 +32,11 @@ import java.util.EnumSet
 internal class Hentai2ReadParser(context: MangaLoaderContext) :
 	Hentai2ReadBaseParser(context, MangaParserSource.HENTAI2READ, "hentai2read.com")
 
-@MangaSourceParser("HENTAI2NET", "Hentai2", "en", ContentType.HENTAI)
-internal class Hentai2NetParser(context: MangaLoaderContext) :
-	Hentai2ReadBaseParser(context, MangaParserSource.HENTAI2NET, "www2.hentai2.net")
+// FIXME: www2.hentai2.net uses a completely different backend/layout from hentai2read.com.
+// It will need its own parser implementation (like GalleryAdultsParser) as it lacks the CSS classes expected here.
+// @MangaSourceParser("HENTAI2NET", "Hentai2", "en", ContentType.HENTAI)
+// internal class Hentai2NetParser(context: MangaLoaderContext) :
+//      Hentai2ReadBaseParser(context, MangaParserSource.HENTAI2NET, "www2.hentai2.net")
 
 internal abstract class Hentai2ReadBaseParser(
 	context: MangaLoaderContext,

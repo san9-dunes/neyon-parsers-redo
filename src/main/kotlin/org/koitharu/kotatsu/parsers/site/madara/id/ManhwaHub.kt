@@ -2,11 +2,13 @@ package org.koitharu.kotatsu.parsers.site.madara.id
 
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.MangaSourceParser
+import org.koitharu.kotatsu.parsers.Broken
 import org.koitharu.kotatsu.parsers.model.*
 import org.koitharu.kotatsu.parsers.site.madara.MadaraParser
 import org.koitharu.kotatsu.parsers.util.*
 import java.util.*
 
+@Broken("Under maintenance")
 @MangaSourceParser("MANHWAHUB", "ManhwaHub", "id", ContentType.HENTAI)
 internal class ManhwaHub(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.MANHWAHUB, "manhwahub.net", 40) {
