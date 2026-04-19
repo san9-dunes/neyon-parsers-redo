@@ -11,3 +11,9 @@ internal class Mangack(context: MangaLoaderContext) :
 	MangaReaderParser(context, MangaParserSource.MANGACK, "mangack.com", pageSize = 20, searchPageSize = 20) {
 	override val configKeyDomain = ConfigKey.Domain("mangack.com")
 }
+
+@MangaSourceParser("MANGACK_COM", "Mangack (.com)", "en")
+internal class MangackCom(context: MangaLoaderContext) :
+    MangaReaderParser(context, MangaParserSource.MANGACK_COM, "www.mangack.com", pageSize = 20, searchPageSize = 20) {
+    override val configKeyDomain = ConfigKey.Domain("www.mangack.com")
+}

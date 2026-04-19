@@ -11,3 +11,15 @@ internal class ManhuaRm(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.MANHUARM, "manhuarmtl.com") {
 	override val configKeyDomain = ConfigKey.Domain("manhuarmtl.com")
 }
+
+@MangaSourceParser("MANHUARM_COM", "ManhuaRm (.com)", "en")
+internal class ManhuaRmCom(context: MangaLoaderContext) :
+    MadaraParser(context, MangaParserSource.MANHUARM_COM, "manhuarm.com") {
+    override val configKeyDomain = ConfigKey.Domain("manhuarm.com")
+}
+
+@MangaSourceParser("MANHUARMMTL_COM", "ManhuaRm MTL (.com)", "en")
+internal class ManhuarmMtlCom(context: MangaLoaderContext) :
+    MadaraParser(context, MangaParserSource.MANHUARMMTL_COM, "manhuarmmtl.com") {
+    override val configKeyDomain = ConfigKey.Domain("manhuarmmtl.com")
+}

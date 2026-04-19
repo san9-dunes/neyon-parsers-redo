@@ -57,3 +57,9 @@ internal class Kiryuu(context: MangaLoaderContext) :
         }.reversed()
     }
 }
+
+@MangaSourceParser("KIRYUU_03", "Kiryuu (03)", "id")
+internal class Kiryuu03(context: MangaLoaderContext) :
+    NatsuParser(context, MangaParserSource.KIRYUU_03, pageSize = 24) {
+    override val configKeyDomain = ConfigKey.Domain("kiryuu03.com")
+}

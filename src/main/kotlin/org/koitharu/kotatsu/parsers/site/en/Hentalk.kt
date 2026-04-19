@@ -341,3 +341,7 @@ internal abstract class HentalkBaseParser(
 
 	private fun space2plus(input: String): String = input.replace(' ', '+')
 }
+
+@MangaSourceParser("FAKKU_CC", "FAKKU (.cc)", "en", type = ContentType.HENTAI)
+internal class FakkuCc(context: MangaLoaderContext) :
+    HentalkBaseParser(context, MangaParserSource.FAKKU_CC, "fakku.cc")

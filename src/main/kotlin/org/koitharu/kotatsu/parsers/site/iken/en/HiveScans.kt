@@ -11,3 +11,7 @@ internal class HiveScans(context: MangaLoaderContext) :
 	IkenParser(context, MangaParserSource.HIVESCANS, "hivetoons.org", 18, true) {
 	override val configKeyDomain = ConfigKey.Domain("hivetoons.org")
 }
+
+@MangaSourceParser("HIVESCANS_COM", "Hive Scans (.com)", "en")
+internal class HiveScansCom(context: MangaLoaderContext) :
+    IkenParser(context, MangaParserSource.HIVESCANS_COM, "hivescans.com", 18, true)

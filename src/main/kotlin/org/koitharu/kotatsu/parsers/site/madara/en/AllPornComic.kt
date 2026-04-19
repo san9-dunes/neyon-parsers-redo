@@ -7,7 +7,7 @@ import org.koitharu.kotatsu.parsers.model.ContentType
 import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.site.madara.MadaraParser
 
-@MangaSourceParser("ALLPORN_COMIC", "AllPornComic", "en", ContentType.HENTAI)
+@MangaSourceParser("ALLPORN_COMIC", "AllPornComic.com", "en", ContentType.HENTAI)
 internal class AllPornComic(context: MangaLoaderContext) :
         AllPornComicParser(context, MangaParserSource.ALLPORN_COMIC, "allporncomic.com")
 

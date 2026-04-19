@@ -11,3 +11,7 @@ internal class DivaScans(context: MangaLoaderContext) :
 	IkenParser(context, MangaParserSource.DIVASCANS, "divatoon.com", 18, true) {
 	override val configKeyDomain = ConfigKey.Domain("divatoon.com")
 }
+
+@MangaSourceParser("DIVASCANS_COM", "Diva Scans (.com)", "en")
+internal class DivaScansCom(context: MangaLoaderContext) :
+    IkenParser(context, MangaParserSource.DIVASCANS_COM, "divascans.com", 18, true)
