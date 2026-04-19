@@ -28,7 +28,7 @@ internal abstract class BaozimhParser(
 	defaultDomain: String,
 ) : PagedMangaParser(context, source, pageSize = 36) {
 
-	override val configKeyDomain = ConfigKey.Domain(defaultDomain, "www.baozimh.com", "www.baozimh.org")
+	override val configKeyDomain = ConfigKey.Domain(defaultDomain)
 
 	override fun onCreateConfig(keys: MutableCollection<ConfigKey<*>>) {
 		super.onCreateConfig(keys)

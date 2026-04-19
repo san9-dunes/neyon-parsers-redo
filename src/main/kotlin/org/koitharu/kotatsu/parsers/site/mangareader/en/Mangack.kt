@@ -9,5 +9,5 @@ import org.koitharu.kotatsu.parsers.site.mangareader.MangaReaderParser
 @MangaSourceParser("MANGACK", "Mangack", "en")
 internal class Mangack(context: MangaLoaderContext) :
 	MangaReaderParser(context, MangaParserSource.MANGACK, "mangack.com", pageSize = 20, searchPageSize = 20) {
-	override val configKeyDomain = ConfigKey.Domain("mangack.com", "www.mangack.com")
+	override val configKeyDomain = ConfigKey.Domain("mangack.com")
 }

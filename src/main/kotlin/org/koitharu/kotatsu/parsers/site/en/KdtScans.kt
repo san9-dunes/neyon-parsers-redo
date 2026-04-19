@@ -44,7 +44,7 @@ internal abstract class KdtScansParser(
     defaultDomain: String,
 ) : PagedMangaParser(context, source, 20) {
 
-    override val configKeyDomain = ConfigKey.Domain(defaultDomain, "www.silentquill.net", "silentquill.com")
+    override val configKeyDomain = ConfigKey.Domain(defaultDomain)
 
     override fun getRequestHeaders() = super.getRequestHeaders().newBuilder()
         .add("Referer", "https://$domain/")

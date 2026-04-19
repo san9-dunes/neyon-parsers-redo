@@ -34,7 +34,7 @@ internal abstract class HentalkBaseParser(
 	defaultDomain: String,
 ) : PagedMangaParser(context, source, 24) {
 
-	override val configKeyDomain = ConfigKey.Domain(defaultDomain, "hentalk.pw", "fakku.cc", "fakku.net")
+	override val configKeyDomain = ConfigKey.Domain(defaultDomain)
 	override val userAgentKey = ConfigKey.UserAgent(UserAgents.KOTATSU)
 
 	private val preferredServerKey = ConfigKey.PreferredImageServer(

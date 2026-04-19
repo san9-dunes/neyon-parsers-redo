@@ -22,7 +22,7 @@ internal abstract class NineMangaParser(
     vararg domains: String,
 ) : PagedMangaParser(context, source, pageSize = 26), Interceptor {
 
-    override val configKeyDomain = ConfigKey.Domain(defaultDomain, *domains)
+    override val configKeyDomain = ConfigKey.Domain(defaultDomain)
 
     override fun onCreateConfig(keys: MutableCollection<ConfigKey<*>>) {
         super.onCreateConfig(keys)

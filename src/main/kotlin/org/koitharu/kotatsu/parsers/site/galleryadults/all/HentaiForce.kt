@@ -26,7 +26,7 @@ internal abstract class HentaiForceParser(
 	source: MangaParserSource,
 	defaultDomain: String,
 ) : GalleryAdultsParser(context, source, defaultDomain, pageSize = 30) {
-	override val configKeyDomain = ConfigKey.Domain(defaultDomain, "hentaiforce.net", "hentaifc.com", "fhentai.net")
+	override val configKeyDomain = ConfigKey.Domain(defaultDomain)
 
 	override val selectGallery = ".gallery"
 	override val selectGalleryLink = "a.gallery-thumb"

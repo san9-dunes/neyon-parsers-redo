@@ -40,7 +40,7 @@ import java.util.Locale
 internal class SenkuroParser(context: MangaLoaderContext) :
 	PagedMangaParser(context, MangaParserSource.SENKURO, pageSize = PAGE_SIZE) {
 
-	override val configKeyDomain = ConfigKey.Domain("senkuro.me", "senkuro.com")
+	override val configKeyDomain = ConfigKey.Domain("senkuro.me")
 
 	override fun onCreateConfig(keys: MutableCollection<ConfigKey<*>>) {
 		super.onCreateConfig(keys)

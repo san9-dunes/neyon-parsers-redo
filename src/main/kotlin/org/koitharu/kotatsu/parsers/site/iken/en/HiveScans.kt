@@ -9,5 +9,5 @@ import org.koitharu.kotatsu.parsers.site.iken.IkenParser
 @MangaSourceParser("HIVESCANS", "Hive Scans", "en")
 internal class HiveScans(context: MangaLoaderContext) :
 	IkenParser(context, MangaParserSource.HIVESCANS, "hivetoons.org", 18, true) {
-	override val configKeyDomain = ConfigKey.Domain("hivetoons.org", "hivetoon.com", "hivescans.com")
+	override val configKeyDomain = ConfigKey.Domain("hivetoons.org")
 }

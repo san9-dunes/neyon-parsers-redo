@@ -15,12 +15,22 @@ import java.util.*
 
 @MangaSourceParser("IMHENTAI", "ImHentai", type = ContentType.HENTAI)
 internal class ImHentai(context: MangaLoaderContext) :
-	PagedMangaParser(context, MangaParserSource.IMHENTAI, pageSize = 20) {
+        ImHentaiParser(context, MangaParserSource.IMHENTAI, "imhentai.xxx")
+
+@MangaSourceParser("IMHENTAI_COM", "ImHentai.com", type = ContentType.HENTAI)
+internal class ImHentaiCom(context: MangaLoaderContext) :
+        ImHentaiParser(context, MangaParserSource.IMHENTAI_COM, "imhentai.com")
+internal abstract class ImHentaiParser(
+        context: MangaLoaderContext,
+        source: MangaParserSource,
+        defaultDomain: String,
+) :
+	PagedMangaParser(context, source, pageSize = 20) {
 
 	override val availableSortOrders: Set<SortOrder> =
 		EnumSet.of(SortOrder.UPDATED, SortOrder.POPULARITY, SortOrder.RATING)
 
-	override val configKeyDomain = ConfigKey.Domain("imhentai.xxx", "imhentai.com")
+	override val configKeyDomain = ConfigKey.Domain(defaultDomain)
 
 	override val filterCapabilities: MangaListFilterCapabilities
 		get() = MangaListFilterCapabilities(

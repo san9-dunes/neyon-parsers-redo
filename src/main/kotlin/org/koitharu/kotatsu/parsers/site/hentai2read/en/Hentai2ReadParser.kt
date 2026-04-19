@@ -42,7 +42,7 @@ internal abstract class Hentai2ReadBaseParser(
 	defaultDomain: String,
 ) : PagedMangaParser(context, source, pageSize = 40, searchPageSize = 36) {
 
-	override val configKeyDomain = ConfigKey.Domain(defaultDomain, "hentai2read.com", "hentai2.net")
+	override val configKeyDomain = ConfigKey.Domain(defaultDomain)
 
 	override val availableSortOrders: Set<SortOrder> = EnumSet.of(
 		SortOrder.UPDATED,

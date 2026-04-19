@@ -24,7 +24,7 @@ internal abstract class MangaxyzParser(
 	source: MangaParserSource,
 	defaultDomain: String,
 ) : MadthemeParser(context, source, defaultDomain) {
-	override val configKeyDomain = ConfigKey.Domain(defaultDomain, "mangaxyz.com", "mangaxl.com")
+	override val configKeyDomain = ConfigKey.Domain(defaultDomain)
 
     private val subDomain = "sb.mbcdn.xyz"
 

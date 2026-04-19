@@ -13,7 +13,7 @@ internal abstract class MangaFreakParser(
 	source: MangaParserSource,
 	defaultDomain: String,
 ) : MadaraParser(context, source, defaultDomain) {
-	override val configKeyDomain = ConfigKey.Domain(defaultDomain, "mangafreak.online", "mfreak.net")
+	override val configKeyDomain = ConfigKey.Domain(defaultDomain)
 	override val postReq = true
 	override val datePattern = "dd MMMM، yyyy"
 }

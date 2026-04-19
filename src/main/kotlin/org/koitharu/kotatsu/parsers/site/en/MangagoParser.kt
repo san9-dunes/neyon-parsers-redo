@@ -24,7 +24,7 @@ internal open class MangagoParser(
     defaultDomain: String = "www.mangago.me",
 ) : PagedMangaParser(context, source, pageSize = 20), Interceptor {
 
-    override val configKeyDomain = ConfigKey.Domain(defaultDomain, "www.mangago.me", "mangago.io")
+    override val configKeyDomain = ConfigKey.Domain(defaultDomain)
 
     override val availableSortOrders: Set<SortOrder> = EnumSet.of(
         SortOrder.POPULARITY,

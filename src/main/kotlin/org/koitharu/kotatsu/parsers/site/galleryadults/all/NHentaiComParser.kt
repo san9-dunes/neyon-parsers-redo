@@ -11,10 +11,10 @@ import org.koitharu.kotatsu.parsers.site.galleryadults.GalleryAdultsParser
 import org.koitharu.kotatsu.parsers.util.*
 import java.util.*
 
-@MangaSourceParser("NHENTAI", "NHentai.net", type = ContentType.HENTAI)
-internal class NHentaiParser(context: MangaLoaderContext) :
-	GalleryAdultsParser(context, MangaParserSource.NHENTAI, "nhentai.net", 25) {
-	override val configKeyDomain = ConfigKey.Domain("nhentai.net")
+@MangaSourceParser("NHENTAI_COM", "NHentai.com", type = ContentType.HENTAI)
+internal class NHentaiComParser(context: MangaLoaderContext) :
+	GalleryAdultsParser(context, MangaParserSource.NHENTAI_COM, "nhentai.com", 25) {
+	override val configKeyDomain = ConfigKey.Domain("nhentai.com")
 
 	override val selectGallery = "div.index-container:not(.index-popular) .gallery, #related-container .gallery, .gallery"
 	override val selectGalleryLink = "a"

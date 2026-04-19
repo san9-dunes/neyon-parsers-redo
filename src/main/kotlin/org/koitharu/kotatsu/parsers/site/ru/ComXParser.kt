@@ -22,7 +22,7 @@ import java.util.*
 internal class ComXParser(context: MangaLoaderContext) :
 	PagedMangaParser(context, MangaParserSource.COMX, 20) {
 
-	override val configKeyDomain = ConfigKey.Domain("com-x.life", "comx.life")
+	override val configKeyDomain = ConfigKey.Domain("com-x.life")
 
 	private val availableTags = suspendLazy(initializer = ::fetchTags)
 	private val cdnImageUrl = "img.com-x.life/comix/"

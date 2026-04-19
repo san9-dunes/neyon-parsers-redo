@@ -33,7 +33,7 @@ internal abstract class MangabatParser(
 	defaultDomain: String,
 ) : MangaboxParser(context, source) {
 
-	override val configKeyDomain = ConfigKey.Domain(defaultDomain, "mangabats.com", "mangabtt.com")
+	override val configKeyDomain = ConfigKey.Domain(defaultDomain)
 
 	// Use custom implementation instead of base class URL handling
 	override val listUrl = "/genre/all"

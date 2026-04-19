@@ -9,5 +9,5 @@ import org.koitharu.kotatsu.parsers.site.iken.IkenParser
 @MangaSourceParser("DIVASCANS", "Diva Scans", "en")
 internal class DivaScans(context: MangaLoaderContext) :
 	IkenParser(context, MangaParserSource.DIVASCANS, "divatoon.com", 18, true) {
-	override val configKeyDomain = ConfigKey.Domain("divatoon.com", "divascans.com")
+	override val configKeyDomain = ConfigKey.Domain("divatoon.com")
 }

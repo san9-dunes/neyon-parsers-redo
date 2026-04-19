@@ -27,7 +27,7 @@ import java.util.EnumSet
 internal class EightMusesParser(context: MangaLoaderContext) :
 	PagedMangaParser(context, MangaParserSource.EIGHTMUSES, pageSize = 40) {
 
-	override val configKeyDomain = ConfigKey.Domain("8muses.io", "8muses.com", "8muses.xxx")
+	override val configKeyDomain = ConfigKey.Domain("8muses.io")
 
 	override val availableSortOrders: Set<SortOrder> = EnumSet.of(SortOrder.UPDATED, SortOrder.POPULARITY)
 

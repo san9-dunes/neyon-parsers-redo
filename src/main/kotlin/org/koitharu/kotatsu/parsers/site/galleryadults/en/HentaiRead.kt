@@ -43,8 +43,6 @@ internal class HentaiRead(context: MangaLoaderContext) :
 	GalleryAdultsParser(context, MangaParserSource.HENTAIREAD, "hentairead.com", 24) {
 	override val configKeyDomain = ConfigKey.Domain(
 		"hentairead.com",
-		"myhentaicomics.com",
-		"myhentaigallery.com",
 	)
 
 

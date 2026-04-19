@@ -34,7 +34,7 @@ internal abstract class KoharuParser(
 	defaultDomain: String,
 ) : PagedMangaParser(context, source, 24) {
 
-	override val configKeyDomain = ConfigKey.Domain(defaultDomain, "niyaniya.moe", "schale.network", "schalenetwork.com")
+	override val configKeyDomain = ConfigKey.Domain(defaultDomain)
 	private val apiSuffix = "api.schale.network"
 
 	override val userAgentKey = ConfigKey.UserAgent(

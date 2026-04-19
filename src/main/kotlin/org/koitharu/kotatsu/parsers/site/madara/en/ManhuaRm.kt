@@ -9,5 +9,5 @@ import org.koitharu.kotatsu.parsers.site.madara.MadaraParser
 @MangaSourceParser("MANHUARM", "Manhuarm MTL", "en")
 internal class ManhuaRm(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.MANHUARM, "manhuarmtl.com") {
-	override val configKeyDomain = ConfigKey.Domain("manhuarmtl.com", "manhuarm.com", "manhuarmmtl.com")
+	override val configKeyDomain = ConfigKey.Domain("manhuarmtl.com")
 }

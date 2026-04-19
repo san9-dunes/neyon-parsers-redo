@@ -17,7 +17,7 @@ internal abstract class MangaTownParser(
 	vararg domains: String,
 ) : PagedMangaParser(context, source, 30) {
 
-	override val configKeyDomain = ConfigKey.Domain(defaultDomain, *domains)
+	override val configKeyDomain = ConfigKey.Domain(defaultDomain)
 
 	override fun onCreateConfig(keys: MutableCollection<ConfigKey<*>>) {
 		super.onCreateConfig(keys)

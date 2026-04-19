@@ -19,5 +19,5 @@ internal abstract class RezoScansParser(
 	source: MangaParserSource,
 	defaultDomain: String,
 ) : KeyoappParser(context, source, defaultDomain) {
-	override val configKeyDomain = ConfigKey.Domain(defaultDomain, "rezoscans.com", "zeroscans.com")
+	override val configKeyDomain = ConfigKey.Domain(defaultDomain)
 }

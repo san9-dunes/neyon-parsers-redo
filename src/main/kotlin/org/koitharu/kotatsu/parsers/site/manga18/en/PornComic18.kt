@@ -20,7 +20,7 @@ internal abstract class PornComic18Parser(
 	source: MangaParserSource,
 	defaultDomain: String,
 ) : Manga18Parser(context, source, defaultDomain) {
-	override val configKeyDomain = ConfigKey.Domain(defaultDomain, "18porncomic.com", "18comic.vip", "18kami.com")
+	override val configKeyDomain = ConfigKey.Domain(defaultDomain)
 
 	override val selectTag = "div.item:not(.info_label) div.info_value a"
 }

@@ -23,7 +23,7 @@ internal abstract class HentaiFoxParser(
 	source: MangaParserSource,
 	defaultDomain: String,
 ) : GalleryAdultsParser(context, source, defaultDomain) {
-	override val configKeyDomain = ConfigKey.Domain(defaultDomain, "hentaifox.com", "hentaivox.com")
+	override val configKeyDomain = ConfigKey.Domain(defaultDomain)
 
 	override val selectGallery = ".lc_galleries .thumb, .related_galleries .thumb"
 	override val pathTagUrl = "/tags/popular/pag/"

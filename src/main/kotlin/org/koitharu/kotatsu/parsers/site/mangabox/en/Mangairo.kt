@@ -21,7 +21,7 @@ import java.util.*
 @MangaSourceParser("MANGAIRO", "MangaIro", "en")
 internal class Mangairo(context: MangaLoaderContext) :
 	MangaboxParser(context, MangaParserSource.MANGAIRO) {
-	override val configKeyDomain = ConfigKey.Domain("w.mangairo.com", "chap.mangairo.com")
+	override val configKeyDomain = ConfigKey.Domain("w.mangairo.com")
 	override val otherDomain = "chap.mangairo.com"
 	override val datePattern = "MMM-dd-yy"
 	override val listUrl = "/manga-list"

@@ -11,7 +11,7 @@ import org.koitharu.kotatsu.parsers.site.vmp.VmpParser
 @MangaSourceParser("VERCOMICSPORNO", "VerComicsPorno", "es", ContentType.HENTAI)
 internal class VerComicsPorno(context: MangaLoaderContext) :
 	VmpParser(context, MangaParserSource.VERCOMICSPORNO, "vercomicsporno.com") {
-	override val configKeyDomain = ConfigKey.Domain("vercomicsporno.com", "vercomicsporno.xxx")
+	override val configKeyDomain = ConfigKey.Domain("vercomicsporno.com")
 
 	override val listUrl = "comics-porno/"
 	override val geneUrl = "etiquetas/"

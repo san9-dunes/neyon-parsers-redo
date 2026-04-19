@@ -30,7 +30,7 @@ internal class BentomangaParser(context: MangaLoaderContext) :
 		SortOrder.ALPHABETICAL_DESC,
 	)
 
-	override val configKeyDomain = ConfigKey.Domain("bentomanga.com", "www.bentomanga.com")
+	override val configKeyDomain = ConfigKey.Domain("bentomanga.com")
 
 	override fun onCreateConfig(keys: MutableCollection<ConfigKey<*>>) {
 		super.onCreateConfig(keys)

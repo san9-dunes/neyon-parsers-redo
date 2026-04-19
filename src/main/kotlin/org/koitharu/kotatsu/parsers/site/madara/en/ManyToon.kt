@@ -16,7 +16,7 @@ import java.text.SimpleDateFormat
 @MangaSourceParser("MANYTOON", "ManyToon", "en", ContentType.HENTAI)
 internal class ManyToon(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.MANYTOON, "manytoon.org", 20) {
-	override val configKeyDomain = ConfigKey.Domain("manytoon.org", "manytoon.com")
+	override val configKeyDomain = ConfigKey.Domain("manytoon.org")
 
 	override val listUrl = "comic/"
 	override val postReq = true

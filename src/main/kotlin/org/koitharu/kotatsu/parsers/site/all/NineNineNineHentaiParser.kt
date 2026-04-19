@@ -26,7 +26,7 @@ internal abstract class NineNineNineHentaiBaseParser(
 	defaultDomain: String,
 ) : PagedMangaParser(context, source, PAGE_SIZE) {
 
-	override val configKeyDomain = ConfigKey.Domain(defaultDomain, "9hentai.so", "animeh.to", "9hentai.com")
+	override val configKeyDomain = ConfigKey.Domain(defaultDomain)
 
 	override fun onCreateConfig(keys: MutableCollection<ConfigKey<*>>) {
 		super.onCreateConfig(keys)

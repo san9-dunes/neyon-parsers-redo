@@ -19,5 +19,5 @@ internal abstract class GuyaCubariParser(
 	source: MangaParserSource,
 	defaultDomain: String,
 ) : GuyaParser(context, source, defaultDomain) {
-	override val configKeyDomain = ConfigKey.Domain(defaultDomain, "guya.cubari.moe", "cubari.moe")
+	override val configKeyDomain = ConfigKey.Domain(defaultDomain)
 }
