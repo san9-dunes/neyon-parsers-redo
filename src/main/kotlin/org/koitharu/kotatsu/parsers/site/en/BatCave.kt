@@ -19,6 +19,7 @@ import org.koitharu.kotatsu.parsers.util.suspendlazy.suspendLazy
 import java.text.SimpleDateFormat
 import java.util.*
 
+@Broken
 @MangaSourceParser("BATCAVE", "BatCave", "en", ContentType.COMICS)
 internal class BatCave(context: MangaLoaderContext) :
 	PagedMangaParser(context, MangaParserSource.BATCAVE, 20) {

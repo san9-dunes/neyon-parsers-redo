@@ -13,7 +13,7 @@ import java.util.*
 @MangaSourceParser("NHENTAI_TO", "NHentai.to", type = ContentType.HENTAI)
 internal class NHentaiToParser(context: MangaLoaderContext) :
 	GalleryAdultsParser(context, MangaParserSource.NHENTAI_TO, "nhentai.to", 25) {
-	override val selectGallery = "div.index-container:not(.index-popular) .gallery, #related-container .gallery"
+	override val selectGallery = "div.index-container:not(.index-popular) .gallery:has(a), #related-container .gallery:has(a)"
 	override val selectGalleryLink = "a"
 	override val selectGalleryTitle = ".caption"
 	override val pathTagUrl = "/tags?page="

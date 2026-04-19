@@ -15,6 +15,7 @@ import org.koitharu.kotatsu.parsers.util.*
 import org.json.JSONObject
 import java.util.*
 
+@Broken
 @MangaSourceParser("GOCTRUYENTRANHVUI", "Góc Truyện Tranh Vui", "vi")
 internal class GocTruyenTranhVui(context: MangaLoaderContext):
     PagedMangaParser(context, MangaParserSource.GOCTRUYENTRANHVUI, 50) {

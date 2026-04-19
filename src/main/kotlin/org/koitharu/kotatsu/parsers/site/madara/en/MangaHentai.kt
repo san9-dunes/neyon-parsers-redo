@@ -6,10 +6,12 @@ import org.koitharu.kotatsu.parsers.model.ContentType
 import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.site.madara.MadaraParser
 
+@Broken
 @MangaSourceParser("MANGAHENTAI", "MangaHentai", "en", ContentType.HENTAI)
 internal class MangaHentai(context: MangaLoaderContext) :
 	MangaHentaiParser(context, MangaParserSource.MANGAHENTAI, "mangahentai.me")
 
+@Broken
 @MangaSourceParser("MANGAHEN", "MangaHen", "en", ContentType.HENTAI)
 internal class MangaHen(context: MangaLoaderContext) :
 	MangaHentaiParser(context, MangaParserSource.MANGAHEN, "mangahen.com")

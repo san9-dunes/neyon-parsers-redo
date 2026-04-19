@@ -9,6 +9,7 @@ import org.koitharu.kotatsu.parsers.util.*
 import java.text.SimpleDateFormat
 import java.util.*
 
+@Broken
 @MangaSourceParser("DOCTRUYEN3Q", "DocTruyen3Q", "vi")
 internal class DocTruyen3Q(context: MangaLoaderContext) :
 	WpComicsParser(context, MangaParserSource.DOCTRUYEN3Q, "doctruyen3qui15.pro", 36) {

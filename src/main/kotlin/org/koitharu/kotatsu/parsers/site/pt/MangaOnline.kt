@@ -9,6 +9,7 @@ import org.koitharu.kotatsu.parsers.util.*
 import java.text.SimpleDateFormat
 import java.util.*
 
+@Broken
 @MangaSourceParser("MANGAONLINE", "MangaOnline.biz", "pt")
 internal class MangaOnline(context: MangaLoaderContext) :
 	PagedMangaParser(context, MangaParserSource.MANGAONLINE, 20) {

@@ -13,6 +13,7 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
+@Broken
 @MangaSourceParser("YUGENMANGAS", "YugenApp", "pt")
 internal class YugenMangas(context: MangaLoaderContext) :
 	SinglePageMangaParser(context, MangaParserSource.YUGENMANGAS) {

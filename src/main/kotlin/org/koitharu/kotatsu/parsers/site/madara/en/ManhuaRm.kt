@@ -12,6 +12,7 @@ internal class ManhuaRm(context: MangaLoaderContext) :
 	override val configKeyDomain = ConfigKey.Domain("manhuarmtl.com")
 }
 
+@Broken
 @MangaSourceParser("MANHUARM_COM", "ManhuaRm (.com)", "en")
 internal class ManhuaRmCom(context: MangaLoaderContext) :
     MadaraParser(context, MangaParserSource.MANHUARM_COM, "manhuarm.com") {

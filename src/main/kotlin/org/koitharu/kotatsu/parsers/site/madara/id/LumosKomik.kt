@@ -6,6 +6,7 @@ import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.site.madara.MadaraParser
 import java.util.*
 
+@Broken
 @MangaSourceParser("LUMOSKOMIK", "LumosKomik", "id")
 internal class LumosKomik(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.LUMOSKOMIK, "lumos01.com") {

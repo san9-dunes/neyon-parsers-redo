@@ -13,6 +13,7 @@ import org.koitharu.kotatsu.parsers.site.madara.MadaraParser
 import org.koitharu.kotatsu.parsers.util.*
 import java.text.SimpleDateFormat
 
+@Broken
 @MangaSourceParser("MANYTOON", "ManyToon", "en", ContentType.HENTAI)
 internal class ManyToon(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.MANYTOON, "manytoon.org", 20) {

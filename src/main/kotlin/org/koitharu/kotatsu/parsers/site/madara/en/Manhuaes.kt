@@ -5,6 +5,7 @@ import org.koitharu.kotatsu.parsers.MangaSourceParser
 import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.site.madara.MadaraParser
 
+@Broken
 @MangaSourceParser("MANHUAES", "ManhuaEs", "en")
 internal class Manhuaes(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.MANHUAES, "manhuaes.com") {

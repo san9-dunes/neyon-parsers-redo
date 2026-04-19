@@ -25,14 +25,17 @@ internal class HentaiHere(context: MangaLoaderContext) :
 internal class HentaiZap(context: MangaLoaderContext) :
 	HentaiEraParser(context, MangaParserSource.HENTAIZAP, "hentaizap.com")
 
+@Broken
 @MangaSourceParser("SIMPLYHENTAI", "SimplyHentai", type = ContentType.HENTAI)
 internal class SimplyHentai(context: MangaLoaderContext) :
 	HentaiEraParser(context, MangaParserSource.SIMPLYHENTAI, "simplyhentai.com")
 
+@Broken
 @MangaSourceParser("MHENTAI", "MHentai", type = ContentType.HENTAI)
 internal class Mhentai(context: MangaLoaderContext) :
 	HentaiEraParser(context, MangaParserSource.MHENTAI, "m-hentai.net")
 
+@Broken
 @MangaSourceParser("HENTAILAND", "HentaiLand", type = ContentType.HENTAI)
 internal class HentaiLand(context: MangaLoaderContext) :
 	HentaiEraParser(context, MangaParserSource.HENTAILAND, "hentailand.com")

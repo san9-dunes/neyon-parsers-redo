@@ -15,6 +15,7 @@ import org.koitharu.kotatsu.parsers.util.json.*
 import java.text.SimpleDateFormat
 import java.util.*
 
+@Broken
 @MangaSourceParser("MANGA_WTF", "MangaWtf", "ru")
 internal class MangaWtfParser(
 	context: MangaLoaderContext,

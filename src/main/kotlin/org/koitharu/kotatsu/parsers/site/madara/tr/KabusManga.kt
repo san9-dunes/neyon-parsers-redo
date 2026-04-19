@@ -5,6 +5,7 @@ import org.koitharu.kotatsu.parsers.MangaSourceParser
 import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.site.madara.MadaraParser
 
+@Broken
 @MangaSourceParser("KABUSMANGA", "KabusManga", "tr")
 internal class KabusManga(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.KABUSMANGA, "kabusmanga.com") {

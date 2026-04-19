@@ -6,6 +6,7 @@ import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.site.madara.MadaraParser
 import java.util.*
 
+@Broken
 @MangaSourceParser("KALANGO", "Kalango", "pt")
 internal class Kalango(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.KALANGO, "kalango.org") {

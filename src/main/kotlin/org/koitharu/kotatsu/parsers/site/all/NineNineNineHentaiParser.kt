@@ -16,6 +16,7 @@ import java.util.*
 internal class NineNineNineHentaiParser(context: MangaLoaderContext) :
 	NineNineNineHentaiBaseParser(context, MangaParserSource.NINENINENINEHENTAI, "9hentai.so")
 
+@Broken
 @MangaSourceParser("SRC_9HENTAI", "9Hentai", type = ContentType.HENTAI)
 internal class Src9HentaiParser(context: MangaLoaderContext) :
 	NineNineNineHentaiBaseParser(context, MangaParserSource.SRC_9HENTAI, "9hentai.com")

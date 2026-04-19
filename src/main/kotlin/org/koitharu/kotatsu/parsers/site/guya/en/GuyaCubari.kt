@@ -22,6 +22,7 @@ internal abstract class GuyaCubariParser(
 	override val configKeyDomain = ConfigKey.Domain(defaultDomain)
 }
 
+@Broken
 @MangaSourceParser("CUBARI_MOE", "Cubari.moe", "en")
 internal class CubariMoe(context: MangaLoaderContext) :
     GuyaCubariParser(context, MangaParserSource.CUBARI_MOE, "cubari.moe")

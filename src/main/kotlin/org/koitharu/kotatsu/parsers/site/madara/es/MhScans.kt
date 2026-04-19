@@ -5,6 +5,7 @@ import org.koitharu.kotatsu.parsers.MangaSourceParser
 import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.site.madara.MadaraParser
 
+@Broken
 @MangaSourceParser("MHSCANS", "MhScans", "es")
 internal class MhScans(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.MHSCANS, "mhscans.mundoalterno.org") {

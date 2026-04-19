@@ -5,6 +5,7 @@ import org.koitharu.kotatsu.parsers.MangaSourceParser
 import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.site.madara.MadaraParser
 
+@Broken
 @MangaSourceParser("ATEMPORAL", "Atemporal", "pt")
 internal class Atemporal(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.ATEMPORAL, "atemporal.cloud") {

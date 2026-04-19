@@ -10,6 +10,7 @@ import org.koitharu.kotatsu.parsers.model.*
 import org.koitharu.kotatsu.parsers.site.madara.MadaraParser
 import org.koitharu.kotatsu.parsers.util.*
 
+@Broken
 @MangaSourceParser("LEITORDEMANGA", "LeitorDeManga", "pt")
 internal class LeitorDeManga(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.LEITORDEMANGA, "leitordemanga.com", 10) {

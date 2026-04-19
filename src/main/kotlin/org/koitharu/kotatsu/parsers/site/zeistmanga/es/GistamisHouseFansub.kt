@@ -5,6 +5,7 @@ import org.koitharu.kotatsu.parsers.MangaSourceParser
 import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.site.zeistmanga.ZeistMangaParser
 
+@Broken
 @MangaSourceParser("GISTAMISHOUSEFANSUB", "GistamisHouseFansub", "es")
 internal class GistamisHouseFansub(context: MangaLoaderContext) :
 	ZeistMangaParser(context, MangaParserSource.GISTAMISHOUSEFANSUB, "gistamishousefansub.blogspot.com") {

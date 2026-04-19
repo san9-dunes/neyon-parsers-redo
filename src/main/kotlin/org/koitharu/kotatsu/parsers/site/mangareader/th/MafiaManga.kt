@@ -6,6 +6,7 @@ import org.koitharu.kotatsu.parsers.model.MangaListFilterCapabilities
 import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.site.mangareader.MangaReaderParser
 
+@Broken
 @MangaSourceParser("MAFIAMANGA", "MafiaManga", "th")
 internal class MafiaManga(context: MangaLoaderContext) :
 	MangaReaderParser(context, MangaParserSource.MAFIAMANGA, "mafia-manga.com", pageSize = 20, searchPageSize = 10) {

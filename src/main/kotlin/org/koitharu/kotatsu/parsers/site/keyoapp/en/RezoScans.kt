@@ -10,6 +10,7 @@ import org.koitharu.kotatsu.parsers.site.keyoapp.KeyoappParser
 internal class RezoScans(context: MangaLoaderContext) :
 	RezoScansParser(context, MangaParserSource.REZOSCANS, "rezoscans.com")
 
+@Broken
 @MangaSourceParser("ZEROSCANS", "ZeroScans", "en")
 internal class ZeroScans(context: MangaLoaderContext) :
 	RezoScansParser(context, MangaParserSource.ZEROSCANS, "zeroscans.com")

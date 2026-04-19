@@ -12,6 +12,7 @@ import org.koitharu.kotatsu.parsers.util.*
 import java.text.SimpleDateFormat
 import java.util.*
 
+@Broken
 @MangaSourceParser("HENTAI18VN", "Hentai18VN", "vi", type = ContentType.HENTAI)
 internal class Hentai18VN(context: MangaLoaderContext) :
 	PagedMangaParser(context, MangaParserSource.HENTAI18VN, 30) {

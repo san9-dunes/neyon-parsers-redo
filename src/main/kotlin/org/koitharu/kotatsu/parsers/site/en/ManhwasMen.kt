@@ -10,6 +10,7 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
+@Broken
 @MangaSourceParser("MANHWASMEN", "ManhwasMen", "en", type = ContentType.HENTAI)
 internal class ManhwasMen(context: MangaLoaderContext) :
 	PagedMangaParser(context, MangaParserSource.MANHWASMEN, pageSize = 30, searchPageSize = 30) {

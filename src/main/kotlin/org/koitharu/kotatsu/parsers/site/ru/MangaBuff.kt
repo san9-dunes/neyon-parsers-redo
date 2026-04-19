@@ -39,6 +39,7 @@ import java.util.EnumSet
 import java.util.LinkedHashSet
 import java.util.Locale
 
+@Broken
 @MangaSourceParser("MANGABUFF", "MangaBuff", "ru")
 internal class MangaBuff(context: MangaLoaderContext) :
 	PagedMangaParser(context, MangaParserSource.MANGABUFF, pageSize = 24) {

@@ -371,6 +371,7 @@ internal abstract class KdtScansParser(
 internal class KdtScans(context: MangaLoaderContext) :
     KdtScansParser(context, MangaParserSource.KDTSCANS, "www.silentquill.net")
 
+@Broken
 @MangaSourceParser("SILENTQUILL", "Armageddon", "en")
 internal class SilentQuill(context: MangaLoaderContext) :
     KdtScansParser(context, MangaParserSource.SILENTQUILL, "silentquill.com")

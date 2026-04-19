@@ -12,6 +12,7 @@ import java.util.*
 internal class Hentai3(context: MangaLoaderContext) :
 	Hentai3Parser(context, MangaParserSource.HENTAI3, "3hentai.net")
 
+@Broken
 @MangaSourceParser("SRC_3HENTAI", "3Hentai", type = ContentType.HENTAI)
 internal class Src3Hentai(context: MangaLoaderContext) :
 	Hentai3Parser(context, MangaParserSource.SRC_3HENTAI, "3hentai.com")

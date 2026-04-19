@@ -15,6 +15,7 @@ import org.koitharu.kotatsu.parsers.util.parseHtml
 internal class Mangaxyz(context: MangaLoaderContext) :
 	MangaxyzParser(context, MangaParserSource.MANGAXYZ, "mangaxyz.com")
 
+@Broken
 @MangaSourceParser("MANGAXL", "MangaXL", "en")
 internal class MangaXl(context: MangaLoaderContext) :
 	MangaxyzParser(context, MangaParserSource.MANGAXL, "mangaxl.com")

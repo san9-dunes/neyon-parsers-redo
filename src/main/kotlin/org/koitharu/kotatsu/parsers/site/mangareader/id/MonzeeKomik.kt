@@ -7,6 +7,7 @@ import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.site.mangareader.MangaReaderParser
 import java.util.*
 
+@Broken
 @MangaSourceParser("MONZEEKOMIK", "MonzeeKomik", "id")
 internal class MonzeeKomik(context: MangaLoaderContext) :
 	MangaReaderParser(

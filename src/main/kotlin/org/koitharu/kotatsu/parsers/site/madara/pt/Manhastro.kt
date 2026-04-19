@@ -15,6 +15,7 @@ import org.koitharu.kotatsu.parsers.util.selectFirstOrThrow
 import org.koitharu.kotatsu.parsers.util.toAbsoluteUrl
 import org.koitharu.kotatsu.parsers.util.toRelativeUrl
 
+@Broken
 @MangaSourceParser("MANHASTRO", "Manhastro", "pt")
 internal class Manhastro(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.MANHASTRO, "manhastro.net", 24) {

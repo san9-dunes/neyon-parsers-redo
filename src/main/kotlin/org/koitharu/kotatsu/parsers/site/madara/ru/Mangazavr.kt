@@ -6,6 +6,7 @@ import org.koitharu.kotatsu.parsers.model.ContentType
 import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.site.madara.MadaraParser
 
+@Broken
 @MangaSourceParser("MANGAZAVR", "Mangazavr", "ru", ContentType.HENTAI)
 internal class Mangazavr(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.MANGAZAVR, "mangazavr.ru") {

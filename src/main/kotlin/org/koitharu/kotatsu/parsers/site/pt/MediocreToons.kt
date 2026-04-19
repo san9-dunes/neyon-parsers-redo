@@ -30,6 +30,7 @@ import org.koitharu.kotatsu.parsers.util.toTitleCase
 import java.text.SimpleDateFormat
 import java.util.EnumSet
 
+@Broken
 @MangaSourceParser("MEDIOCRETOONS", "MediocreToons", "pt")
 internal class MediocreToons(context: MangaLoaderContext) : PagedMangaParser(
 	context,

@@ -36,6 +36,7 @@ import java.util.LinkedHashMap
 import java.util.LinkedHashSet
 import java.util.Locale
 
+@Broken
 @MangaSourceParser("SENKURO", "Senkuro", "ru")
 internal class SenkuroParser(context: MangaLoaderContext) :
 	PagedMangaParser(context, MangaParserSource.SENKURO, pageSize = PAGE_SIZE) {

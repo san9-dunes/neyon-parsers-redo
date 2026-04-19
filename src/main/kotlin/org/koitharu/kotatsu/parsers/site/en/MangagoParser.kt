@@ -734,6 +734,7 @@ internal open class MangagoParser(
 internal class Mangago(context: MangaLoaderContext) :
     MangagoParser(context, MangaParserSource.MANGAGO, "www.mangago.me")
 
+@Broken
 @MangaSourceParser("MANGAGOIO", "Mangago.io", "en")
 internal class MangagoIo(context: MangaLoaderContext) :
     MangagoParser(context, MangaParserSource.MANGAGOIO, "mangago.io")

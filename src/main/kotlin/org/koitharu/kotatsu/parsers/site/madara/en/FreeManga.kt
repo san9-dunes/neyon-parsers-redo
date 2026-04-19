@@ -5,6 +5,7 @@ import org.koitharu.kotatsu.parsers.MangaSourceParser
 import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.site.madara.MadaraParser
 
+@Broken
 @MangaSourceParser("FREEMANGA", "FreeManga", "en")
 internal class FreeManga(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.FREEMANGA, "freemanga.me") {

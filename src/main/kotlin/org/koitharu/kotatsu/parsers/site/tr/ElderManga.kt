@@ -14,6 +14,7 @@ import org.koitharu.kotatsu.parsers.util.json.*
 import java.text.SimpleDateFormat
 import java.util.*
 
+@Broken
 @MangaSourceParser("ELDERMANGA", "Elder Manga", "tr")
 internal class ElderManga(context: MangaLoaderContext):
     PagedMangaParser(context, MangaParserSource.ELDERMANGA, 25) {

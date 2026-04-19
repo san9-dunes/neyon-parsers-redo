@@ -316,7 +316,8 @@ internal abstract class NineMangaParser(
         "fr.ninemanga.com",
     )
 
-    @MangaSourceParser("TAADD", "NineManga / TAADD", "en")
+    @Broken
+@MangaSourceParser("TAADD", "NineManga / TAADD", "en")
     class Taadd(context: MangaLoaderContext) : NineMangaParser(
         context,
         MangaParserSource.TAADD,

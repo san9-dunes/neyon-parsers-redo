@@ -23,6 +23,7 @@ import kotlin.collections.set
 internal class Mangabat(context: MangaLoaderContext) :
 	MangabatParser(context, MangaParserSource.HMANGABAT, "mangabats.com")
 
+@Broken
 @MangaSourceParser("MANGABTT", "MangaBTT", "en")
 internal class MangaBtt(context: MangaLoaderContext) :
 	MangabatParser(context, MangaParserSource.MANGABTT, "mangabtt.com")

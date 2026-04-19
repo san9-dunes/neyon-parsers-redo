@@ -6,6 +6,7 @@ import org.koitharu.kotatsu.parsers.model.MangaListFilterCapabilities
 import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.site.mangareader.MangaReaderParser
 
+@Broken
 @MangaSourceParser("WALPURGISCAN", "WalpurgiScan", "it")
 internal class Walpurgiscan(context: MangaLoaderContext) :
 	MangaReaderParser(

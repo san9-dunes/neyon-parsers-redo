@@ -6,6 +6,7 @@ import org.koitharu.kotatsu.parsers.model.ContentType
 import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.site.madara.MadaraParser
 
+@Broken
 @MangaSourceParser("YURILIVE", "YuriLive", "pt", ContentType.HENTAI)
 internal class YuriLive(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.YURILIVE, "yuri.live") {

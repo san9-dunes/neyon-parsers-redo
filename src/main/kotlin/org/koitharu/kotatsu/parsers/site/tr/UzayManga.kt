@@ -5,6 +5,7 @@ import org.koitharu.kotatsu.parsers.MangaSourceParser
 import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.site.uzaymanga.UzayMangaParser
 
+@Broken
 @MangaSourceParser("UZAYMANGA", "Uzay Manga", "tr")
 internal class UzayManga(context: MangaLoaderContext) :
 	UzayMangaParser(

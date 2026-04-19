@@ -9,6 +9,7 @@ import org.koitharu.kotatsu.parsers.util.*
 import java.text.SimpleDateFormat
 import java.util.EnumSet
 
+@Broken
 @MangaSourceParser("KOMIKU", "Komiku", "id")
 internal class Komiku(context: MangaLoaderContext) :
 	MangaReaderParser(context, MangaParserSource.KOMIKU, "komiku.org", pageSize = 20, searchPageSize = 10) {

@@ -5,6 +5,7 @@ import org.koitharu.kotatsu.parsers.MangaSourceParser
 import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.site.madara.MadaraParser
 
+@Broken
 @MangaSourceParser("PASSAMAOSCAN", "PassamaoScan", "pt")
 internal class PassamaoScan(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.PASSAMAOSCAN, "passamaoscan.com") {

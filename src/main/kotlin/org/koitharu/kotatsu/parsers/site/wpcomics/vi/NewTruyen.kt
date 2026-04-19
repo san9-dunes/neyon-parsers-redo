@@ -12,6 +12,7 @@ import org.koitharu.kotatsu.parsers.util.*
 import java.text.SimpleDateFormat
 import java.util.*
 
+@Broken
 @MangaSourceParser("NEWTRUYEN", "NewTruyen", "vi")
 internal class NewTruyen(context: MangaLoaderContext) :
 	WpComicsParser(context, MangaParserSource.NEWTRUYEN, "newtruyentranh4.com", 36) {
