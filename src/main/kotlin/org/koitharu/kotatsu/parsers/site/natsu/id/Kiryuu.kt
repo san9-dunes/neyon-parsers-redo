@@ -62,4 +62,9 @@ internal class Kiryuu(context: MangaLoaderContext) :
 internal class Kiryuu03(context: MangaLoaderContext) :
     NatsuParser(context, MangaParserSource.KIRYUU_03, pageSize = 24) {
     override val configKeyDomain = ConfigKey.Domain("v4.kiryuu.to")
+
+    override fun onCreateConfig(keys: MutableCollection<ConfigKey<*>>) {
+        super.onCreateConfig(keys)
+        keys.add(ConfigKey.InterceptCloudflare())
+    }
 }

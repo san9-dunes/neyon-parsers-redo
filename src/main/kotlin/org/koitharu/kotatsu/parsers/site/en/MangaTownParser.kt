@@ -290,8 +290,10 @@ internal class MangaTown(context: MangaLoaderContext) :
 
 @MangaSourceParser("FANFOX", "MangaFox", "en")
 internal class FanFox(context: MangaLoaderContext) :
-	MangaTownParser(context, MangaParserSource.FANFOX, "fanfox.net", "www.fanfox.net")
-
-@MangaSourceParser("MANGAHOME", "MangaHome", "en")
-internal class MangaHome(context: MangaLoaderContext) :
+        MangaTownParser(context, MangaParserSource.FANFOX, "fanfox.net", "www.fanfox.net") {
+        override fun onCreateConfig(keys: MutableCollection<ConfigKey<*>>) {
+                super.onCreateConfig(keys)
+                keys.add(ConfigKey.InterceptCloudflare())
+        }
+}@MangaSourceParser("MANGAHOME", "MangaHome", "en")internal class MangaHome(context: MangaLoaderContext) :
 	MangaTownParser(context, MangaParserSource.MANGAHOME, "www.mangahome.com", "mangahome.com")
