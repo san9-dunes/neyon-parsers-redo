@@ -12,4 +12,5 @@ internal class YaoiX3(context: MangaLoaderContext) :
 	override val datePattern = "dd/MM/yyyy"
 	override val listUrl = "bl/"
 	override val tagPrefix = "genero/"
+        override val withoutAjax = true
 }

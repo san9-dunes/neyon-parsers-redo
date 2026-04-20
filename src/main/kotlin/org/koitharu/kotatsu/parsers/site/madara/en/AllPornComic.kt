@@ -22,6 +22,8 @@ internal abstract class AllPornComicParser(
 ) : MadaraParser(context, source, defaultDomain, pageSize = 24) {
         override val configKeyDomain = ConfigKey.Domain(defaultDomain)
 
+        override val listUrl = "porncomic/"
+        override val withoutAjax = true
         override val tagPrefix = "porncomic-genre/"
         override val datePattern = "MMMM dd, yyyy"
 }

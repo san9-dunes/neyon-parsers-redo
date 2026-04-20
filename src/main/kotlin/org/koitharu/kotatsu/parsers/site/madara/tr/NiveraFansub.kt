@@ -10,4 +10,5 @@ import org.koitharu.kotatsu.parsers.site.madara.MadaraParser
 internal class NiveraFansub(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.NIVERAFANSUB, "niverafansub.org") {
 	override val datePattern = "d MMMM yyyy"
+        override val withoutAjax = true
 }

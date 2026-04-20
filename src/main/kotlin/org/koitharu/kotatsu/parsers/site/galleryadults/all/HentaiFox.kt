@@ -14,10 +14,6 @@ import java.util.*
 internal class HentaiFox(context: MangaLoaderContext) :
 	HentaiFoxParser(context, MangaParserSource.HENTAIFOX, "hentaifox.com")
 
-@MangaSourceParser("HENTAIVOX", "HentaiVox", type = ContentType.HENTAI)
-internal class HentaiVox(context: MangaLoaderContext) :
-	HentaiFoxParser(context, MangaParserSource.HENTAIVOX, "hentaivox.com")
-
 internal abstract class HentaiFoxParser(
 	context: MangaLoaderContext,
 	source: MangaParserSource,

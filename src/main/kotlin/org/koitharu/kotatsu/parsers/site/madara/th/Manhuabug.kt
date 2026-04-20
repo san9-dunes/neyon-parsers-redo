@@ -10,6 +10,7 @@ import java.util.*
 internal class Manhuabug(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.MANHUABUG, "www.manhuabug.com", 10) {
 	override val datePattern: String = "d MMMM yyyy"
+	override val withoutAjax = true
 	override val sourceLocale: Locale = Locale.ENGLISH
 	override val selectPage = "img"
 }

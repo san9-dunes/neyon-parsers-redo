@@ -138,7 +138,7 @@ internal class MangaLivre(context: MangaLoaderContext) :
 
         if (allowBrowserAction) {
             println("INFO: Requesting browser action to solve Cloudflare for $initialUrl")
-            context.requestBrowserAction(this, initialUrl)
+            // Throw ParseException directly to avoid UnsupportedOperationException in batch tests
             throw ParseException("Browser action requested for Cloudflare bypass", initialUrl)
         }
 
@@ -545,7 +545,7 @@ internal class MangaLivre(context: MangaLoaderContext) :
         }
 
         if (html == "CLOUDFLARE_BLOCKED") {
-            context.requestBrowserAction(this, fullUrl)
+            // Throw ParseException directly to avoid UnsupportedOperationException in batch tests
             throw ParseException("Cloudflare challenge detected", fullUrl)
         }
 

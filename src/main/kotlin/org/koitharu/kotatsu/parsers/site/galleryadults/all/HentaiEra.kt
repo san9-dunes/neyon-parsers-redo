@@ -21,10 +21,13 @@ internal class HentaiHand(context: MangaLoaderContext) :
 
 @MangaSourceParser("HENTAIHERE", "HentaiHere", type = ContentType.HENTAI)
 internal class HentaiHere(context: MangaLoaderContext) :
-	HentaiEraParser(context, MangaParserSource.HENTAIHERE, "hentaihere.com")
-
-@MangaSourceParser("HENTAIZAP", "HentaiZap", type = ContentType.HENTAI)
-internal class HentaiZap(context: MangaLoaderContext) :
+        HentaiEraParser(context, MangaParserSource.HENTAIHERE, "hentaihere.com") {
+        override fun onCreateConfig(keys: MutableCollection<ConfigKey<*>>) {
+                super.onCreateConfig(keys)
+                keys.add(ConfigKey.InterceptCloudflare(defaultValue = true))
+        }
+}
+@MangaSourceParser("HENTAIZAP", "HentaiZap", type = ContentType.HENTAI)internal class HentaiZap(context: MangaLoaderContext) :
 	HentaiEraParser(context, MangaParserSource.HENTAIZAP, "hentaizap.com")
 
 @Broken

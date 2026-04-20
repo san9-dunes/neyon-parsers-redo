@@ -13,10 +13,6 @@ import java.util.*
 internal class HentaiForce(context: MangaLoaderContext) :
 	HentaiForceParser(context, MangaParserSource.HENTAIFORCE, "hentaiforce.net")
 
-@MangaSourceParser("HENTAIFC", "HentaiFC", type = ContentType.HENTAI)
-internal class HentaiFc(context: MangaLoaderContext) :
-	HentaiForceParser(context, MangaParserSource.HENTAIFC, "hentaifc.com")
-
 @MangaSourceParser("FHENTAI", "FHentai", type = ContentType.HENTAI)
 internal class FHentai(context: MangaLoaderContext) :
 	HentaiForceParser(context, MangaParserSource.FHENTAI, "fhentai.net")

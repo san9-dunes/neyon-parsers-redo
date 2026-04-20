@@ -10,4 +10,5 @@ internal class ArazNovel(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.ARAZNOVEL, "araznovel.com", 10) {
 	override val datePattern = "d MMMM yyyy"
 	override val postReq = true
+        override val withoutAjax = true
 }

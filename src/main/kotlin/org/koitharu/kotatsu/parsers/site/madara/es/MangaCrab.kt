@@ -14,4 +14,5 @@ internal class MangaCrab(context: MangaLoaderContext) :
 	override val selectChapter = "div.listing-chapters_wrap > ul > li"
 	override val selectDesc = "div.c-page__content div.modal-contenido p"
 	override val selectState = "div.summary-content2"
+        override val withoutAjax = true
 }
