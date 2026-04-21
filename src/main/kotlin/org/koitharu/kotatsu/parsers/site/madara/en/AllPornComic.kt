@@ -17,6 +17,10 @@ import java.text.SimpleDateFormat
 internal class AllPornComic(context: MangaLoaderContext) :
         AllPornComicParser(context, MangaParserSource.ALLPORN_COMIC, "allporncomic.com")
 
+@MangaSourceParser("ALLPORN_COMICS", "AllPornComics.com", "en", ContentType.HENTAI)
+internal class AllPornComics(context: MangaLoaderContext) :
+        AllPornComicParser(context, MangaParserSource.ALLPORN_COMICS, "allporncomics.com")
+
 @MangaSourceParser("ALLPORN_COMICS_CO", "AllPornComics.co", "en", ContentType.HENTAI)
 internal class AllPornComicsCo(context: MangaLoaderContext) :
         AllPornComicParser(context, MangaParserSource.ALLPORN_COMICS_CO, "allporncomics.co")
