@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.parsers.site.en
 
+import org.koitharu.kotatsu.parsers.Broken
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.MangaSourceParser
 import org.koitharu.kotatsu.parsers.config.ConfigKey
@@ -288,6 +289,7 @@ internal abstract class MangaTownParser(
 internal class MangaTown(context: MangaLoaderContext) :
 	MangaTownParser(context, MangaParserSource.MANGATOWN, "www.mangatown.com", "mangatown.com")
 
+@Broken("WIP: Search not finished yet / WIP")
 @MangaSourceParser("FANFOX", "MangaFox", "en")
 internal class FanFox(context: MangaLoaderContext) :
         MangaTownParser(context, MangaParserSource.FANFOX, "fanfox.net", "www.fanfox.net") {
@@ -295,5 +297,6 @@ internal class FanFox(context: MangaLoaderContext) :
                 super.onCreateConfig(keys)
                 keys.add(ConfigKey.InterceptCloudflare())
         }
-}@MangaSourceParser("MANGAHOME", "MangaHome", "en")internal class MangaHome(context: MangaLoaderContext) :
+}@Broken("WIP: Search not finished yet / WIP")
+@MangaSourceParser("MANGAHOME", "MangaHome", "en")internal class MangaHome(context: MangaLoaderContext) :
 	MangaTownParser(context, MangaParserSource.MANGAHOME, "www.mangahome.com", "mangahome.com")

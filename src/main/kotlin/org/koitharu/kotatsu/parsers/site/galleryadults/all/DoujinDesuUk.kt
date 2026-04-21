@@ -12,15 +12,16 @@ import java.util.*
 @MangaSourceParser("DOUJINDESUUK", "DoujinDesu.uk", type = ContentType.HENTAI)
 internal class DoujinDesuUk(context: MangaLoaderContext) :
 	GalleryAdultsParser(context, MangaParserSource.DOUJINDESUUK, "doujindesu.tv", 25) {
-	override val selectGallery = ".gallery"
+	override val selectGallery = ".entry"
 	override val selectGalleryLink = "a"
-	override val selectGalleryTitle = ".caption"
+	override val selectGalleryTitle = ".metadata a"
 	override val pathTagUrl = "/tags?page="
 	override val selectTags = "#tag-container"
 	override val selectTag = "div.tag-container:contains(Tags) span.tags"
 	override val selectAuthor = "div.tag-container:contains(Artists) a"
 	override val selectLanguageChapter = "div.tag-container:contains(Languages) a"
 	override val idImg = "image-container"
+    override val selectGalleryImg = "img"
 
 	override suspend fun getFilterOptions() = super.getFilterOptions().copy(
 		availableLocales = setOf(
@@ -63,6 +64,33 @@ internal class DoujinDesuUk(context: MangaLoaderContext) :
 		val doc = webClient.httpGet(page.url.toAbsoluteUrl(domain)).parseHtml()
 		val root = doc.body()
 		return root.requireElementById(idImg).selectFirstOrThrow("img").requireSrc()
+	}
+
+	override suspend fun getDetails(manga: Manga): Manga {
+		val doc = webClient.httpGet(manga.url.toAbsoluteUrl(domain)).parseHtml()
+		val urlChapters = doc.selectFirst("#cover a, .cover a, .left_cover a, .g_thumb a, .gallery_left a, .gt_left a")?.attr("href") ?: manga.url
+		val tag = doc.selectFirst(selectTag)?.parseTags()
+		val branch = doc.select(selectLanguageChapter).joinToString(separator = " / ") {
+			it.text()
+		}
+		val author = doc.selectFirst(selectAuthor)?.text()
+		return manga.copy(
+			tags = tag.orEmpty(),
+			authors = setOfNotNull(author),
+			chapters = listOf(
+				MangaChapter(
+					id = manga.id,
+					title = manga.title,
+					number = 1f,
+					volume = 0,
+					url = urlChapters,
+					scanlator = null,
+					uploadDate = 0,
+					branch = branch,
+					source = source,
+				),
+			),
+		)
 	}
 
 	override suspend fun getListPage(page: Int, order: SortOrder, filter: MangaListFilter): List<Manga> {

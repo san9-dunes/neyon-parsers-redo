@@ -181,8 +181,8 @@ internal abstract class NatsuParser(
     protected open fun parseMangaList(doc: Document): List<Manga> {
         val mangaList = mutableListOf<Manga>()
 
-        doc.select("body > div").forEach { divElement ->
-            val mainLink = divElement.selectFirst("a[href*='/manga/']") ?: return@forEach
+        doc.select(".bsx, .utao, .listupd .utao, .listo, div.grid > div, div.flex-col, .list-manga .item-manga").forEach { divElement ->
+            val mainLink = divElement.selectFirst("a[href*='/manga/'], a[href*='/komik/'], a[href*='/mangas/'], a[href*='/ch/']") ?: return@forEach
             val href = mainLink.attrAsRelativeUrl("href")
 
             if (href.contains("/chapter-")) return@forEach

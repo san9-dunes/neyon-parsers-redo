@@ -4,6 +4,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import org.koitharu.kotatsu.parsers.Broken
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.MangaSourceParser
 import org.koitharu.kotatsu.parsers.config.ConfigKey
@@ -13,6 +14,7 @@ import org.koitharu.kotatsu.parsers.util.*
 import java.text.SimpleDateFormat
 import java.util.*
 
+@Broken("WIP: Search not finished yet / WIP")
 @MangaSourceParser("MANGAGEKO", "MangaGeko", "en")
 internal class MangaGeko(context: MangaLoaderContext) :
 	PagedMangaParser(context, MangaParserSource.MANGAGEKO, 30) {
@@ -37,6 +39,7 @@ internal class MangaGeko(context: MangaLoaderContext) :
 	override fun onCreateConfig(keys: MutableCollection<ConfigKey<*>>) {
 		super.onCreateConfig(keys)
 		keys.add(userAgentKey)
+		keys.add(ConfigKey.InterceptCloudflare(defaultValue = true))
 	}
 
 	override suspend fun getListPage(page: Int, order: SortOrder, filter: MangaListFilter): List<Manga> {
@@ -87,7 +90,7 @@ internal class MangaGeko(context: MangaLoaderContext) :
 			}
 		}
 
-		val doc = webClient.httpGet(url).parseHtml()
+		val doc = captureDocument(url)
 
 		return doc.select("article.comic-card").map { article ->
 			val href = article.selectFirstOrThrow("h3.comic-card__title a").attrAsRelativeUrl("href")

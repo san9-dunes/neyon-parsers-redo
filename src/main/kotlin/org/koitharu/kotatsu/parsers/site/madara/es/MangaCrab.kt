@@ -1,10 +1,12 @@
 package org.koitharu.kotatsu.parsers.site.madara.es
 
+import org.koitharu.kotatsu.parsers.Broken
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.MangaSourceParser
 import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.site.madara.MadaraParser
 
+@Broken("WIP: Search not finished yet / WIP")
 @MangaSourceParser("MANGA_CRAB", "MangaCrab", "es")
 internal class MangaCrab(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.MANGA_CRAB, "mangacrab.org") {

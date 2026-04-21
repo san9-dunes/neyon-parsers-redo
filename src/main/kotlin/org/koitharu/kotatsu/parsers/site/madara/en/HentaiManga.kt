@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.parsers.site.madara.en
 
+import org.koitharu.kotatsu.parsers.Broken
 import kotlinx.coroutines.*
 import okhttp3.Headers
 import okhttp3.HttpUrl
@@ -12,6 +13,7 @@ import org.koitharu.kotatsu.parsers.site.madara.MadaraParser
 import org.koitharu.kotatsu.parsers.util.*
 import java.text.SimpleDateFormat
 
+@Broken("WIP: Search not finished yet / WIP")
 @MangaSourceParser("HENTAIMANGA", "HentaiManga", "en", ContentType.HENTAI)
 internal class HentaiManga(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.HENTAIMANGA, "hentaimanga.me", 36) {
