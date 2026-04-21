@@ -14,3 +14,12 @@ internal class YaoiX3(context: MangaLoaderContext) :
 	override val tagPrefix = "genero/"
         override val withoutAjax = true
 }
+
+@MangaSourceParser("YAOIX33", "XYaoi", "pt", ContentType.HENTAI)
+internal class YaoiX33(context: MangaLoaderContext) :
+	MadaraParser(context, MangaParserSource.YAOIX33, "3xyaoi.com") {
+	override val datePattern = "dd/MM/yyyy"
+	override val listUrl = "bl/"
+	override val tagPrefix = "genero/"
+	override val withoutAjax = true
+}

@@ -22,7 +22,7 @@ import java.util.*
 
 @MangaSourceParser("KOHARU", "Schale.network", type = ContentType.HENTAI)
 internal class Koharu(context: MangaLoaderContext) :
-	KoharuParser(context, MangaParserSource.KOHARU, "niyaniya.moe")
+	KoharuParser(context, MangaParserSource.KOHARU, "anchira.to")
 
 @MangaSourceParser("SCHALENETWORK", "Schale Network", type = ContentType.HENTAI)
 internal class SchaleNetwork(context: MangaLoaderContext) :
@@ -35,7 +35,7 @@ internal abstract class KoharuParser(
 ) : PagedMangaParser(context, source, 24) {
 
 	override val configKeyDomain = ConfigKey.Domain(defaultDomain)
-	private val apiSuffix = "api.anchira.to"
+	private val apiSuffix = "api.schale.network"
 
 	override val userAgentKey = ConfigKey.UserAgent(
 		"Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.7204.46 Mobile Safari/537.36",
@@ -148,9 +148,10 @@ internal abstract class KoharuParser(
 			}
 
 			append("&page=").append(page)
+			append("&s=")
 
 			if (terms.isNotEmpty()) {
-				append("&s=").append(terms.joinToString(" ").urlEncoded())
+				append(terms.joinToString(" ").urlEncoded())
 			}
 		}
 

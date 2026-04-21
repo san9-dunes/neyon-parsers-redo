@@ -65,6 +65,6 @@ internal class Kiryuu03(context: MangaLoaderContext) :
 
     override fun onCreateConfig(keys: MutableCollection<ConfigKey<*>>) {
         super.onCreateConfig(keys)
-        keys.add(ConfigKey.InterceptCloudflare())
+        keys.add(ConfigKey.InterceptCloudflare(defaultValue = true))
     }
 }

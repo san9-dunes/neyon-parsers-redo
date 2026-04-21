@@ -25,8 +25,129 @@ internal class Hentalk(context: MangaLoaderContext) :
 	HentalkBaseParser(context, MangaParserSource.HENTALK, "hentalk.pw")
 
 @MangaSourceParser("FAKKU", "FAKKU", "en", type = ContentType.HENTAI)
-internal class Fakku(context: MangaLoaderContext) :
-	HentalkBaseParser(context, MangaParserSource.FAKKU, "fakku.net")
+internal class FakkuParser(
+	context: MangaLoaderContext,
+) : PagedMangaParser(context, MangaParserSource.FAKKU, pageSize = 24) {
+
+	override val configKeyDomain = ConfigKey.Domain("fakku.net")
+
+	override val availableSortOrders: Set<SortOrder> = EnumSet.of(
+		SortOrder.UPDATED,
+		SortOrder.NEWEST,
+		SortOrder.ALPHABETICAL,
+	)
+
+	override val filterCapabilities: MangaListFilterCapabilities
+		get() = MangaListFilterCapabilities(isSearchSupported = true)
+
+	override suspend fun getFilterOptions(): MangaListFilterOptions = MangaListFilterOptions()
+
+	override suspend fun getListPage(page: Int, order: SortOrder, filter: MangaListFilter): List<Manga> {
+		val url = when {
+			!filter.query.isNullOrEmpty() && page > 0 -> return emptyList()
+			!filter.query.isNullOrEmpty() -> "https://$domain/search/${filter.query.urlEncoded()}"
+			page > 0 -> "https://$domain/hentai/page/${page + 1}"
+			else -> "https://$domain/hentai"
+		}
+		val doc = webClient.httpGet(url).parseHtml()
+		val seen = HashSet<String>()
+		return doc.select("a[href^=/hentai/]").mapNotNull { a ->
+			val href = a.attrAsRelativeUrlOrNull("href")?.substringBefore('?') ?: return@mapNotNull null
+			if (href == "/hentai" || href.endsWith("/read") || !seen.add(href)) {
+				return@mapNotNull null
+			}
+
+			val title = a.attr("title").ifBlank { a.text().trim() }
+				.ifBlank { href.substringAfterLast('/').replace('-', ' ') }
+
+			val cover = a.selectFirst("img")?.src()
+				?: a.parent()?.selectFirst("img")?.src()
+
+			Manga(
+				id = generateUid(href),
+				title = title,
+				altTitles = emptySet(),
+				url = href,
+				publicUrl = href.toAbsoluteUrl(domain),
+				rating = RATING_UNKNOWN,
+				contentRating = ContentRating.ADULT,
+				coverUrl = cover,
+				tags = emptySet(),
+				state = null,
+				authors = emptySet(),
+				source = source,
+			)
+		}
+	}
+
+	override suspend fun getDetails(manga: Manga): Manga {
+		val doc = webClient.httpGet(manga.url.toAbsoluteUrl(domain)).parseHtml()
+
+		val title = doc.selectFirst("meta[property=og:title]")?.attr("content")
+			?.substringBefore(" - FAKKU")
+			?.takeIf { it.isNotBlank() }
+			?: manga.title
+
+		val description = doc.selectFirst("meta[name=description]")?.attr("content")
+
+		val tags = doc.select("a[href^=/tags/]").mapNotNullToSet { a ->
+			val href = a.attrAsRelativeUrlOrNull("href") ?: return@mapNotNullToSet null
+			val key = href.removeSuffix('/').substringAfterLast('/')
+			val name = a.text().trim()
+			if (key.isBlank() || name.isBlank()) return@mapNotNullToSet null
+			MangaTag(key = key, title = name, source = source)
+		}
+
+		val authors = doc.select("a[href^=/artists/]").mapNotNullToSet { a ->
+			a.text().trim().takeIf { it.isNotBlank() }
+		}
+
+		val readUrl = doc.selectFirst("a[href$=/read], a[href*=/read]")
+			?.attrAsRelativeUrlOrNull("href")
+			?: "${manga.url.removeSuffix('/')}/read"
+
+		val chapter = MangaChapter(
+			id = generateUid(readUrl),
+			title = null,
+			number = 1f,
+			volume = 0,
+			url = readUrl,
+			scanlator = null,
+			uploadDate = 0,
+			branch = null,
+			source = source,
+		)
+
+		return manga.copy(
+			title = title,
+			description = description,
+			tags = tags,
+			authors = authors,
+			chapters = listOf(chapter),
+		)
+	}
+
+	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
+		val doc = webClient.httpGet(chapter.url.toAbsoluteUrl(domain)).parseHtml()
+		val pageUrls = doc.select("img[src*='t.fakku.net/images/'], img[data-src*='t.fakku.net/images/']")
+			.mapNotNull { img ->
+				img.attr("src").ifBlank { img.attr("data-src") }.takeIf { it.isNotBlank() }
+			}
+			.distinct()
+
+		return pageUrls.map { url ->
+			val relative = url.toRelativeUrl(domain)
+			MangaPage(
+				id = generateUid(relative),
+				url = relative,
+				preview = null,
+				source = source,
+			)
+		}
+	}
+
+	override suspend fun getPageUrl(page: MangaPage): String = page.url.toAbsoluteUrl(domain)
+}
 
 internal abstract class HentalkBaseParser(
 	context: MangaLoaderContext,

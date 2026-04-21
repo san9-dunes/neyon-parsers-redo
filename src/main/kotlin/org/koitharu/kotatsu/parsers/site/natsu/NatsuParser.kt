@@ -119,7 +119,7 @@ internal abstract class NatsuParser(
             formParts["genre_exclude"] = exGenreArray.toString()
         } else formParts["genre_exclude"] = "[]"
 
-        formParts["page"] = page.toString()
+        formParts["page"] = (page + 1).toString()
 
         if (!filter.author.isNullOrEmpty()) {
             val authorArray = JSONArray(filter.author)

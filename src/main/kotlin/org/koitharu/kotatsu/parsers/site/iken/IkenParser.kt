@@ -56,12 +56,15 @@ internal abstract class IkenParser(
 	)
 
 	override suspend fun getListPage(page: Int, order: SortOrder, filter: MangaListFilter): List<Manga> {
+		val pageNumber = page + 1
 		val url = buildString {
 			append("https://")
 			append(defaultDomain)
-			append("/api/query?page=")
-			append(page)
-			append("&perPage=18&searchTerm=")
+			append("/api/query?perPage=")
+			append(pageSize)
+			append("&view=search&page=")
+			append(pageNumber)
+			append("&searchTerm=")
 
 			filter.query?.let {
 				append(filter.query.urlEncoded())
@@ -72,8 +75,8 @@ internal abstract class IkenParser(
 				filter.tags.joinTo(this, ",") { it.key }
 			}
 
-			append("&seriesType=")
 			filter.types.oneOrThrowIfMany()?.let {
+				append("&seriesType=")
 				append(
 					when (it) {
 						ContentType.MANGA -> "MANGA"
@@ -85,8 +88,8 @@ internal abstract class IkenParser(
 				)
 			}
 
-			append("&seriesStatus=")
 			filter.states.oneOrThrowIfMany()?.let {
+				append("&seriesStatus=")
 				append(
 					when (it) {
 						MangaState.ONGOING -> "ONGOING"
@@ -105,7 +108,8 @@ internal abstract class IkenParser(
 		return json.getJSONArray("posts").mapJSON {
 			val url = "/series/${it.getString("slug")}"
 			val isNsfwSource = it.getBooleanOrDefault("hot", false)
-			val author = it.getString("author")
+			val author = it.getStringOrNull("author")
+			val seriesStatus = it.getStringOrNull("seriesStatus")
 			Manga(
 				id = it.getLong("id"),
 				url = url,
@@ -113,11 +117,11 @@ internal abstract class IkenParser(
 				coverUrl = it.getString("featuredImage"),
 				title = it.getString("postTitle"),
 				altTitles = setOfNotNull(it.getStringOrNull("alternativeTitles")),
-				description = it.getString("postContent"),
+				description = it.getStringOrNull("postContent"),
 				rating = RATING_UNKNOWN,
 				tags = emptySet(),
 				authors = setOfNotNull(author),
-				state = when (it.getString("seriesStatus")) {
+				state = when (seriesStatus) {
 					"ONGOING" -> MangaState.ONGOING
 					"COMPLETED" -> MangaState.FINISHED
 					"DROPPED", "CANCELLED" -> MangaState.ABANDONED

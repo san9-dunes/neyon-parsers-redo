@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.parsers.site.galleryadults.all
 import org.jsoup.nodes.Document
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.MangaSourceParser
+import org.koitharu.kotatsu.parsers.config.ConfigKey
 import org.koitharu.kotatsu.parsers.model.*
 import org.koitharu.kotatsu.parsers.site.galleryadults.GalleryAdultsParser
 import org.koitharu.kotatsu.parsers.util.*
@@ -28,6 +29,11 @@ internal class DoujinDesuUk(context: MangaLoaderContext) :
 			Locale.CHINESE,
 		),
 	)
+
+	override fun onCreateConfig(keys: MutableCollection<ConfigKey<*>>) {
+		super.onCreateConfig(keys)
+		keys.add(ConfigKey.InterceptCloudflare(defaultValue = true))
+	}
 
 	override fun parseMangaList(doc: Document): List<Manga> {
 		val regexBrackets = Regex("\\[[^]]+]|\\([^)]+\\)")
@@ -57,6 +63,37 @@ internal class DoujinDesuUk(context: MangaLoaderContext) :
 		val doc = webClient.httpGet(page.url.toAbsoluteUrl(domain)).parseHtml()
 		val root = doc.body()
 		return root.requireElementById(idImg).selectFirstOrThrow("img").requireSrc()
+	}
+
+	override suspend fun getListPage(page: Int, order: SortOrder, filter: MangaListFilter): List<Manga> {
+		val pageNumber = page + 1
+		val url = buildString {
+			append("https://")
+			append(domain)
+			when {
+				!filter.query.isNullOrEmpty() -> {
+					append("/search/?q=")
+					append(filter.query.urlEncoded())
+					append("&")
+				}
+
+				filter.tags.isNotEmpty() -> {
+					filter.tags.oneOrThrowIfMany()?.let {
+						append("/tag/")
+						append(it.key)
+					}
+					append("/?")
+				}
+
+				else -> {
+					append("/manga/?")
+				}
+			}
+			append("page=")
+			append(pageNumber)
+		}
+
+		return parseMangaList(webClient.httpGet(url).parseHtml())
 	}
 
 }

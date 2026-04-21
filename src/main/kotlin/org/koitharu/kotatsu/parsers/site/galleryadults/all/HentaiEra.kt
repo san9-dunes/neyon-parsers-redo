@@ -6,6 +6,7 @@ import org.jsoup.nodes.Element
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.MangaSourceParser
 import org.koitharu.kotatsu.parsers.config.ConfigKey
+import org.koitharu.kotatsu.parsers.core.PagedMangaParser
 import org.koitharu.kotatsu.parsers.model.*
 import org.koitharu.kotatsu.parsers.site.galleryadults.GalleryAdultsParser
 import org.koitharu.kotatsu.parsers.util.*
@@ -21,12 +22,7 @@ internal class HentaiHand(context: MangaLoaderContext) :
 
 @MangaSourceParser("HENTAIHERE", "HentaiHere", type = ContentType.HENTAI)
 internal class HentaiHere(context: MangaLoaderContext) :
-        HentaiEraParser(context, MangaParserSource.HENTAIHERE, "hentaihere.com") {
-        override fun onCreateConfig(keys: MutableCollection<ConfigKey<*>>) {
-                super.onCreateConfig(keys)
-                keys.add(ConfigKey.InterceptCloudflare(defaultValue = true))
-        }
-}
+        HentaiEraParser(context, MangaParserSource.HENTAIHERE, "hentaihere.com")
 @MangaSourceParser("HENTAIZAP", "HentaiZap", type = ContentType.HENTAI)internal class HentaiZap(context: MangaLoaderContext) :
 	HentaiEraParser(context, MangaParserSource.HENTAIZAP, "hentaizap.com")
 
@@ -59,7 +55,7 @@ internal class HentaiName(context: MangaLoaderContext) :
 
 @MangaSourceParser("HENTAIKISU", "HentaiKisu", type = ContentType.HENTAI)
 internal class HentaiKisu(context: MangaLoaderContext) :
-	HentaiEraParser(context, MangaParserSource.HENTAIKISU, "hentaikisu.com")
+	HentaiKisuParser(context)
 
 @MangaSourceParser("HENTAILOOP", "HentaiLoop", type = ContentType.HENTAI)
 internal class HentaiLoop(context: MangaLoaderContext) :
@@ -70,6 +66,11 @@ internal abstract class HentaiEraParser(
 	source: MangaParserSource,
 	defaultDomain: String,
 ) : GalleryAdultsParser(context, source, defaultDomain, 25) {
+	override fun onCreateConfig(keys: MutableCollection<ConfigKey<*>>) {
+		super.onCreateConfig(keys)
+		keys.add(ConfigKey.InterceptCloudflare(defaultValue = true))
+	}
+
 	override val configKeyDomain = ConfigKey.Domain(
 		defaultDomain,
 		"hentaiera.com",
@@ -123,6 +124,7 @@ internal abstract class HentaiEraParser(
 	}
 
 	override suspend fun getListPage(page: Int, order: SortOrder, filter: MangaListFilter): List<Manga> {
+		val pageNumber = page + 1
 		val url = buildString {
 			append("https://")
 			append(domain)
@@ -172,7 +174,7 @@ internal abstract class HentaiEraParser(
 				}
 			}
 			append("page=")
-			append(page.toString())
+			append(pageNumber.toString())
 		}
 
 		return parseMangaList(webClient.httpGet(url).parseHtml())
@@ -222,4 +224,112 @@ internal abstract class HentaiEraParser(
 			),
 		)
 	}
+}
+
+internal open class HentaiKisuParser(
+	context: MangaLoaderContext,
+) : PagedMangaParser(context, MangaParserSource.HENTAIKISU, pageSize = 24) {
+
+	override val configKeyDomain = ConfigKey.Domain("hentaikisu.com")
+
+	override val availableSortOrders: Set<SortOrder> = EnumSet.of(SortOrder.UPDATED)
+
+	override val filterCapabilities: MangaListFilterCapabilities
+		get() = MangaListFilterCapabilities(isSearchSupported = true)
+
+	override suspend fun getFilterOptions(): MangaListFilterOptions = MangaListFilterOptions()
+
+	override suspend fun getListPage(page: Int, order: SortOrder, filter: MangaListFilter): List<Manga> {
+		val pageNumber = page + 1
+		val url = when {
+			!filter.query.isNullOrEmpty() -> "https://$domain/search?s=${filter.query.urlEncoded()}"
+			page > 0 -> "https://$domain/?page=$pageNumber"
+			else -> "https://$domain/"
+		}
+		val doc = webClient.httpGet(url).parseHtml()
+		return parseList(doc)
+	}
+
+	private fun parseList(doc: org.jsoup.nodes.Document): List<Manga> {
+		val seen = HashSet<String>()
+		return doc.select("#ipage .book-list a[href], #ipage .book-list a[href^=/g/], #ipage .book-list a[href^=g/]")
+			.mapNotNull { a ->
+				val href = a.attrAsRelativeUrlOrNull("href")?.substringBefore('#') ?: return@mapNotNull null
+				if (!href.contains("/g/") && !href.startsWith("g/")) return@mapNotNull null
+				if (!seen.add(href)) return@mapNotNull null
+
+				val title = a.selectFirst(".book-description p")?.text()?.trim()
+					?: a.attr("title").substringBefore(" online hentai").substringAfter("read ").trim()
+				if (title.isBlank()) return@mapNotNull null
+
+				Manga(
+					id = generateUid(href),
+					title = title,
+					altTitles = emptySet(),
+					url = href,
+					publicUrl = href.toAbsoluteUrl(domain),
+					rating = RATING_UNKNOWN,
+					contentRating = ContentRating.ADULT,
+					coverUrl = a.selectFirst("img")?.src(),
+					tags = emptySet(),
+					state = null,
+					authors = emptySet(),
+					source = source,
+				)
+			}
+	}
+
+	override suspend fun getDetails(manga: Manga): Manga {
+		val doc = webClient.httpGet(manga.url.toAbsoluteUrl(domain)).parseHtml()
+		val title = doc.selectFirst("#info h1")?.text()?.trim().orEmpty().ifBlank { manga.title }
+		val author = doc.select(".tag-container:contains(Artist:) a").firstOrNull()?.text()?.trim()
+		val chapter = MangaChapter(
+			id = manga.id,
+			title = null,
+			number = 1f,
+			volume = 0,
+			url = manga.url,
+			scanlator = null,
+			uploadDate = 0,
+			branch = null,
+			source = source,
+		)
+
+		return manga.copy(
+			title = title,
+			description = doc.selectFirst("meta[name=description]")?.attr("content"),
+			authors = setOfNotNull(author),
+			tags = doc.select("section#tags a.tag").mapNotNullToSet { tag ->
+				val href = tag.attrAsRelativeUrlOrNull("href") ?: return@mapNotNullToSet null
+				val key = href.substringAfterLast('/').substringAfterLast('=').trim()
+				if (key.isBlank()) return@mapNotNullToSet null
+				val name = tag.text().trim()
+				if (name.isBlank()) return@mapNotNullToSet null
+				MangaTag(
+					key = key,
+					title = name,
+					source = source,
+				)
+			},
+			chapters = listOf(chapter),
+		)
+	}
+
+	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
+		val doc = webClient.httpGet(chapter.url.toAbsoluteUrl(domain)).parseHtml()
+		val pages = doc.select("img.thum_pre[data-src], img.thum_pre[src]")
+			.mapNotNull { img -> img.src()?.takeIf { it.isNotBlank() } }
+			.distinct()
+		return pages.map { imageUrl ->
+			val relative = imageUrl.toRelativeUrl(domain)
+			MangaPage(
+				id = generateUid(relative),
+				url = relative,
+				preview = null,
+				source = source,
+			)
+		}
+	}
+
+	override suspend fun getPageUrl(page: MangaPage): String = page.url.orEmpty().toAbsoluteUrl(domain)
 }

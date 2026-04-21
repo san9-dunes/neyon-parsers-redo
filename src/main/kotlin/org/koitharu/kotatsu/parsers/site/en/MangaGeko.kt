@@ -8,7 +8,6 @@ import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.MangaSourceParser
 import org.koitharu.kotatsu.parsers.config.ConfigKey
 import org.koitharu.kotatsu.parsers.core.PagedMangaParser
-import org.koitharu.kotatsu.parsers.exception.ParseException
 import org.koitharu.kotatsu.parsers.model.*
 import org.koitharu.kotatsu.parsers.util.*
 import java.text.SimpleDateFormat
@@ -88,7 +87,7 @@ internal class MangaGeko(context: MangaLoaderContext) :
 			}
 		}
 
-		val doc = captureDocument(url)
+		val doc = webClient.httpGet(url).parseHtml()
 
 		return doc.select("article.comic-card").map { article ->
 			val href = article.selectFirstOrThrow("h3.comic-card__title a").attrAsRelativeUrl("href")
@@ -261,20 +260,32 @@ internal class MangaGeko(context: MangaLoaderContext) :
 			})();
 		""".trimIndent()
 
-		val rawHtml = context.evaluateJs(url, script, 30000L) ?: throw ParseException("Failed to load page", url)
+		val rawHtml = runCatching {
+			context.evaluateJs(url, script, 30000L)
+		}.getOrNull()
 
-		val html = if (rawHtml.startsWith("\"") && rawHtml.endsWith("\"")) {
-			rawHtml.substring(1, rawHtml.length - 1)
-				.replace("\\\"", "\"")
-				.replace("\\n", "\n")
-				.replace("\\r", "\r")
-				.replace("\\t", "\t")
-				.replace(Regex("""\\u([0-9A-Fa-f]{4})""")) { match ->
-					val hexValue = match.groupValues[1]
-					hexValue.toInt(16).toChar().toString()
-				}
-		} else rawHtml
+		if (!rawHtml.isNullOrBlank()) {
+			val html = if (rawHtml.startsWith("\"") && rawHtml.endsWith("\"")) {
+				rawHtml.substring(1, rawHtml.length - 1)
+					.replace("\\\"", "\"")
+					.replace("\\n", "\n")
+					.replace("\\r", "\r")
+					.replace("\\t", "\t")
+					.replace(Regex("""\\u([0-9A-Fa-f]{4})""")) { match ->
+						val hexValue = match.groupValues[1]
+						hexValue.toInt(16).toChar().toString()
+					}
+			} else rawHtml
 
-		return Jsoup.parse(html, url)
+			val parsed = Jsoup.parse(html, url)
+			val hasExpectedContent = parsed.select(
+				"article.comic-card, .author, .description, #chapters, ul.chapter-list, center img, button.chip[data-group='include_genres']",
+			).isNotEmpty()
+			if (hasExpectedContent) {
+				return parsed
+			}
+		}
+
+		return webClient.httpGet(url).parseHtml()
 	}
 }

@@ -29,6 +29,12 @@ public object CloudFlareHelper {
         return when {
             content.selectFirst("h2[data-translate=\"blocked_why_headline\"]") != null -> PROTECTION_BLOCKED
             content.getElementById("challenge-error-title") != null || content.getElementById("challenge-error-text") != null -> PROTECTION_CAPTCHA
+            content.selectFirst("script[src*=challenge-platform]") != null -> PROTECTION_CAPTCHA
+            content.selectFirst("form[action*=__cf_chl]") != null -> PROTECTION_CAPTCHA
+            content.title().contains("just a moment", ignoreCase = true) -> PROTECTION_CAPTCHA
+            content.title().contains("attention required", ignoreCase = true) -> PROTECTION_BLOCKED
+            content.outerHtml().contains("__cf_chl", ignoreCase = true) -> PROTECTION_CAPTCHA
+            content.body()?.text()?.contains("Enable JavaScript and cookies to continue", ignoreCase = true) == true -> PROTECTION_CAPTCHA
 
             else -> PROTECTION_NOT_DETECTED
         }

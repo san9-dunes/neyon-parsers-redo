@@ -19,7 +19,7 @@ internal class EightMusesCom(context: MangaLoaderContext) :
 
 @MangaSourceParser("EIGHTMUSES_XXX", "8muses.xxx", "en", ContentType.HENTAI)
 internal class EightMusesXxx(context: MangaLoaderContext) :
-        EightMusesParser(context, MangaParserSource.EIGHTMUSES_XXX, "8muses.xxx")
+        EightMusesParser(context, MangaParserSource.EIGHTMUSES_XXX, "comics.8muses.com")
 
 internal abstract class EightMusesParser(
         context: MangaLoaderContext,
