@@ -176,6 +176,7 @@ internal class ManyToon(context: MangaLoaderContext) :
 	}
 }
 
+@Broken("WIP: Search not finished yet / WIP")
 @MangaSourceParser("MANYTOON_COM", "ManyToon (.com)", "en", ContentType.HENTAI)
 internal class ManyToonCom(context: MangaLoaderContext) :
     MadaraParser(context, MangaParserSource.MANYTOON_COM, "manytoon.com", 20) {

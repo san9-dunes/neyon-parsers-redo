@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.parsers.site.all
 
+import org.koitharu.kotatsu.parsers.Broken
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.MangaSourceParser
 import org.koitharu.kotatsu.parsers.config.ConfigKey
@@ -8,6 +9,7 @@ import org.koitharu.kotatsu.parsers.model.*
 import org.koitharu.kotatsu.parsers.util.*
 import java.util.*
 
+@Broken("WIP: Search not finished yet / WIP")
 @MangaSourceParser("MISSKON", "MissKon", type = ContentType.OTHER)
 internal class Misskon(context: MangaLoaderContext) : PagedMangaParser(context, MangaParserSource.MISSKON, 24) {
 

@@ -21,6 +21,7 @@ internal class ManhuaRmCom(context: MangaLoaderContext) :
     override val configKeyDomain = ConfigKey.Domain("manhuarm.com")
 }
 
+@Broken("WIP: Search not finished yet / WIP")
 @MangaSourceParser("MANHUARMMTL_COM", "ManhuaRm MTL (.com)", "en")
 internal class ManhuarmMtlCom(context: MangaLoaderContext) :
     MadaraParser(context, MangaParserSource.MANHUARMMTL_COM, "manhuarmmtl.com") {

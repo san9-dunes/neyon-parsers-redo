@@ -33,6 +33,7 @@ internal class RequestedSourcesSmokeTest {
             "FHENTAI",
             "HENTAIHUG",
             "HENTAINAME",
+            "HENTAIREAD",
         ],
         mode = EnumSource.Mode.INCLUDE,
     )

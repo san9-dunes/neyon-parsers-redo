@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.parsers.site.iken.en
 
+import org.koitharu.kotatsu.parsers.Broken
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.MangaSourceParser
 import org.koitharu.kotatsu.parsers.config.ConfigKey
@@ -12,6 +13,7 @@ internal class HiveScans(context: MangaLoaderContext) :
 	override val configKeyDomain = ConfigKey.Domain("hivetoons.org")
 }
 
+@Broken("WIP: Search not finished yet / WIP")
 @MangaSourceParser("HIVESCANS_COM", "Hive Scans (.com)", "en")
 internal class HiveScansCom(context: MangaLoaderContext) :
     IkenParser(context, MangaParserSource.HIVESCANS_COM, "hivescans.com", 18, true)

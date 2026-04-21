@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.parsers.site.ru
 
+import org.koitharu.kotatsu.parsers.Broken
 import org.json.JSONObject
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.MangaSourceParser
@@ -11,6 +12,7 @@ import org.koitharu.kotatsu.parsers.util.json.*
 import java.text.SimpleDateFormat
 import java.util.*
 
+@Broken("WIP: Search not finished yet / WIP")
 @MangaSourceParser("WAMANGA", "WaManga", "ru", type = ContentType.MANGA)
 internal class WaMangaParser(
 	context: MangaLoaderContext,

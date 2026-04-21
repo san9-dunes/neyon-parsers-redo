@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.parsers.site.zh
 
+import org.koitharu.kotatsu.parsers.Broken
 import androidx.collection.ArrayMap
 import org.json.JSONArray
 import org.jsoup.nodes.Document
@@ -18,6 +19,7 @@ import java.util.*
 internal class Baozimh(context: MangaLoaderContext) :
 	BaozimhParser(context, MangaParserSource.BAOZIMH, "www.baozimh.com")
 
+@Broken("WIP: Search not finished yet / WIP")
 @MangaSourceParser("BAOZIMHORG", "Baozi Manhua RAW", "zh")
 internal class BaozimhOrg(context: MangaLoaderContext) :
 	BaozimhParser(context, MangaParserSource.BAOZIMHORG, "www.baozimh.org")

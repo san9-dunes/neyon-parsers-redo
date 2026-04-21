@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.parsers.site.ru
 
+import org.koitharu.kotatsu.parsers.Broken
 import okhttp3.Headers
 import okhttp3.HttpUrl
 import okhttp3.Interceptor
@@ -24,6 +25,7 @@ import java.util.*
 private const val PAGE_SIZE = 20
 private const val TOO_MANY_REQUESTS = 429
 
+@Broken("WIP: Search not finished yet / WIP")
 @MangaSourceParser("REMANGA", "Реманга", "ru")
 internal class RemangaParser(
 	context: MangaLoaderContext,

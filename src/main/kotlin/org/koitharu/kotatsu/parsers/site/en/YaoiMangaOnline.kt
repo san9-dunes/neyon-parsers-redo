@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.parsers.site.en
 
+import org.koitharu.kotatsu.parsers.Broken
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
@@ -32,6 +33,7 @@ import java.util.Locale
 internal class YaoiMangaOnline(context: MangaLoaderContext) :
 	YaoiMangaOnlineParser(context, MangaParserSource.YAOIMANGAONLINE, "yaoimangaonline.com")
 
+@Broken("WIP: Search not finished yet / WIP")
 @MangaSourceParser("BARAMANGAONLINE", "BaraMangaOnline", "en", ContentType.HENTAI)
 internal class BaraMangaOnline(context: MangaLoaderContext) :
 	YaoiMangaOnlineParser(context, MangaParserSource.BARAMANGAONLINE, "baramangaonline.com")

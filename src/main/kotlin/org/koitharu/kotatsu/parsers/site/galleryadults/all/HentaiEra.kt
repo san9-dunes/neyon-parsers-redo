@@ -16,13 +16,19 @@ import java.util.*
 internal class HentaiEra(context: MangaLoaderContext) :
 	HentaiEraParser(context, MangaParserSource.HENTAIERA, "hentaiera.com")
 
+@Broken("WIP: Search not finished yet / WIP")
 @MangaSourceParser("HENTAIHAND", "HentaiHand", type = ContentType.HENTAI)
 internal class HentaiHand(context: MangaLoaderContext) :
 	HentaiEraParser(context, MangaParserSource.HENTAIHAND, "hentaihand.com")
 
 @MangaSourceParser("HENTAIHERE", "HentaiHere", type = ContentType.HENTAI)
 internal class HentaiHere(context: MangaLoaderContext) :
-        HentaiEraParser(context, MangaParserSource.HENTAIHERE, "hentaihere.com")
+        HentaiEraParser(context, MangaParserSource.HENTAIHERE, "hentaihere.com") {
+	override val selectGallery = ".seriesBlock"
+	override val selectGalleryLink = ".padder-v-top a"
+	override val selectGalleryTitle = ".padder-v-top a"
+}
+
 @MangaSourceParser("HENTAIZAP", "HentaiZap", type = ContentType.HENTAI)internal class HentaiZap(context: MangaLoaderContext) :
 	HentaiEraParser(context, MangaParserSource.HENTAIZAP, "hentaizap.com")
 
@@ -41,22 +47,63 @@ internal class Mhentai(context: MangaLoaderContext) :
 internal class HentaiLand(context: MangaLoaderContext) :
 	HentaiEraParser(context, MangaParserSource.HENTAILAND, "hentailand.com")
 
-@MangaSourceParser("HENTAIPAW", "HentaiPaw", type = ContentType.HENTAI)
-internal class HentaiPaw(context: MangaLoaderContext) :
-	HentaiEraParser(context, MangaParserSource.HENTAIPAW, "hentaipaw.com")
-
 @MangaSourceParser("HENTAIHUG", "HentaiHug", type = ContentType.HENTAI)
 internal class HentaiHug(context: MangaLoaderContext) :
-	HentaiEraParser(context, MangaParserSource.HENTAIHUG, "hentaihug.com")
+	HentaiEraParser(context, MangaParserSource.HENTAIHUG, "hentaihug.com") {
+	override val selectGallery = ".thumb"
+	override val selectGalleryLink = "a"
+
+	override suspend fun getDetails(manga: Manga): Manga {
+		val doc = webClient.httpGet(manga.url.toAbsoluteUrl(domain)).parseHtml()
+		val urlChapters = doc.selectFirst("#cover a, .cover a, .left_cover a")?.attr("href") ?: manga.url
+		val tag = doc.selectFirst(selectTag)?.parseTags()
+		val branch = doc.select(selectLanguageChapter).joinToString(separator = " / ") {
+			it.text()
+		}
+		val author = doc.selectFirst(selectAuthor)?.text()
+		return manga.copy(
+			tags = tag.orEmpty(),
+			authors = setOfNotNull(author),
+			chapters = listOf(
+				MangaChapter(
+					id = manga.id,
+					title = manga.title,
+					number = 1f,
+					volume = 0,
+					url = urlChapters,
+					scanlator = null,
+					uploadDate = 0,
+					branch = branch,
+					source = source,
+				),
+			),
+		)
+	}
+}
 
 @MangaSourceParser("HENTAINAME", "Hentai.name", type = ContentType.HENTAI)
 internal class HentaiName(context: MangaLoaderContext) :
-	HentaiEraParser(context, MangaParserSource.HENTAINAME, "hentai.name")
+	HentaiEraParser(context, MangaParserSource.HENTAINAME, "hentai.name") {
+	override val selectGallery = ".gallery"
+	override val selectGalleryLink = "a"
+	override val selectGalleryTitle = ".caption"
 
+	override suspend fun getListPage(page: Int, order: SortOrder, filter: MangaListFilter): List<Manga> {
+		if (filter.query.isNullOrEmpty() && filter.tags.isEmpty() && filter.locale == null) {
+			val pageNumber = page + 1
+			val url = "https://$domain/new/?p=$pageNumber"
+			return parseMangaList(webClient.httpGet(url).parseHtml())
+		}
+		return super.getListPage(page, order, filter)
+	}
+}
+
+@Broken("WIP: Search not finished yet / WIP")
 @MangaSourceParser("HENTAIKISU", "HentaiKisu", type = ContentType.HENTAI)
 internal class HentaiKisu(context: MangaLoaderContext) :
 	HentaiKisuParser(context)
 
+@Broken("WIP: Search not finished yet / WIP")
 @MangaSourceParser("HENTAILOOP", "HentaiLoop", type = ContentType.HENTAI)
 internal class HentaiLoop(context: MangaLoaderContext) :
 	HentaiEraParser(context, MangaParserSource.HENTAILOOP, "hentailoop.com")

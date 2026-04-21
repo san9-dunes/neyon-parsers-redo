@@ -6,12 +6,12 @@ import okhttp3.Headers
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.MangaSourceParser
 import org.koitharu.kotatsu.parsers.config.ConfigKey
-import org.koitharu.kotatsu.parsers.model.MangaChapter
-import org.koitharu.kotatsu.parsers.model.MangaParserSource
+import org.koitharu.kotatsu.parsers.model.*
 import org.koitharu.kotatsu.parsers.site.natsu.NatsuParser
 import org.koitharu.kotatsu.parsers.util.attrAsRelativeUrl
 import org.koitharu.kotatsu.parsers.util.generateUid
 import org.koitharu.kotatsu.parsers.util.parseHtml
+import org.koitharu.kotatsu.parsers.util.urlEncoded
 
 @Broken
 @MangaSourceParser("KIRYUU", "Kiryuu", "id")
@@ -58,10 +58,42 @@ internal class Kiryuu(context: MangaLoaderContext) :
     }
 }
 
+@Broken("WIP: Search not finished yet / WIP")
 @MangaSourceParser("KIRYUU_03", "Kiryuu (03)", "id")
 internal class Kiryuu03(context: MangaLoaderContext) :
-    NatsuParser(context, MangaParserSource.KIRYUU_03, pageSize = 24) {
-    override val configKeyDomain = ConfigKey.Domain("v4.kiryuu.to")
+    org.koitharu.kotatsu.parsers.site.mangareader.MangaReaderParser(context, MangaParserSource.KIRYUU_03, "v4.kiryuu.to", pageSize = 20, searchPageSize = 20) {
+
+    override val listUrl = "/manga"
+    override val selectMangaList = ".listupd .bsx, .listo .bsx"
+    override val selectMangaListImg = "img"
+    override val selectMangaListTitle = ".tt"
+
+    override suspend fun getListPage(page: Int, order: SortOrder, filter: MangaListFilter): List<Manga> {
+        val pageNumber = page + 1
+        val url = buildString {
+            append("https://")
+            append(domain)
+            if (!filter.query.isNullOrEmpty()) {
+                append("/page/")
+                append(pageNumber)
+                append("/?s=")
+                append(filter.query.urlEncoded())
+            } else {
+                append(listUrl)
+                append("/?page=")
+                append(pageNumber)
+                append("&order=")
+                append(when (order) {
+                    SortOrder.POPULARITY -> "popular"
+                    SortOrder.NEWEST -> "latest"
+                    SortOrder.ALPHABETICAL -> "title"
+                    SortOrder.RATING -> "rating"
+                    else -> "update"
+                })
+            }
+        }
+        return parseMangaList(webClient.httpGet(url).parseHtml())
+    }
 
     override fun onCreateConfig(keys: MutableCollection<ConfigKey<*>>) {
         super.onCreateConfig(keys)

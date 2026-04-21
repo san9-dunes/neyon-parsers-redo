@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.parsers.site.galleryadults.all
 
+import org.koitharu.kotatsu.parsers.Broken
 import org.jsoup.internal.StringUtil
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
@@ -11,6 +12,7 @@ import org.koitharu.kotatsu.parsers.site.galleryadults.GalleryAdultsParser
 import org.koitharu.kotatsu.parsers.util.*
 import java.util.*
 
+@Broken("WIP: Search not finished yet / WIP")
 @MangaSourceParser("NHENTAI_COM", "NHentai.com", type = ContentType.HENTAI)
 internal class NHentaiComParser(context: MangaLoaderContext) :
 	GalleryAdultsParser(context, MangaParserSource.NHENTAI_COM, "nhentai.com", 25) {

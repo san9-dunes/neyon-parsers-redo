@@ -5,6 +5,7 @@ import androidx.collection.MutableIntList
 import androidx.collection.MutableIntObjectMap
 import org.json.JSONObject
 import org.jsoup.HttpStatusException
+import org.koitharu.kotatsu.parsers.Broken
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.MangaSourceParser
 import org.koitharu.kotatsu.parsers.config.ConfigKey
@@ -24,6 +25,7 @@ private const val SERVER_DATA = ""
 internal class Hentalk(context: MangaLoaderContext) :
 	HentalkBaseParser(context, MangaParserSource.HENTALK, "hentalk.pw")
 
+@Broken("WIP: Search not finished yet / WIP")
 @MangaSourceParser("FAKKU", "FAKKU", "en", type = ContentType.HENTAI)
 internal class FakkuParser(
 	context: MangaLoaderContext,

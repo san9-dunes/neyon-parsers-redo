@@ -13,25 +13,14 @@ import org.koitharu.kotatsu.parsers.site.madara.MadaraParser
 import org.koitharu.kotatsu.parsers.util.*
 import java.text.SimpleDateFormat
 
-@MangaSourceParser("ALLPORN_COMIC", "AllPornComic.com", "en", ContentType.HENTAI)
-internal class AllPornComic(context: MangaLoaderContext) :
-        AllPornComicParser(context, MangaParserSource.ALLPORN_COMIC, "allporncomic.com")
+@MangaSourceParser("HENTAIREAD", "HentaiRead", "en", ContentType.HENTAI)
+internal class HentaiRead(context: MangaLoaderContext) :
+        MadaraParser(context, MangaParserSource.HENTAIREAD, "hentairead.com", pageSize = 24) {
 
-@MangaSourceParser("ALLPORN_COMICS_CO", "AllPornComics.co", "en", ContentType.HENTAI)
-internal class AllPornComicsCo(context: MangaLoaderContext) :
-        AllPornComicParser(context, MangaParserSource.ALLPORN_COMICS_CO, "allporncomics.co")
+        override val configKeyDomain = ConfigKey.Domain("hentairead.com")
 
-internal abstract class AllPornComicParser(
-        context: MangaLoaderContext,
-        source: MangaParserSource,
-        defaultDomain: String,
-) : MadaraParser(context, source, defaultDomain, pageSize = 24) {
-        override val configKeyDomain = ConfigKey.Domain(defaultDomain)
-
-        override val listUrl = "porncomic/"
-        override val withoutAjax = true
-        override val tagPrefix = "porncomic-genre/"
-        override val datePattern = "MMMM dd, yyyy"
+        override val listUrl = "hentai/"
+        override val tagPrefix = "hentai-tag/"
 
         override fun onCreateConfig(keys: MutableCollection<ConfigKey<*>>) {
                 super.onCreateConfig(keys)
@@ -44,7 +33,7 @@ internal abstract class AllPornComicParser(
                         .set("sec-ch-ua", "\"Chromium\";v=\"147\", \"Not.A/Brand\";v=\"8\"")
                         .set("sec-ch-ua-mobile", "?0")
                         .set("sec-ch-ua-platform", "\"Windows\"")
-                        .set("Referer", "https://allporncomic.com/home-3/")
+                        .set("Referer", "https://$domain/")
                         .build()
         }
 
