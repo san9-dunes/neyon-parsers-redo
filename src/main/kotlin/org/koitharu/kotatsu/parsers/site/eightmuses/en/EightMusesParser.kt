@@ -95,7 +95,7 @@ internal abstract class EightMusesParser(
                 val chapterUrl = chapter.url.toAbsoluteUrl(domain)
                 val doc = webClient.httpGet(chapterUrl).parseHtml()
 
-                val pictureLinks = doc.select("a[href^=/picture/]")
+                val pictureLinks = doc.select("a[href^=/picture/], a[href^=/comics/picture/]")
                         .mapNotNull { a ->
                                 val href = a.attrAsRelativeUrlOrNull("href")?.substringBefore("?") ?: return@mapNotNull null
                                 href to a.selectFirst("img")?.src()
@@ -113,7 +113,7 @@ internal abstract class EightMusesParser(
                         }
                 }
 
-                if (chapter.url.startsWith("/picture/")) {
+                if (chapter.url.startsWith("/picture/") || chapter.url.startsWith("/comics/picture/")) {
                         return listOf(
                                 MangaPage(
                                         id = generateUid(chapter.url),
