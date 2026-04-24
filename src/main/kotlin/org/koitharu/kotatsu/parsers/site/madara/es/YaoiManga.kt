@@ -8,4 +8,6 @@ import org.koitharu.kotatsu.parsers.site.madara.MadaraParser
 
 @MangaSourceParser("YAOIMANGA", "YaoiManga", "es", type = ContentType.HENTAI)
 internal class YaoiManga(context: MangaLoaderContext) :
-	MadaraParser(context, MangaParserSource.YAOIMANGA, "yaoimanga.es", 42)
+	MadaraParser(context, MangaParserSource.YAOIMANGA, "yaoimanga.es", 42) {
+	override val withoutAjax = true
+}

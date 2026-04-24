@@ -5,8 +5,9 @@ import org.koitharu.kotatsu.parsers.MangaSourceParser
 import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.site.madara.MadaraParser
 
-@MangaSourceParser("LEITORKAMISAMA", "LeitorKamisama", "pt")
+@MangaSourceParser("LEITORKAMISAMA", "Kami Sama Explorer", "pt")
 internal class LeitorKamisama(context: MangaLoaderContext) :
-	MadaraParser(context, MangaParserSource.LEITORKAMISAMA, "leitor.kamisama.com.br", 10) {
+	MadaraParser(context, MangaParserSource.LEITORKAMISAMA, "leitor.kamisama.com.br") {
+	override val withoutAjax = true
 	override val datePattern: String = "dd 'de' MMMMM 'de' yyyy"
 }

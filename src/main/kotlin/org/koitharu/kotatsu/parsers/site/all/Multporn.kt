@@ -5,6 +5,7 @@ import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.MangaSourceParser
 import org.koitharu.kotatsu.parsers.config.ConfigKey
 import org.koitharu.kotatsu.parsers.core.PagedMangaParser
+import org.koitharu.kotatsu.parsers.exception.ParseException
 import org.koitharu.kotatsu.parsers.model.*
 import org.koitharu.kotatsu.parsers.util.*
 import java.util.*
@@ -176,9 +177,6 @@ internal class Multporn(context: MangaLoaderContext) :
             authors = authors.toSet(),
             tags = tags,
             description = buildString {
-                append("Pages: ")
-                append(doc.select(".jb-image img").size)
-                append("\n\n")
                 doc.select(".field:has(.field-label:contains(Section:)) .links a").joinTo(this, prefix = "Section: ") { it.text() }
                 doc.select(".field:has(.field-label:contains(Characters:)) .links a").joinTo(this, prefix = "\n\nCharacters: ") { it.text() }
             },
@@ -200,15 +198,19 @@ internal class Multporn(context: MangaLoaderContext) :
     }
 
     override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
-        val doc = webClient.httpGet(chapter.url.toAbsoluteUrl(domain)).parseHtml()
-        return doc.select(".jb-image img").mapIndexed { i, img ->
-            val url = img.attrAsAbsoluteUrl("src")
-                .replace("/styles/juicebox_2k/public", "")
-                .substringBefore("?")
+        val html = webClient.httpGet(chapter.url.toAbsoluteUrl(domain)).parseHtml().html()
+        val configUrl = configUrlRegex.find(html)?.groupValues?.get(1)
+            ?.replace("\\/", "/")
+            ?: throw ParseException("Juicebox config not found", chapter.url)
+
+        val xml = webClient.httpGet(configUrl.toAbsoluteUrl(domain)).parseHtml()
+        return xml.select("image").map { image ->
+            val url = image.attr("linkURL").ifEmpty { image.attr("largeImageURL") }
+                .toAbsoluteUrl(domain)
             MangaPage(
                 id = generateUid(url),
                 url = url,
-                preview = null,
+                preview = image.attr("thumbURL").toAbsoluteUrl(domain).nullIfEmpty(),
                 source = source,
             )
         }
@@ -225,5 +227,9 @@ internal class Multporn(context: MangaLoaderContext) :
         return authorClasses.flatMap { className ->
             document.select(".$className a").map { it.text().trim() }
         }
+    }
+
+    companion object {
+        private val configUrlRegex = """"configUrl"\s*:\s*"([^"]+)"""".toRegex()
     }
 }

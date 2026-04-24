@@ -11,4 +11,5 @@ internal class GourmetScans(context: MangaLoaderContext) :
 	override val listUrl = "project/"
 	override val tagPrefix = "genre/"
 	override val stylePage = ""
+	override val withoutAjax = true
 }

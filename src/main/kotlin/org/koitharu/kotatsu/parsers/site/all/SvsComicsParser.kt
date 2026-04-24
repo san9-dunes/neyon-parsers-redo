@@ -26,6 +26,7 @@ import org.koitharu.kotatsu.parsers.util.parseHtml
 import org.koitharu.kotatsu.parsers.util.requireElementById
 import org.koitharu.kotatsu.parsers.util.requireSrc
 import org.koitharu.kotatsu.parsers.util.toAbsoluteUrl
+import org.koitharu.kotatsu.parsers.util.urlEncoded
 import java.util.EnumSet
 import java.util.LinkedHashSet
 
@@ -42,18 +43,30 @@ internal class SvsComicsParser(context: MangaLoaderContext) :
 
 	override val filterCapabilities: MangaListFilterCapabilities
 		get() = MangaListFilterCapabilities(
-			isSearchSupported = false,
+			isSearchSupported = true,
 		)
 
 	override suspend fun getFilterOptions(): MangaListFilterOptions = MangaListFilterOptions()
 
 	override suspend fun getListPage(page: Int, order: SortOrder, filter: MangaListFilter): List<Manga> {
-		if (!filter.query.isNullOrEmpty()) return emptyList()
 		val pageNumber = page.coerceAtLeast(1)
-		val url = if (pageNumber <= 1) {
-			"https://$domain/"
-		} else {
-			"https://$domain/page/$pageNumber"
+		val url = buildString {
+			append("https://")
+			append(domain)
+			append("/")
+			if (!filter.query.isNullOrEmpty()) {
+				append("?s=")
+				append(filter.query.urlEncoded())
+				if (pageNumber > 1) {
+					append("&paged=")
+					append(pageNumber)
+				}
+			} else {
+				if (pageNumber > 1) {
+					append("page/")
+					append(pageNumber)
+				}
+			}
 		}
 		val doc = webClient.httpGet(url).parseHtml()
 		return doc.select("article.post").mapNotNull { post ->

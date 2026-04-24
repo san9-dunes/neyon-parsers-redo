@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.parsers.site.madara.es
+package org.koitharu.kotatsu.parsers.site.madara.en
 
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.MangaSourceParser
@@ -6,9 +6,8 @@ import org.koitharu.kotatsu.parsers.model.ContentType
 import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.site.madara.MadaraParser
 
-@MangaSourceParser("TOPCOMICPORNO", "TopComicPorno", "es", ContentType.HENTAI)
-internal class TopComicPorno(context: MangaLoaderContext) :
-	MadaraParser(context, MangaParserSource.TOPCOMICPORNO, "topcomicporno.net", 18) {
+@MangaSourceParser("ADULTCOMIXXX", "AdultComiXxx", "en", type = ContentType.HENTAI)
+internal class AdultComiXxx(context: MangaLoaderContext) :
+	MadaraParser(context, MangaParserSource.ADULTCOMIXXX, "adultcomixxx.com") {
 	override val withoutAjax = true
-	override val datePattern = "MMM dd, yy"
 }

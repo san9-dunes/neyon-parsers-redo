@@ -21,6 +21,7 @@ internal class HentaiRead(context: MangaLoaderContext) :
 
         override val listUrl = "hentai/"
         override val tagPrefix = "hentai-tag/"
+        override val withoutAjax = true
 
         override fun onCreateConfig(keys: MutableCollection<ConfigKey<*>>) {
                 super.onCreateConfig(keys)

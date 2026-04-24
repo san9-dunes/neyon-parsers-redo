@@ -9,5 +9,6 @@ import org.koitharu.kotatsu.parsers.site.madara.MadaraParser
 @MangaSourceParser("NOCSUMMER", "NocturneSummer", "pt", ContentType.HENTAI)
 internal class Nocsummer(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.NOCSUMMER, "nocfsb.com", 18) {
+	override val withoutAjax = true
 	override val datePattern = "dd 'de' MMMMM 'de' yyyy"
 }

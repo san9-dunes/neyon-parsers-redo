@@ -159,6 +159,8 @@ internal abstract class Hentai2ReadBaseParser(
 
 			val title = a.text().trim().ifBlank { return@mapNotNull null }
 			val cover = a.selectFirst("img")?.attr("src")
+				?.replace("/42/", "/")
+				?.replace("img2.", "img1.")
 
 			Manga(
 				id = generateUid(relativeUrl),

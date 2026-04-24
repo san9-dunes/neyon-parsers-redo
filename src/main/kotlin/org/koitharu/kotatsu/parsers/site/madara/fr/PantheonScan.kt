@@ -8,5 +8,6 @@ import org.koitharu.kotatsu.parsers.site.madara.MadaraParser
 @MangaSourceParser("PANTHEONSCAN", "PantheonScan.com", "fr")
 internal class PantheonScan(context: MangaLoaderContext) :
 	MadaraParser(context, MangaParserSource.PANTHEONSCAN, "pantheon-scan.com") {
+	override val withoutAjax = true
 	override val datePattern = "d MMMM yyyy"
 }

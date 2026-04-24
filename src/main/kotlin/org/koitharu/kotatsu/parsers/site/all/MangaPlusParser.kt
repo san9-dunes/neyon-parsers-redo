@@ -254,10 +254,10 @@ internal abstract class MangaPlusParser(
 		val success = response.optJSONObject("success")
 
 		return checkNotNull(success) {
-			val error = response.getJSONObject("error")
-			val reason = error.getJSONArray("popups")
-				.asTypedList<JSONObject>()
-				.firstOrNull { it.getStringOrNull("language") == null }
+			val error = response.optJSONObject("error")
+			val reason = error?.optJSONArray("popups")
+				?.asTypedList<JSONObject>()
+				?.firstOrNull { it.getStringOrNull("language") == null }
 
 			if (reason?.getStringOrNull("subject") == "Not Found" && url.contains("manga_viewer")) {
 				"This chapter has expired"
