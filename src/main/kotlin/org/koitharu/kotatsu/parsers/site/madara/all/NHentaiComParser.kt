@@ -118,27 +118,27 @@ internal class NHentaiComParser(context: MangaLoaderContext) :
 			chapters = listOf(chapter),
 		)
 	}
+override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
+	val url = "https://$domain/api/comics/${chapter.url}?lang=en&nsfw=false"
+	val item = webClient.httpGet(url).parseJson()
 
-	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
-		val url = "https://$domain/api/comics/${chapter.url}?lang=en&nsfw=false"
-		val item = webClient.httpGet(url).parseJson()
-		
-		val pagesCount = item.optInt("pages", 0)
-		if (pagesCount == 0) return emptyList()
+	val pagesCount = item.optInt("pages", 0)
+	if (pagesCount == 0) return emptyList()
 
-		val comicId = item.optInt("id", 0)
-		if (comicId == 0) return emptyList()
+	val comicId = item.optInt("id", 0)
+	if (comicId == 0) return emptyList()
 
-		return (1..pagesCount).map { i ->
-			val pageUrl = "https://cdn.nhentai.com/nhentai/storage/comics/pages/$comicId/$i.jpg"
-			MangaPage(
-				id = generateUid(pageUrl),
-				url = pageUrl,
-				preview = null,
-				source = source,
-			)
-		}
+	return (1..pagesCount).map { i ->
+		val pageUrl = "https://cdn.nhentai.com/nhentai/storage/images/$comicId/$i.webp"
+		MangaPage(
+			id = generateUid(pageUrl),
+			url = pageUrl,
+			preview = null,
+			source = source,
+		)
 	}
+}
+
 
 	private fun parseTags(item: JSONObject): Set<MangaTag> {
 		val tags = mutableSetOf<MangaTag>()

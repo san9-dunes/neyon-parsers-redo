@@ -44,7 +44,7 @@ internal abstract class AllPornComicParser(
                         .set("sec-ch-ua", "\"Chromium\";v=\"147\", \"Not.A/Brand\";v=\"8\"")
                         .set("sec-ch-ua-mobile", "?0")
                         .set("sec-ch-ua-platform", "\"Windows\"")
-                        .set("Referer", "https://allporncomic.com/home-3/")
+                        .set("Referer", "https://$domain/")
                         .build()
         }
 

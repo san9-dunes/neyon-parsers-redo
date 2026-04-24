@@ -43,14 +43,23 @@ internal class WebtoonPorn(context: MangaLoaderContext) : PagedMangaParser(conte
 
 		val doc = webClient.httpGet(url).parseHtml()
 		return doc.select("a").mapNotNull { a ->
-			val trackingUrl = a.attr("href")
-			if (!trackingUrl.contains("tracking.php?")) return@mapNotNull null
-			val realUrl = trackingUrl.toAbsoluteUrl(domain).toHttpUrl().queryParameter("url") ?: return@mapNotNull null
-			val relativeUrl = realUrl.toRelativeUrl(domain)
+			val rawHref = a.attr("href")
+			val link = when {
+				rawHref.contains("tracking.php?") -> rawHref.toAbsoluteUrl(domain).toHttpUrl().queryParameter("url")
+				rawHref.contains("/manhwa1-") -> rawHref
+				else -> null
+			} ?: return@mapNotNull null
+			
+			val relativeUrl = link.toRelativeUrl(domain)
 			if (!relativeUrl.startsWith("/manhwa1-")) return@mapNotNull null
 
-			val title = a.parent()?.selectFirst("strong")?.text()?.trim() ?: a.text().trim().ifBlank { return@mapNotNull null }
-			val coverUrl = a.selectFirst("img")?.requireSrc() ?: return@mapNotNull null
+			val title = a.parent()?.selectFirst("strong")?.text()?.trim() 
+				?: a.text().trim().removePrefix("🏁").removePrefix("💬").removePrefix("📚").trim()
+			
+			if (title.isBlank()) return@mapNotNull null
+			
+			val coverUrl = a.selectFirst("img")?.requireSrc() 
+				?: "https://cdn.webtoonporn.com/img/loading.gif" // Fallback
 
 			Manga(
 				id = generateUid(relativeUrl),
@@ -79,9 +88,14 @@ internal class WebtoonPorn(context: MangaLoaderContext) : PagedMangaParser(conte
 			val text = a.text().uppercase()
 			if (!text.contains("CHAPTER")) return@mapNotNull null
 			
-			val trackingUrl = a.attr("href")
-			val realUrl = trackingUrl.toHttpUrl().queryParameter("url") ?: trackingUrl
-			val relativeUrl = realUrl.toRelativeUrl(domain)
+			val rawHref = a.attr("href")
+			val link = if (rawHref.contains("tracking.php?")) {
+				rawHref.toAbsoluteUrl(domain).toHttpUrl().queryParameter("url")
+			} else {
+				rawHref
+			} ?: return@mapNotNull null
+			
+			val relativeUrl = link.toRelativeUrl(domain)
 			
 			val numberStr = text.substringAfter("CHAPTER").trim().substringBefore(" ")
 			val number = numberStr.toFloatOrNull() ?: 0f

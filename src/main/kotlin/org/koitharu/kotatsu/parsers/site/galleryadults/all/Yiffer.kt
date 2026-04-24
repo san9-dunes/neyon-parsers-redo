@@ -29,17 +29,15 @@ internal class Yiffer(context: MangaLoaderContext) : PagedMangaParser(context, M
 		if (page > 0) return emptyList()
 
 		val html = webClient.httpGet("https://$domain/browse").parseHtml().html()
-		val comicRegex = """href="/c/([^"]+)"""".toRegex()
-		val titleRegex = """aria-label="([^"]+)"""".toRegex()
 		
-		// Find all /c/ links
-		return comicRegex.findAll(html).mapNotNull { match ->
-			val href = match.groupValues[1]
-			val relativeUrl = "/c/$href"
-			
-			// Try to find title near this link in the same block
-			// Since parsing HTML is hard for SPA, we'll just unescape the URL as title fallback
-			val title = href.replace("%20", " ")
+		// Extremely broad regex to find ANY numeric ID followed by an escaped title string
+		val comicDataRegex = """(\d+),\\"([^\\"]+)"""".toRegex()
+		
+		return comicDataRegex.findAll(html).map { match ->
+			val id = match.groupValues[1]
+			val title = match.groupValues[2]
+			val relativeUrl = "/c/${title.replace(" ", "%20")}"
+			val coverUrl = "https://pics.yiffer.xyz/comics/$id/thumbnail-2x.webp"
 
 			Manga(
 				id = generateUid(relativeUrl),
@@ -49,7 +47,7 @@ internal class Yiffer(context: MangaLoaderContext) : PagedMangaParser(context, M
 				publicUrl = relativeUrl.toAbsoluteUrl(domain),
 				rating = RATING_UNKNOWN,
 				contentRating = ContentRating.ADULT,
-				coverUrl = null, // Covers are also buried in JSON, hard to match via simple regex
+				coverUrl = coverUrl,
 				tags = emptySet(),
 				state = null,
 				authors = emptySet(),
@@ -75,7 +73,7 @@ internal class Yiffer(context: MangaLoaderContext) : PagedMangaParser(context, M
 			}.toSet()
 
 		return manga.copy(
-			authors = authors,
+			authors = authors.ifEmpty { manga.authors },
 			tags = tags,
 			description = doc.selectFirst("div.mt-4.text-sm")?.text()?.trim(),
 			chapters = listOf(

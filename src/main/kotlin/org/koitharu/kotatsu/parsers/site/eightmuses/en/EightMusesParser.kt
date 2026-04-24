@@ -1,12 +1,14 @@
 package org.koitharu.kotatsu.parsers.site.eightmuses.en
 
 import org.jsoup.nodes.Document
+import org.jsoup.nodes.Element
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.MangaSourceParser
 import org.koitharu.kotatsu.parsers.config.ConfigKey
 import org.koitharu.kotatsu.parsers.core.PagedMangaParser
 import org.koitharu.kotatsu.parsers.model.*
 import org.koitharu.kotatsu.parsers.util.*
+import org.koitharu.kotatsu.parsers.site.madara.MadaraParser
 import java.util.EnumSet
 
 @MangaSourceParser("EIGHTMUSES", "8muses.io", "en", ContentType.HENTAI)
@@ -19,7 +21,9 @@ internal class EightMusesCom(context: MangaLoaderContext) :
 
 @MangaSourceParser("EIGHTMUSES_XXX", "8muses.xxx", "en", ContentType.HENTAI)
 internal class EightMusesXxx(context: MangaLoaderContext) :
-        EightMusesParser(context, MangaParserSource.EIGHTMUSES_XXX, "comics.8muses.com")
+        MadaraParser(context, MangaParserSource.EIGHTMUSES_XXX, "8muses.xxx", 18) {
+        override val withoutAjax = true
+}
 
 internal abstract class EightMusesParser(
         context: MangaLoaderContext,
@@ -32,17 +36,23 @@ internal abstract class EightMusesParser(
         override val availableSortOrders: Set<SortOrder> = EnumSet.of(SortOrder.UPDATED, SortOrder.POPULARITY)
 
         override val filterCapabilities: MangaListFilterCapabilities
-                get() = MangaListFilterCapabilities(isSearchSupported = false)
+                get() = MangaListFilterCapabilities(isSearchSupported = true)
 
         override suspend fun getFilterOptions(): MangaListFilterOptions = MangaListFilterOptions()
 
         override suspend fun getListPage(page: Int, order: SortOrder, filter: MangaListFilter): List<Manga> {
-                if (page > 1 || !filter.query.isNullOrEmpty()) {
-                        return emptyList()
+                val url = buildString {
+                        append("https://")
+                        append(domain)
+                        if (!filter.query.isNullOrEmpty()) {
+                                append("/search?q=")
+                                append(filter.query.urlEncoded())
+                        } else {
+                                if (domain == "comics.8muses.com") append("/comics") else append("/")
+                        }
                 }
                 
-                val startPage = if (domain == "comics.8muses.com") "/comics" else "/"
-                val doc = webClient.httpGet("https://$domain$startPage").parseHtml()
+                val doc = webClient.httpGet(url).parseHtml()
                 return parseAlbumCards(doc)
         }
 
@@ -81,7 +91,8 @@ internal abstract class EightMusesParser(
                 }
 
                 val cover = doc.select("img[src]").firstOrNull { img ->
-                        img.attr("src").contains("/img/data/")
+                        val src = img.attr("src")
+                        src.contains("/img/data/") || src.contains("/image/th/")
                 }?.src()
 
                 return manga.copy(
@@ -95,9 +106,10 @@ internal abstract class EightMusesParser(
                 val chapterUrl = chapter.url.toAbsoluteUrl(domain)
                 val doc = webClient.httpGet(chapterUrl).parseHtml()
 
-                val pictureLinks = doc.select("a[href^=/picture/], a[href^=/comics/picture/]")
+                val pictureLinks = doc.select("a[href*=/picture/], a.c-tile:has(img)")
                         .mapNotNull { a ->
                                 val href = a.attrAsRelativeUrlOrNull("href")?.substringBefore("?") ?: return@mapNotNull null
+                                if (!href.contains("/picture/")) return@mapNotNull null
                                 href to a.selectFirst("img")?.src()
                         }
                         .distinctBy { it.first }
@@ -113,7 +125,7 @@ internal abstract class EightMusesParser(
                         }
                 }
 
-                if (chapter.url.startsWith("/picture/") || chapter.url.startsWith("/comics/picture/")) {
+                if (chapter.url.contains("/picture/")) {
                         return listOf(
                                 MangaPage(
                                         id = generateUid(chapter.url),
@@ -131,9 +143,19 @@ internal abstract class EightMusesParser(
                 val doc = webClient.httpGet(page.url.toAbsoluteUrl(domain)).parseHtml()
                 val fullImage = doc.select("img[src]").firstOrNull { img ->
                         val src = img.attr("src")
-                        src.contains("/img/data/full_") || src.contains("/img/data/")
+                        src.contains("/img/data/full_") || src.contains("/img/data/") || src.contains("/image/fm/")
                 }?.attr("src")
-                return fullImage?.toAbsoluteUrl(domain) ?: super.getPageUrl(page)
+                
+                if (fullImage != null) {
+                        return fullImage.toAbsoluteUrl(domain)
+                }
+                
+                // Final fallback: try to resolve by pattern if thumbnail is known
+                if (page.preview != null && page.preview.contains("/image/th/")) {
+                        return page.preview.replace("/image/th/", "/image/fm/")
+                }
+                
+                return super.getPageUrl(page)
         }
 
         private fun parseAlbumCards(doc: Document): List<Manga> {

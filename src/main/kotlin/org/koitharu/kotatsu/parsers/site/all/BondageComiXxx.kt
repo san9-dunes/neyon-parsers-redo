@@ -11,7 +11,7 @@ import java.util.*
 
 @MangaSourceParser("BONDAGECOMIXXX", "BondageComiXxx.net", type = ContentType.HENTAI)
 internal class BondageComiXxx(context: MangaLoaderContext) :
-	PagedMangaParser(context, MangaParserSource.BONDAGECOMIXXX, pageSize = 10) {
+	PagedMangaParser(context, MangaParserSource.BONDAGECOMIXXX, pageSize = 20) {
 
 	override val configKeyDomain = ConfigKey.Domain("bondagecomixxx.net")
 
@@ -22,30 +22,63 @@ internal class BondageComiXxx(context: MangaLoaderContext) :
 
 	override suspend fun getFilterOptions(): MangaListFilterOptions = MangaListFilterOptions()
 
+	init {
+		setFirstPage(0)
+	}
+
 	override suspend fun getListPage(page: Int, order: SortOrder, filter: MangaListFilter): List<Manga> {
 		val url = buildString {
 			append("https://")
 			append(domain)
-			append("/")
 			if (!filter.query.isNullOrEmpty()) {
-				append("?s=")
+				append("/?s=")
 				append(filter.query.urlEncoded())
 				if (page > 0) {
 					append("&paged=")
 					append(page + 1)
 				}
 			} else {
+				append("/feed/")
 				if (page > 0) {
-					append("page/")
+					append("?paged=")
 					append(page + 1)
-					append("/")
 				}
 			}
 		}
 
 		val doc = webClient.httpGet(url).parseHtml()
-		return doc.select(".jet-listing-grid__item").mapNotNull { post ->
-			val a = post.selectFirst("a") ?: return@mapNotNull null
+		
+		// If using RSS feed
+		if (url.contains("/feed/")) {
+			return doc.select("item").map { item ->
+				val title = item.selectFirst("title")?.text()?.trim() ?: "Unknown"
+				val link = item.selectFirst("link")?.text()?.trim() ?: ""
+				val relativeUrl = link.toRelativeUrl(domain)
+				
+				// Try to extract cover from content:encoded
+				val content = item.selectFirst("content\\:encoded")?.text() ?: ""
+				val coverUrl = """src="([^"]+)"""".toRegex().find(content)?.groupValues?.get(1)
+
+				Manga(
+					id = generateUid(relativeUrl),
+					title = title,
+					altTitles = emptySet(),
+					url = relativeUrl,
+					publicUrl = link,
+					rating = RATING_UNKNOWN,
+					contentRating = ContentRating.ADULT,
+					coverUrl = coverUrl,
+					tags = emptySet(),
+					state = MangaState.FINISHED,
+					authors = emptySet(),
+					source = source,
+				)
+			}
+		}
+
+		// Fallback for search which is usually static in WP
+		return doc.select("article, .post, .jet-listing-grid__item").mapNotNull { post ->
+			val a = post.selectFirst("h2 a, .entry-title a, a") ?: return@mapNotNull null
 			val href = a.attrAsRelativeUrl("href")
 			val title = post.selectFirst(".elementor-heading-title")?.text()?.trim() ?: a.text().trim()
 			if (title.isBlank()) return@mapNotNull null
@@ -117,8 +150,9 @@ internal class BondageComiXxx(context: MangaLoaderContext) :
 		val doc = webClient.httpGet(page.url).parseHtml()
 		val imageUrl = doc.selectFirst("img.pic")?.requireSrc()
 			?: doc.selectFirst("a[data-fancybox=gallery][href]")?.attr("href")
-			?: doc.requireElementById("main-image").requireSrc()
-		return imageUrl.toAbsoluteUrl("imagetwist.com")
+			?: doc.selectFirst(".pic[src]")?.requireSrc()
+			?: doc.selectFirst("img[src*='/img/']")?.requireSrc()
+		return imageUrl?.toAbsoluteUrl("imagetwist.com") ?: page.url
 	}
 
 	private fun Element.toMangaTagOrNull(): MangaTag? {

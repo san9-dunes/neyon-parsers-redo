@@ -230,6 +230,7 @@ internal class Multporn(context: MangaLoaderContext) :
     }
 
     companion object {
-        private val configUrlRegex = """"configUrl"\s*:\s*"([^"]+)"""".toRegex()
+        private val configUrlRegex = """(?:"configUrl"|configUrl)\s*:\s*"([^"]+)"""".toRegex()
     }
+
 }

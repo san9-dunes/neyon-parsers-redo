@@ -262,7 +262,7 @@ internal abstract class MangaPlusParser(
 			if (reason?.getStringOrNull("subject") == "Not Found" && url.contains("manga_viewer")) {
 				"This chapter has expired"
 			} else {
-				reason?.getStringOrNull("body") ?: "Unknown Error"
+				reason?.getStringOrNull("body") ?: "Unknown Error: $response"
 			}
 		}
 	}
