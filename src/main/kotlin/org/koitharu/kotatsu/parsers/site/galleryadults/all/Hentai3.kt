@@ -10,14 +10,15 @@ import org.koitharu.kotatsu.parsers.site.galleryadults.GalleryAdultsParser
 import org.koitharu.kotatsu.parsers.util.*
 import java.util.*
 
+@Broken
 @MangaSourceParser("HENTAI3", "3Hentai", type = ContentType.HENTAI)
 internal class Hentai3(context: MangaLoaderContext) :
-	Hentai3Parser(context, MangaParserSource.HENTAI3, "3hentai.net")
+	Hentai3Parser(context, MangaParserSource.valueOf("HENTAI3"), "3hentai.net")
 
 @Broken
 @MangaSourceParser("SRC_3HENTAI", "3Hentai", type = ContentType.HENTAI)
 internal class Src3Hentai(context: MangaLoaderContext) :
-	Hentai3Parser(context, MangaParserSource.SRC_3HENTAI, "3hentai.net")
+	Hentai3Parser(context, MangaParserSource.valueOf("SRC_3HENTAI"), "3hentai.net")
 
 internal abstract class Hentai3Parser(
 	context: MangaLoaderContext,

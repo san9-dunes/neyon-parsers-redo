@@ -128,7 +128,25 @@ internal class BondageComiXxx(context: MangaLoaderContext) :
 	}
 
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
-		val doc = webClient.httpGet(chapter.url.toAbsoluteUrl(domain)).parseHtml()
+		val html = webClient.httpGet(chapter.url.toAbsoluteUrl(domain)).parseHtml().html()
+		
+		// Aggressive regex to find any ImageTwist link in the HTML
+		val imageTwistRegex = """https?://imagetwist\.com/[a-z0-9]+/[^"'\s<>]+""".toRegex()
+		val links = imageTwistRegex.findAll(html).map { it.value }.distinct().toList()
+		
+		if (links.isNotEmpty()) {
+			return links.map { url ->
+				MangaPage(
+					id = generateUid(url),
+					url = url,
+					preview = null,
+					source = source,
+				)
+			}
+		}
+
+		// Fallback to selector
+		val doc = org.jsoup.Jsoup.parse(html)
 		return doc.select("a[href*='imagetwist.com']").map { a ->
 			val url = a.attr("href")
 			MangaPage(

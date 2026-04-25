@@ -19,13 +19,7 @@ import org.koitharu.kotatsu.parsers.model.MangaState
 import org.koitharu.kotatsu.parsers.model.MangaTag
 import org.koitharu.kotatsu.parsers.model.RATING_UNKNOWN
 import org.koitharu.kotatsu.parsers.model.SortOrder
-import org.koitharu.kotatsu.parsers.util.attrAsRelativeUrl
-import org.koitharu.kotatsu.parsers.util.generateUid
-import org.koitharu.kotatsu.parsers.util.mapNotNullToSet
-import org.koitharu.kotatsu.parsers.util.parseHtml
-import org.koitharu.kotatsu.parsers.util.toAbsoluteUrl
-import org.koitharu.kotatsu.parsers.util.toTitleCase
-import org.koitharu.kotatsu.parsers.util.urlEncoded
+import org.koitharu.kotatsu.parsers.util.*
 import java.util.EnumSet
 
 @MangaSourceParser("HENTAI2READ", "Hentai2Read", "en", ContentType.HENTAI)
@@ -68,9 +62,14 @@ internal abstract class Hentai2ReadBaseParser(
                 val state = parseState(doc)
                 val chapters = parseChapters(doc)
 
+                val img = doc.selectFirst("img.img-responsive.border-black-op")
+                val coverUrl = (img?.attr("data-src")?.takeIf { it.isNotEmpty() } ?: img?.attr("src"))
+                        ?.toAbsoluteUrl(domain)
+                        ?.replace("/_S", "/")
+
                 return manga.copy(
                         title = title,
-                        coverUrl = doc.selectFirst("img.img-responsive.border-black-op")?.attr("src") ?: manga.coverUrl,
+                        coverUrl = coverUrl ?: manga.coverUrl,
                         description = doc.selectFirst("meta[name=description]")?.attr("content"),
                         tags = tags,
                         authors = authors,
@@ -154,25 +153,23 @@ internal abstract class Hentai2ReadBaseParser(
                         val relativeUrl = runCatching { a.attrAsRelativeUrl("href") }.getOrNull() ?: return@mapNotNull null
                         if (!seen.add(relativeUrl)) return@mapNotNull null
 
-			val title = a.text().trim().ifBlank { return@mapNotNull null }
+                        val title = a.text().trim().ifBlank { return@mapNotNull null }
                         val img = div.selectFirst("img")
                         val imgSrc = img?.attr("data-src")?.takeIf { it.isNotEmpty() } ?: img?.attr("src")
-                        val coverUrl = imgSrc?.replace(Regex("img\\d\\.hentaicdn\\.com"), "img1.hentaicdn.com")
-                                             ?.replace("/_S", "/")
+                        val coverUrl = imgSrc?.toAbsoluteUrl(domain)?.replace("/_S", "/")
+
                         Manga(
                                 id = generateUid(relativeUrl),
                                 title = title,
-                                altTitle = null,
+                                altTitles = emptySet(),
                                 url = relativeUrl,
                                 publicUrl = relativeUrl.toAbsoluteUrl(domain),
                                 rating = RATING_UNKNOWN,
-                                isNsfw = true,
+                                contentRating = ContentRating.ADULT,
                                 coverUrl = coverUrl,
                                 tags = emptySet(),
                                 state = null,
-                                author = null,
-                                largeCoverUrl = coverUrl,
-                                description = "",
+                                authors = emptySet(),
                                 source = source
                         )
                 }

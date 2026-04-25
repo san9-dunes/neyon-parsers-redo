@@ -19,7 +19,6 @@ internal class RequestedSourcesSmokeTest {
             "HENTAIREAD",
             "MANGASHIINA",
             "BONDAGECOMIXXX",
-            "YIFFER",
             "WEBTOONPORN",
             "FREECOMICS_XXX",
             "COMICPORN",
@@ -30,7 +29,9 @@ internal class RequestedSourcesSmokeTest {
             "MULTPORN",
             "LXMANGA",
             "MANGAKITA",
-            "SVSCOMICS"
+            "SVSCOMICS",
+            "HENTAIFC",
+            "HENTAI2READ"
         ],
         mode = EnumSource.Mode.INCLUDE,
     )

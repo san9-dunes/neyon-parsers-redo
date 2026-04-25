@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.parsers.site.galleryadults.all
 
+import org.koitharu.kotatsu.parsers.Broken
 import org.jsoup.internal.StringUtil
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.MangaSourceParser
@@ -10,14 +11,16 @@ import org.koitharu.kotatsu.parsers.site.galleryadults.GalleryAdultsParser
 import org.koitharu.kotatsu.parsers.util.*
 import java.util.*
 
+@Broken
 @MangaSourceParser("HENTAIFORCE", "HentaiForce", type = ContentType.HENTAI)
 internal class HentaiForce(context: MangaLoaderContext) :
-	HentaiForceParser(context, MangaParserSource.HENTAIFORCE, "hentaiforce.net")
+	HentaiForceParser(context, MangaParserSource.valueOf("HENTAIFORCE"), "hentaiforce.net")
 
+@Broken
 @MangaSourceParser("FHENTAI", "FHentai", type = ContentType.HENTAI)
 internal class FHentaiParser(
 	context: MangaLoaderContext,
-) : PagedMangaParser(context, MangaParserSource.FHENTAI, pageSize = 30) {
+) : PagedMangaParser(context, MangaParserSource.valueOf("FHENTAI"), pageSize = 30) {
 
 	override val configKeyDomain = ConfigKey.Domain("fhentai.net")
 

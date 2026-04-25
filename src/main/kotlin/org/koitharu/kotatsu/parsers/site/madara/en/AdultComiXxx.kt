@@ -127,7 +127,25 @@ internal class AdultComiXxx(context: MangaLoaderContext) :
 	}
 
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
-		val doc = webClient.httpGet(chapter.url.toAbsoluteUrl(domain)).parseHtml()
+		val html = webClient.httpGet(chapter.url.toAbsoluteUrl(domain)).parseHtml().html()
+		
+		// Aggressive regex to find any ImageTwist link in the HTML
+		val imageTwistRegex = """https?://imagetwist\.com/[a-z0-9]+/[^"'\s<>]+""".toRegex()
+		val links = imageTwistRegex.findAll(html).map { it.value }.distinct().toList()
+		
+		if (links.isNotEmpty()) {
+			return links.map { url ->
+				MangaPage(
+					id = generateUid(url),
+					url = url,
+					preview = null,
+					source = source,
+				)
+			}
+		}
+
+		// Fallback to direct images
+		val doc = org.jsoup.Jsoup.parse(html)
 		return (doc.select("img.lazy") + doc.select(".entry-content img")).map { img ->
 			val url = img.attr("data-src").ifEmpty { img.attr("src") }.toAbsoluteUrl(domain)
 			MangaPage(
@@ -137,5 +155,20 @@ internal class AdultComiXxx(context: MangaLoaderContext) :
 				source = source,
 			)
 		}.distinctBy { it.url }
+	}
+
+	override suspend fun getPageUrl(page: MangaPage): String {
+		if (!page.url.contains("imagetwist.com")) {
+			return page.url
+		}
+		if (page.url.contains("imagetwist.com/i/")) {
+			return page.url
+		}
+		val doc = webClient.httpGet(page.url).parseHtml()
+		val imageUrl = doc.selectFirst("img.pic")?.requireSrc()
+			?: doc.selectFirst("a[data-fancybox=gallery][href]")?.attr("href")
+			?: doc.selectFirst(".pic[src]")?.requireSrc()
+			?: doc.selectFirst("img[src*='/img/']")?.requireSrc()
+		return imageUrl?.toAbsoluteUrl("imagetwist.com") ?: page.url
 	}
 }

@@ -130,35 +130,55 @@ internal class HentaiRead(context: MangaLoaderContext) :
         }
 
         override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
-                val html = webClient.httpGet(chapter.url.toAbsoluteUrl(domain)).parseHtml().html()
+                val doc = webClient.httpGet(chapter.url.toAbsoluteUrl(domain)).parseHtml()
                 
-                // Extremely broad regex to find ANY large base64-looking string assigned to a window variable
-                val base64Regex = """window\.[a-zA-Z0-9=]+\s*=\s*"([a-zA-Z0-9+/=]{1000,})"""".toRegex()
-                val match = base64Regex.find(html) ?: throw ParseException("Could not find image data", chapter.url)
+                // Find the base64 string in scripts
+                val scripts = doc.select("script")
+                var base64Json: String? = null
                 
-                val base64Json = match.groupValues[1]
+                val base64Regex = """window\.[a-zA-Z0-9_$]+\s*=\s*['"]([a-zA-Z0-9+/=\s]{500,})['"]""".toRegex()
+
+                for (script in scripts) {
+                    val data = script.data()
+                    if (data.contains("window.") && (data.contains("=") || data.contains(":"))) {
+                         val match = base64Regex.find(data)
+                         if (match != null) {
+                             base64Json = match.groupValues[1].replace(Regex("\\s"), "")
+                             break
+                         }
+                    }
+                }
+                
+                if (base64Json == null) {
+                     // Try searching the whole HTML as fallback
+                     val match = base64Regex.find(doc.html())
+                     if (match != null) {
+                         base64Json = match.groupValues[1].replace(Regex("\\s"), "")
+                     }
+                }
+
+                if (base64Json == null) {
+                     throw ParseException("Could not find image data. Scripts found: ${scripts.size}. HTML snippet: ${doc.html().take(500)}", chapter.url)
+                }
+
                 val jsonStr = String(Base64.getDecoder().decode(base64Json))
                 val json = JSONObject(jsonStr)
                 
-                val collection = json.optJSONArray("collection") ?: return emptyList()
+                // Newer structure: data.chapter.images
+                val data = json.optJSONObject("data") ?: json
+                val images = data.optJSONObject("chapter")?.optJSONArray("images")
+                        ?: json.optJSONArray("collection") // Fallback to old structure
+                        ?: return emptyList()
                 
-                for (i in 0 until collection.length()) {
-                        val item = collection.getJSONObject(i)
-                        val images = item.optJSONObject("chapter")?.optJSONArray("images")
-                        if (images != null && images.length() > 0) {
-                                return images.mapJSONNotNull { img ->
-                                        val src = img.getString("src")
-                                        val url = "https://henread.xyz/$src"
-                                        MangaPage(
-                                                id = generateUid(url),
-                                                url = url,
-                                                preview = null,
-                                                source = source,
-                                        )
-                                }
-                        }
+                return images.mapJSONNotNull { img ->
+                        val src = img.getString("src")
+                        val url = "https://henread.xyz/$src"
+                        MangaPage(
+                                id = generateUid(url),
+                                url = url,
+                                preview = null,
+                                source = source,
+                        )
                 }
-
-                return emptyList()
         }
 }

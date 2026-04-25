@@ -1,0 +1,101 @@
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e5]:
+        - generic [ref=e8]:
+          - link "Back" [ref=e9] [cursor=pointer]:
+            - /url: https://hentairead.com/hentai/my-wife-gave-birth-to-my-wife/
+            - generic [ref=e10]: 
+          - heading "My wife gave birth to my wife" [level=1] [ref=e11]:
+            - link "My wife gave birth to my wife" [ref=e12] [cursor=pointer]:
+              - /url: https://hentairead.com/hentai/my-wife-gave-birth-to-my-wife/
+          - generic [ref=e13]:
+            - generic [ref=e16] [cursor=pointer]: 
+            - button "Bookmark" [ref=e17] [cursor=pointer]
+            - button "Open Report Modal" [ref=e18] [cursor=pointer]:
+              - generic [ref=e19]: 
+        - generic [ref=e22]:
+          - iframe [ref=e24]:
+            - generic [ref=f3e4]:
+              - link "Ad Info & Reporting" [ref=f3e6] [cursor=pointer]:
+                - /url: //ck.juicyads.com/getjuicy_3.php?z=775200&report=v2b444w274z2w214p2o224
+                - img "Ad Info & Reporting" [ref=f3e7]
+              - iframe [ref=f3e8]:
+                - iframe [ref=f18e2]:
+                  - generic [active]:
+                    - generic:
+                      - img [ref=f24e1] [cursor=pointer]
+                      - img [ref=f24e2] [cursor=pointer]
+                    - link "JAV XXX":
+                      - /url: https://javhd.com
+          - img "Page 1" [ref=e31]
+          - iframe [ref=e33]:
+            - generic [active] [ref=f5e1]:
+              - generic [ref=f5e4]:
+                - link "Ad Info & Reporting" [ref=f5e6] [cursor=pointer]:
+                  - /url: //ck.juicyads.com/getjuicy_3.php?z=775835&report=v2b444x264z2p214v2y2a42313r2y2z284a4w2w2x2
+                  - img "Ad Info & Reporting" [ref=f5e7]
+                - iframe [ref=f5e8]:
+                  - iframe [ref=f17e2]:
+                    - generic [active]:
+                      - generic:
+                        - img [ref=f25e1] [cursor=pointer]
+                        - img [ref=f25e2] [cursor=pointer]
+                      - link "JAV XXX":
+                        - /url: https://javhd.com
+              - table [ref=f5e9]:
+                - rowgroup [ref=f5e10]:
+                  - row [ref=f5e11]:
+                    - cell [ref=f5e12]
+                  - row [ref=f5e13]:
+                    - cell [ref=f5e14]:
+                      - link [ref=f5e15] [cursor=pointer]:
+                        - /url: https://ck.juicyads.com/getjuicy_2.php?p=67837&s=129915&z=775835&type=1
+                  - row [ref=f5e16]:
+                    - cell [ref=f5e17]:
+                      - link [ref=f5e18] [cursor=pointer]:
+                        - /url: https://ck.juicyads.com/getjuicy_2.php?p=67837&s=129915&z=775835&type=2
+                  - row [ref=f5e19]:
+                    - cell [ref=f5e20]:
+                      - link [ref=f5e21] [cursor=pointer]:
+                        - /url: https://ck.juicyads.com/getjuicy_2.php?p=67837&s=129915&z=775835&type=3
+                  - row [ref=f5e22]:
+                    - cell [ref=f5e23]:
+                      - link [ref=f5e24] [cursor=pointer]:
+                        - /url: https://ck.juicyads.com/getjuicy_2.php?p=67837&s=129915&z=775835&type=4
+                  - row [ref=f5e25]:
+                    - cell [ref=f5e26]:
+                      - link:
+                        - /url: https://ck.juicyads.com/getjuicy_2.php?p=67837&s=129915&z=775835&type=5
+                  - row [ref=f5e27]:
+                    - cell [ref=f5e28]:
+                      - link [ref=f5e29] [cursor=pointer]:
+                        - /url: https://ck.juicyads.com/getjuicy_2.php?p=67837&s=129915&z=775835&type=6
+        - generic [ref=e38]:
+          - generic [ref=e40] [cursor=pointer]:
+            - generic [ref=e41]: "1"
+            - generic [ref=e42]: /
+            - generic [ref=e43]: "17"
+          - button "Go Next" [ref=e44] [cursor=pointer]:
+            - generic [ref=e45]: Next
+            - generic [ref=e46]: 
+          - button "Go Last" [ref=e47] [cursor=pointer]:
+            - generic [ref=e48]: Last
+            - generic [ref=e49]: 
+        - generic [ref=e55]:
+          - generic [ref=e58]: 
+          - generic [ref=e60]:
+            - img [ref=e63]
+            - generic [ref=e65]: Tap to show/hide navigation bar
+          - generic [ref=e68]: 
+      - text: 
+  - dialog:
+    - generic [ref=e74]:
+      - button "Close" [ref=e75] [cursor=pointer]:
+        - generic [ref=e76]: 
+      - link "Popup Banner READ NOW FOR FREE on ManhwaRead" [ref=e77] [cursor=pointer]:
+        - /url: https://manhwaread.com/?p=6386
+        - img "Popup Banner" [ref=e78]
+        - generic [ref=e80]:
+          - text: READ NOW FOR FREE
+          - text: on ManhwaRead

@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.parsers.site.galleryadults.all
 
+import org.koitharu.kotatsu.parsers.Broken
 import org.json.JSONObject
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.MangaSourceParser
@@ -10,9 +11,10 @@ import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import org.koitharu.kotatsu.parsers.util.*
 import java.util.Base64
 
+@Broken
 @MangaSourceParser("HENTAIVOX", "HentaiVox", type = ContentType.HENTAI)
 internal class HentaiVox(context: MangaLoaderContext) :
-	HentaiForceParser(context, MangaParserSource.HENTAIVOX, "hentaivox.com") {
+	HentaiForceParser(context, MangaParserSource.valueOf("HENTAIVOX"), "hentaivox.com") {
 
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
 		val doc = webClient.httpGet(chapter.url.toAbsoluteUrl(domain)).parseHtml()

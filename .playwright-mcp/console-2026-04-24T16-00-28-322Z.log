@@ -1,0 +1,10 @@
+[    1187ms] [ERROR] Failed to load resource: the server responded with a status of 500 () @ https://8muses.xxx/:0
+[    1711ms] [ERROR] Failed to load resource: net::ERR_ADDRESS_INVALID @ https://a.realsrv.com/ad-provider.js:0
+[    1961ms] [ERROR] Failed to load resource: net::ERR_ADDRESS_INVALID @ https://a.magsrv.com/video-slider.js:0
+[    2205ms] [LOG] JQMIGRATE: Migrate is installed, version 3.4.1 @ https://8muses.xxx/wp-includes/js/jquery/jquery-migrate.min.js?ver=3.4.1:1
+[    2286ms] [LOG] %c MUSES IMPROVEMENTS v1.0.0  background:#6366f1;color:white;font-size:14px;padding:5px 15px;border-radius:20px @ https://8muses.xxx/:1080
+[    2296ms] [ERROR] Failed to load resource: net::ERR_ADDRESS_INVALID @ https://a.realsrv.com/ad-provider.js:0
+[    2386ms] ReferenceError: ExoVideoSlider is not defined
+    at https://8muses.xxx/:1319:1
+[    2386ms] Unexpected token '<'
+[    2402ms] [LOG] ✓ Search @ https://8muses.xxx/:1121

@@ -1,0 +1,99 @@
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e3]:
+      - generic [ref=e5]:
+        - generic [ref=e8]:
+          - link "Back" [ref=e9] [cursor=pointer]:
+            - /url: https://hentairead.com/hentai/yaricir-shingakki-ni-boku-no-heya-wa-minna-no-tamariba-omake-ver/
+            - generic [ref=e10]: 
+          - heading "YariCir Shingakki ni Boku no Heya wa Minna no Tamariba (Omake Ver.)" [level=1] [ref=e11]:
+            - link "YariCir Shingakki ni Boku no Heya wa Minna no Tamariba (Omake Ver.)" [ref=e12] [cursor=pointer]:
+              - /url: https://hentairead.com/hentai/yaricir-shingakki-ni-boku-no-heya-wa-minna-no-tamariba-omake-ver/
+          - generic [ref=e13]:
+            - button "Collection Modal" [ref=e14] [cursor=pointer]:
+              - generic [ref=e15]: 
+              - text: Collection
+            - generic [ref=e18] [cursor=pointer]: 
+            - button "Bookmark" [ref=e19] [cursor=pointer]
+            - button "Open Report Modal" [ref=e20] [cursor=pointer]:
+              - generic [ref=e21]: 
+        - generic [ref=e24]:
+          - iframe [ref=e26]:
+            - generic [active] [ref=f190e1]:
+              - generic [ref=f190e4]:
+                - link "Ad Info & Reporting" [ref=f190e6] [cursor=pointer]:
+                  - /url: //ck.juicyads.com/getjuicy_3.php?z=775200&report=v2b444w274z2w214p2o224
+                  - img "Ad Info & Reporting" [ref=f190e7]
+                - iframe [ref=f190e8]:
+                  
+              - table [ref=f190e9]:
+                - rowgroup [ref=f190e10]:
+                  - row [ref=f190e11]:
+                    - cell [ref=f190e12]
+                  - row [ref=f190e13]:
+                    - cell [ref=f190e14]:
+                      - link [ref=f190e15] [cursor=pointer]:
+                        - /url: https://ck.juicyads.com/getjuicy_2.php?p=67837&s=129915&z=775200&type=1
+                  - row [ref=f190e16]:
+                    - cell [ref=f190e17]:
+                      - link [ref=f190e18] [cursor=pointer]:
+                        - /url: https://ck.juicyads.com/getjuicy_2.php?p=67837&s=129915&z=775200&type=2
+                  - row [ref=f190e19]:
+                    - cell [ref=f190e20]:
+                      - link [ref=f190e21] [cursor=pointer]:
+                        - /url: https://ck.juicyads.com/getjuicy_2.php?p=67837&s=129915&z=775200&type=3
+                  - row [ref=f190e22]:
+                    - cell [ref=f190e23]:
+                      - link [ref=f190e24] [cursor=pointer]:
+                        - /url: https://ck.juicyads.com/getjuicy_2.php?p=67837&s=129915&z=775200&type=4
+                  - row [ref=f190e25]:
+                    - cell [ref=f190e26]:
+                      - link:
+                        - /url: https://ck.juicyads.com/getjuicy_2.php?p=67837&s=129915&z=775200&type=5
+                  - row [ref=f190e27]:
+                    - cell [ref=f190e28]:
+                      - link [ref=f190e29] [cursor=pointer]:
+                        - /url: https://ck.juicyads.com/getjuicy_2.php?p=67837&s=129915&z=775200&type=6
+          - img "Page 1" [ref=e33]
+          - iframe [ref=e35]:
+            - generic [ref=f192e4]:
+              - link "Ad Info & Reporting" [ref=f192e6] [cursor=pointer]:
+                - /url: //ck.juicyads.com/getjuicy_3.php?z=775835&report=v2b444x264z2p214x2x24463v2u243v2848403x2
+                - img "Ad Info & Reporting" [ref=f192e7]
+              - link "The Best @ Babes.xyz" [ref=f192e9] [cursor=pointer]:
+                - /url: https://ck.juicyads.com/getjuicy.php?jad=1624321&juser=67837&jfill=8729&jfimg=1744353&data=85a3ab00b0efd1400c3b5b2fa1fcdbf2&idty=c3ae9d80ad0a032a81283d31842db072&std2=x243y223u213x274e4c4&pubid=67837&zoneid=775835&jurl=p5y5l4i4m4b424n2a4n5k406a4o5x594i594m274l4f4w2
+                - img "The Best @ Babes.xyz" [ref=f192e10]
+              - generic:
+                - link:
+                  - /url: //ck.juicyads.com/getjuicy_2.php?p=67837&s=129915&z=775835&type=9
+        - generic [ref=e40]:
+          - button "Go Previous" [ref=e41] [cursor=pointer]:
+            - generic [ref=e42]: 
+            - generic [ref=e43]: Prev
+          - generic [ref=e45] [cursor=pointer]:
+            - generic [ref=e46]: "1"
+            - generic [ref=e47]: /
+            - generic [ref=e48]: "89"
+          - button "Go Next" [ref=e49] [cursor=pointer]:
+            - generic [ref=e50]: Next
+            - generic [ref=e51]: 
+          - button "Go Last" [ref=e52] [cursor=pointer]:
+            - generic [ref=e53]: Last
+            - generic [ref=e54]: 
+        - generic [ref=e60]:
+          - generic [ref=e63]: 
+          - generic [ref=e65]:
+            - img [ref=e68]
+            - generic [ref=e70]: Tap to show/hide navigation bar
+          - generic [ref=e73]: 
+      - text: 
+  - dialog:
+    - generic [ref=e79]:
+      - button "Close" [ref=e80] [cursor=pointer]:
+        - generic [ref=e81]: 
+      - link "Popup Banner READ NOW FOR FREE on ManhwaRead" [ref=e82] [cursor=pointer]:
+        - /url: https://manhwaread.com/?p=6380
+        - img "Popup Banner" [ref=e83]
+        - generic [ref=e85]:
+          - text: READ NOW FOR FREE
+          - text: on ManhwaRead

@@ -1,0 +1,61 @@
+- generic [ref=e2]:
+  - text: 
+  - generic [ref=e3]:
+    - generic [ref=e4]:
+      - link "8muses" [ref=e6] [cursor=pointer]:
+        - /url: /comics
+        - img "8muses" [ref=e7]
+      - list [ref=e9]:
+        - listitem [ref=e10]:
+          - link "" [ref=e11] [cursor=pointer]:
+            - /url: /comics
+            - generic [ref=e12]: 
+        - listitem [ref=e13]:
+          - text: 
+          - link "Renderotica Comics" [ref=e14] [cursor=pointer]:
+            - /url: /comics/album/Renderotica-Comics
+        - listitem [ref=e15]:
+          - text: 
+          - link "Joos3dart" [ref=e16] [cursor=pointer]:
+            - /url: /comics/album/Renderotica-Comics/Joos3dart
+        - listitem [ref=e17]:
+          - text: 
+          - link "A Friend in Need" [ref=e18] [cursor=pointer]:
+            - /url: /comics/album/Renderotica-Comics/Joos3dart/A-Friend-in-Need
+        - listitem [ref=e19]:
+          - text: 
+          - link "06" [ref=e20] [cursor=pointer]:
+            - /url: /comics/picture/Renderotica-Comics/Joos3dart/A-Friend-in-Need/2
+      - link " Log in" [ref=e23] [cursor=pointer]:
+        - /url: /auth/login?back=%2Fcomics%2Fpicture%2FRenderotica-Comics%2FJoos3dart%2FA-Friend-in-Need%2F2
+        - generic [ref=e24]: 
+        - text: Log in
+    - generic [ref=e25]:
+      - list [ref=e26]:
+        - listitem [ref=e27]:
+          - generic [ref=e28]:
+            - checkbox "  Image full size"
+            - generic [ref=e29] [cursor=pointer]:
+              - text: 
+              - generic [ref=e30]: 
+              - text: Image full size
+        - listitem [ref=e31]:
+          - generic [ref=e32]:
+            - link "" [ref=e33] [cursor=pointer]:
+              - /url: /comics/picture/Renderotica-Comics/Joos3dart/A-Friend-in-Need/1
+              - generic [ref=e34]: 
+            - generic [ref=e35] [cursor=pointer]: Page 2 
+            - link "" [ref=e36] [cursor=pointer]:
+              - /url: /comics/picture/Renderotica-Comics/Joos3dart/A-Friend-in-Need/3
+              - generic [ref=e37]: 
+        - text: 
+      - iframe [ref=e39]:
+        - iframe [ref=f5e2]:
+          
+      - list [ref=e41]:
+        - listitem [ref=e42]:
+          - link "DMCA" [ref=e43] [cursor=pointer]:
+            - /url: /dmca.html
+    - link "06" [ref=e47] [cursor=pointer]:
+      - /url: /comics/picture/Renderotica-Comics/Joos3dart/A-Friend-in-Need/3
+      - img [ref=e48]
