@@ -3,6 +3,7 @@ package org.koitharu.kotatsu.parsers.site.en
 import androidx.collection.ArraySet
 import androidx.collection.MutableIntList
 import androidx.collection.MutableIntObjectMap
+import org.json.JSONArray
 import org.json.JSONObject
 import org.jsoup.HttpStatusException
 import org.koitharu.kotatsu.parsers.Broken
@@ -172,6 +173,7 @@ internal abstract class HentalkBaseParser(
 		super.onCreateConfig(keys)
 		keys.add(userAgentKey)
 		keys.add(preferredServerKey)
+		keys.add(ConfigKey.InterceptCloudflare(defaultValue = true))
 	}
 
 	override val availableSortOrders: Set<SortOrder> = EnumSet.of(
@@ -247,10 +249,17 @@ internal abstract class HentalkBaseParser(
 			}
 		}
 
-		val dataArray = json.getJSONArray("nodes")
-			.optJSONObject(2)
-			?.optJSONArray("data")
-			?: return emptyList()
+		val nodes = json.getJSONArray("nodes")
+		var dataArray: JSONArray? = null
+		for (i in 0 until nodes.length()) {
+			val node = nodes.optJSONObject(i)
+			if (node?.optString("type") == "data") {
+				dataArray = node.optJSONArray("data")
+				if (dataArray != null && dataArray.length() > 5) break // Found the main data array
+			}
+		}
+		
+		if (dataArray == null) return emptyList()
 
 		val dataValues = MutableIntObjectMap<Any>(dataArray.length())
 		for (i in 0 until dataArray.length()) {
@@ -386,20 +395,71 @@ internal abstract class HentalkBaseParser(
 
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
 		val json = webClient.httpGet(chapter.url.toAbsoluteUrl(domain)).parseJson()
-		val dataArray = json.getJSONArray("nodes")
-			.optJSONObject(2)
-			?.optJSONArray("data")
-			?: return emptyList()
+		val nodes = json.getJSONArray("nodes")
+		
+		var dataArray: JSONArray? = null
+		for (i in nodes.length() - 1 downTo 0) { // Gallery is usually in the last data node
+			val node = nodes.optJSONObject(i)
+			if (node?.optString("type") == "data") {
+				val arr = node.optJSONArray("data")
+				if (arr != null) {
+					// Check if this array contains image related info
+					var hasImages = false
+					for (j in 0 until (arr.length().coerceAtMost(50))) {
+						val item = arr.opt(j)
+						if (item is JSONObject && (item.has("images") || item.has("gallery") || item.has("filename"))) {
+							hasImages = true
+							break
+						}
+					}
+					if (hasImages) {
+						dataArray = arr
+						break
+					}
+				}
+			}
+		}
 
-		var compressID = ""
+		if (dataArray == null) return emptyList()
+
+		var imagesRef = -1
 		for (i in 0 until dataArray.length()) {
 			val item = dataArray.opt(i)
-			if (item is JSONObject && item.has("hash")) {
-				if (i < 20) {
-					val hashValue = dataArray.getString(item.getInt("hash"))
-					if (hashValue.length == 8) {
-						compressID = hashValue
-						break
+			if (item is JSONObject && item.has("images") && item.has("title")) {
+				imagesRef = item.getInt("images")
+				break
+			}
+		}
+
+		val imgList = ArrayList<String>()
+		if (imagesRef != -1 && imagesRef < dataArray.length()) {
+			val imagesArray = dataArray.optJSONArray(imagesRef)
+			if (imagesArray != null) {
+				for (i in 0 until imagesArray.length()) {
+					val imgObjRef = imagesArray.getInt(i)
+					val imgObj = dataArray.optJSONObject(imgObjRef)
+					if (imgObj != null && imgObj.has("filename")) {
+						val filenameRef = imgObj.getInt("filename")
+						val filename = dataArray.optString(filenameRef, "")
+						if (filename.isNotEmpty()) {
+							imgList.add(filename)
+						}
+					}
+				}
+			}
+		}
+
+		// Fallback to old loose scanning if specific array not found
+		if (imgList.isEmpty()) {
+			for (i in 0 until dataArray.length()) {
+				val item = dataArray.opt(i)
+				if (item is JSONObject && item.has("filename")) {
+					val filenameIndex = item.getInt("filename")
+					if (dataArray.length() > filenameIndex) {
+						val filename = dataArray.optString(filenameIndex, "")
+						if (filename.isNotEmpty()) {
+							imgList.add(filename)
+						}
 					}
 				}
 			}
@@ -408,38 +468,22 @@ internal abstract class HentalkBaseParser(
 		var hashID = ""
 		for (i in 0 until dataArray.length()) {
 			val item = dataArray.opt(i)
-			if (item is JSONObject && item.has("hash") && item.has("id")) {
+			if (item is JSONObject && item.has("hash") && (item.has("id") || item.has("title"))) {
 				val hashIndex = item.getInt("hash")
 				hashID = dataArray.getString(hashIndex)
-				break
+				if (hashID.length > 8) break // Found the main gallery hash
 			}
 		}
 
-		if (hashID.isEmpty()) {
-			for (i in 0 until dataArray.length()) {
-				val item = dataArray.opt(i)
-				if (item is JSONObject && item.has("gallery")) {
-					val galleryIndex = item.getInt("gallery")
-					val galleryTemplate = dataArray.optJSONObject(galleryIndex)
-					if (galleryTemplate != null && galleryTemplate.has("hash")) {
-						val hashIndex = galleryTemplate.getInt("hash")
-						hashID = dataArray.getString(hashIndex)
-						break
-					}
-				}
-			}
-		}
-
-		val imgList = ArrayList<String>(dataArray.length())
+		var compressID = ""
 		for (i in 0 until dataArray.length()) {
 			val item = dataArray.opt(i)
-			if (item is JSONObject && item.has("filename")) {
-				val filenameIndex = item.getInt("filename")
-				if (dataArray.length() > filenameIndex) {
-					val filename = dataArray.optString(filenameIndex, "")
-					if (filename.isNotEmpty()) {
-						imgList.add(filename)
-					}
+			if (item is JSONObject && item.has("hash") && item.has("format")) {
+				val hashIndex = item.getInt("hash")
+				val hashValue = dataArray.getString(hashIndex)
+				if (hashValue.length == 8) {
+					compressID = hashValue
+					break
 				}
 			}
 		}

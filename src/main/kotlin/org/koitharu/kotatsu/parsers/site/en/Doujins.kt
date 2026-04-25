@@ -1,4 +1,4 @@
-package org.koitharu.kotatsu.parsers.site.vi
+package org.koitharu.kotatsu.parsers.site.en
 
 import okhttp3.Headers
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
@@ -8,16 +8,17 @@ import org.koitharu.kotatsu.parsers.core.PagedMangaParser
 import org.koitharu.kotatsu.parsers.model.*
 import org.koitharu.kotatsu.parsers.util.*
 import java.util.*
+import java.util.concurrent.TimeUnit
 
-@MangaSourceParser("TRUYENHENTAI18", "TruyenHentai18", "vi", type = ContentType.HENTAI)
-internal class TruyenHentai18(context: MangaLoaderContext) :
-	PagedMangaParser(context, MangaParserSource.TRUYENHENTAI18, pageSize = 20) {
+@MangaSourceParser("DOUJINS_COM", "Doujins.com", "en", type = ContentType.HENTAI)
+internal class DoujinsCom(context: MangaLoaderContext) :
+	PagedMangaParser(context, MangaParserSource.valueOf("DOUJINS_COM"), pageSize = 20) {
 
-	override val configKeyDomain = ConfigKey.Domain("truyenhentai18.net")
+	override val configKeyDomain = ConfigKey.Domain("doujins.com")
 
 	override fun onCreateConfig(keys: MutableCollection<ConfigKey<*>>) {
 		super.onCreateConfig(keys)
-		keys.add(userAgentKey)
+		keys.add(ConfigKey.UserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"))
 		keys.add(ConfigKey.InterceptCloudflare(defaultValue = true))
 	}
 
@@ -26,7 +27,7 @@ internal class TruyenHentai18(context: MangaLoaderContext) :
 		.build()
 
 	override val availableSortOrders: Set<SortOrder> = EnumSet.of(
-		SortOrder.UPDATED,
+		SortOrder.NEWEST,
 		SortOrder.POPULARITY
 	)
 
@@ -40,25 +41,32 @@ internal class TruyenHentai18(context: MangaLoaderContext) :
 			append("https://")
 			append(domain)
 			if (!filter.query.isNullOrEmpty()) {
-				append("/?s=")
+				append("/searches?words=")
 				append(filter.query.urlEncoded())
-			} else {
-				when (order) {
-					SortOrder.POPULARITY -> append("/xem-nhieu-nhat")
-					else -> append("/moi-cap-nhat")
+				if (page > 0) {
+					append("&page=")
+					append(page + 1)
 				}
-			}
-			if (page > 0) {
-				append("/page/")
-				append(page + 1)
+			} else {
+				if (order == SortOrder.POPULARITY) {
+					append("/top")
+				} else {
+					// Time-window pagination for Latest (3-day chunks)
+					val calendar = Calendar.getInstance()
+					calendar.add(Calendar.DAY_OF_MONTH, -(page * 3))
+					val end = TimeUnit.MILLISECONDS.toSeconds(calendar.timeInMillis)
+					calendar.add(Calendar.DAY_OF_MONTH, -3)
+					val start = TimeUnit.MILLISECONDS.toSeconds(calendar.timeInMillis)
+					append("/folders?start=$start&end=$end")
+				}
 			}
 		}
 
 		val doc = webClient.httpGet(url).parseHtml()
-		return doc.select("div.col-6.col-md-4.col-lg-2, div.thumb-item-flow").mapNotNull { el ->
+		return doc.select(".thumbnail-doujin, .thumbnail").mapNotNull { el ->
 			val a = el.selectFirst("a") ?: return@mapNotNull null
 			val href = a.attrAsRelativeUrl("href")
-			val title = el.selectFirst("h2, .manga-name, .title")?.text()?.trim() ?: a.attr("title").trim()
+			val title = a.text().trim()
 			if (title.isBlank()) return@mapNotNull null
 
 			val img = el.selectFirst("img")
@@ -84,45 +92,41 @@ internal class TruyenHentai18(context: MangaLoaderContext) :
 	override suspend fun getDetails(manga: Manga): Manga {
 		val doc = webClient.httpGet(manga.url.toAbsoluteUrl(domain)).parseHtml()
 
-		val tags = doc.select("a.badge.bg-primary, a[href*='/category/']").mapNotNullToSet { a ->
+		val tags = doc.select("a[href*='/tag/']").mapNotNullToSet { a ->
 			val text = a.text().trim()
 			if (text.isBlank()) return@mapNotNullToSet null
 			MangaTag(
 				title = text,
-				key = a.attr("href").substringAfter("/category/").substringBefore("/").trim(),
+				key = a.attr("href").substringAfterLast("/").nullIfEmpty() ?: text,
 				source = source
 			)
 		}
 
-		val authors = doc.select(".list-group-item:contains(Tác giả) a").map { it.text().trim() }.toSet()
-
-		val chapters = doc.select("div.chapter-item").mapIndexed { index, el ->
-			val a = el.selectFirst("a.fw-bold") ?: el.selectFirst("a")!!
-			val href = a.attrAsRelativeUrl("href")
-			MangaChapter(
-				id = generateUid(href),
-				title = a.text().trim(),
-				number = (index + 1).toFloat(),
-				url = href,
-				source = source,
-				scanlator = null,
-				uploadDate = 0,
-				branch = null,
-				volume = 0
-			)
-		}
+		val authors = doc.select("a[href*='/artist/']").map { it.text().trim() }.toSet()
 
 		return manga.copy(
 			tags = tags,
 			authors = authors,
-			description = doc.select(".description").text().trim(),
-			chapters = chapters.reversed()
+			description = doc.selectFirst(".description")?.text()?.trim(),
+			chapters = listOf(
+				MangaChapter(
+					id = generateUid(manga.url),
+					title = "Doujin",
+					number = 1f,
+					url = manga.url,
+					source = source,
+					scanlator = null,
+					uploadDate = 0,
+					branch = null,
+					volume = 0
+				)
+			)
 		)
 	}
 
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
 		val doc = webClient.httpGet(chapter.url.toAbsoluteUrl(domain)).parseHtml()
-		return doc.select("div#viewer img, div.chapter-container img").map { img ->
+		return doc.select("img.swiper-lazy").map { img ->
 			val url = (img.attr("data-src").takeIf { it.isNotEmpty() } ?: img.attr("src")).toAbsoluteUrl(domain)
 			MangaPage(
 				id = generateUid(url),

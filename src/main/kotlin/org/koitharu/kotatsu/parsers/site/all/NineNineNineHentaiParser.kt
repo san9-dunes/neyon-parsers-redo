@@ -14,7 +14,7 @@ import org.koitharu.kotatsu.parsers.util.json.getStringOrNull
 import org.koitharu.kotatsu.parsers.util.json.mapJSONToSet
 import java.util.*
 
-@MangaSourceParser("NINENINENINEHENTAI", "9Hentai", type = ContentType.HENTAI)
+@MangaSourceParser("NINENINENINEHENTAI", "9Hentai (.so)", type = ContentType.HENTAI)
 internal class NineNineNineHentaiParser(context: MangaLoaderContext) :
 	NineNineNineHentaiBaseParser(context, MangaParserSource.NINENINENINEHENTAI, "9hentai.so")
 

@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.parsers.site.all
 
 import okhttp3.Headers
-import org.json.JSONObject
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.MangaSourceParser
 import org.koitharu.kotatsu.parsers.config.ConfigKey
@@ -10,11 +9,11 @@ import org.koitharu.kotatsu.parsers.model.*
 import org.koitharu.kotatsu.parsers.util.*
 import java.util.*
 
-@MangaSourceParser("HENTAIRUN", "HentaiRun", type = ContentType.HENTAI)
-internal class HentaiRun(context: MangaLoaderContext) :
-	PagedMangaParser(context, MangaParserSource.HENTAIRUN, pageSize = 24) {
+@MangaSourceParser("ROKUHENTAI", "Roku Hentai", type = ContentType.HENTAI)
+internal class RokuHentai(context: MangaLoaderContext) :
+	PagedMangaParser(context, MangaParserSource.valueOf("ROKUHENTAI"), pageSize = 24) {
 
-	override val configKeyDomain = ConfigKey.Domain("hentairun.com")
+	override val configKeyDomain = ConfigKey.Domain("rokuhentai.com")
 
 	override fun onCreateConfig(keys: MutableCollection<ConfigKey<*>>) {
 		super.onCreateConfig(keys)
@@ -26,7 +25,7 @@ internal class HentaiRun(context: MangaLoaderContext) :
 		.add("Referer", "https://$domain/")
 		.build()
 
-	override val availableSortOrders: Set<SortOrder> = EnumSet.of(SortOrder.UPDATED, SortOrder.POPULARITY)
+	override val availableSortOrders: Set<SortOrder> = EnumSet.of(SortOrder.NEWEST)
 
 	override val filterCapabilities: MangaListFilterCapabilities
 		get() = MangaListFilterCapabilities(isSearchSupported = true)
@@ -34,36 +33,26 @@ internal class HentaiRun(context: MangaLoaderContext) :
 	override suspend fun getFilterOptions(): MangaListFilterOptions = MangaListFilterOptions()
 
 	override suspend fun getListPage(page: Int, order: SortOrder, filter: MangaListFilter): List<Manga> {
+		if (page > 1) return emptyList() // Stateful pagination not supported yet
+
 		val url = buildString {
 			append("https://")
 			append(domain)
 			if (!filter.query.isNullOrEmpty()) {
-				append("/search/?q=")
+				append("/?q=")
 				append(filter.query.urlEncoded())
-			} else {
-				if (order == SortOrder.POPULARITY) {
-					append("/popular")
-				} else {
-					append("/")
-				}
-			}
-			if (page > 0) {
-				append(if (contains("?")) "&" else "?")
-				append("page=")
-				append(page + 1)
 			}
 		}
 
 		val doc = webClient.httpGet(url).parseHtml()
-		return doc.select(".item, .manga-item").mapNotNull { el ->
+		
+		return doc.select(".mdc-card").mapNotNull { el ->
 			val a = el.selectFirst("a") ?: return@mapNotNull null
-			val href = a.attrAsRelativeUrl("href")
-			val title = el.selectFirst(".title, h2, h3")?.text()?.trim() ?: a.attr("title").trim()
+			val href = a.attrAsRelativeUrl("href").substringBeforeLast("/")
+			val title = el.selectFirst(".site-manga-card__title--primary")?.text()?.trim() ?: return@mapNotNull null
 			
-			if (title.isBlank()) return@mapNotNull null
-
-			val img = el.selectFirst("img")
-			val cover = (img?.attr("data-src")?.takeIf { it.isNotEmpty() } ?: img?.attr("src"))?.toAbsoluteUrl(domain)
+			val style = el.selectFirst(".mdc-card__media")?.attr("style") ?: ""
+			val cover = IMG_REGEX.find(style)?.groupValues?.get(1)?.toAbsoluteUrl(domain)
 
 			Manga(
 				id = generateUid(href),
@@ -84,25 +73,30 @@ internal class HentaiRun(context: MangaLoaderContext) :
 
 	override suspend fun getDetails(manga: Manga): Manga {
 		val doc = webClient.httpGet(manga.url.toAbsoluteUrl(domain)).parseHtml()
-
-		val tags = doc.select("a[href*='/tag/']").mapNotNullToSet { a ->
-			val text = a.text().trim()
+		
+		val tags = doc.select(".mdc-chip").mapNotNullToSet { chip ->
+			val text = chip.text().trim()
 			if (text.isBlank()) return@mapNotNullToSet null
 			MangaTag(title = text, key = text, source = source)
 		}
 
-		val authors = doc.select("a[href*='/artist/']").map { it.text().trim() }.toSet()
+		val artist = tags.find { it.title.startsWith("artist:", ignoreCase = true) }?.title?.substringAfter(":")?.trim()
+		
+		val infoText = doc.selectFirst(".mdc-typography--caption:contains(images)")?.text() ?: ""
+		val pageCount = infoText.substringBefore(" images").trim().toIntOrNull() ?: 1
+		
+		val chapterUrl = "${manga.url}#$pageCount"
 
 		return manga.copy(
 			tags = tags,
-			authors = authors,
-			description = doc.selectFirst(".description")?.text()?.trim(),
+			authors = setOfNotNull(artist),
+			description = doc.select(".site-manga-info__info h6").getOrNull(1)?.text()?.trim(),
 			chapters = listOf(
 				MangaChapter(
-					id = generateUid(manga.url),
-					title = "Chapter 1",
+					id = generateUid(chapterUrl),
+					title = "Comic",
 					number = 1f,
-					url = manga.url,
+					url = chapterUrl,
 					source = source,
 					scanlator = null,
 					uploadDate = 0,
@@ -114,27 +108,11 @@ internal class HentaiRun(context: MangaLoaderContext) :
 	}
 
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
-		val html = webClient.httpGet(chapter.url.toAbsoluteUrl(domain)).parseHtml().html()
+		val id = chapter.url.substringBefore("#").substringAfterLast("/")
+		val count = chapter.url.substringAfter("#").toIntOrNull() ?: 0
 		
-		// Use the same script extraction logic as Fakku/9Hentai
-		val imagesRegex = """["'](https?://[^"']+/hentai/[^"']+\.(jpg|png|webp))["']""".toRegex()
-		val matches = imagesRegex.findAll(html).map { it.groupValues[1] }.distinct().toList()
-
-		if (matches.isNotEmpty()) {
-			return matches.map { url ->
-				MangaPage(
-					id = generateUid(url),
-					url = url,
-					preview = null,
-					source = source
-				)
-			}
-		}
-
-		// Fallback for simple layouts
-		val doc = org.jsoup.Jsoup.parse(html)
-		return doc.select("img[src*='/hentai/']").map { img ->
-			val url = img.requireSrc()
+		return (0 until count).map { i ->
+			val url = "https://$domain/_images/pages/$id/$i.jpg"
 			MangaPage(
 				id = generateUid(url),
 				url = url,
@@ -142,5 +120,9 @@ internal class HentaiRun(context: MangaLoaderContext) :
 				source = source
 			)
 		}
+	}
+
+	companion object {
+		private val IMG_REGEX = Regex("""background-image: url\("(.+?)"\);""")
 	}
 }

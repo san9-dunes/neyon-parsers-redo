@@ -42,18 +42,12 @@ internal class WebtoonPorn(context: MangaLoaderContext) : PagedMangaParser(conte
 		}
 
 		val doc = webClient.httpGet(url).parseHtml()
-		return doc.select("a").mapNotNull { a ->
-			val rawHref = a.attr("href")
-			val link = when {
-				rawHref.contains("tracking.php?") -> rawHref.toAbsoluteUrl(domain).toHttpUrl().queryParameter("url")
-				rawHref.contains("/manhwa") -> rawHref
-				else -> null
-			} ?: return@mapNotNull null
-			
-			val relativeUrl = link.toRelativeUrl(domain)
-			if (!relativeUrl.contains("/manhwa")) return@mapNotNull null
+		return doc.select("a[href*='/manhwa']").mapNotNull { a ->
+			val href = a.attrAsRelativeUrl("href")
+			if (!href.contains("/manhwa")) return@mapNotNull null
 
-			val title = a.parent()?.selectFirst("strong")?.text()?.trim() 
+			val title = a.attr("title").takeIf { it.isNotEmpty() } 
+				?: a.selectFirst("u")?.text()?.trim()
 				?: a.text().trim().removePrefix("🏁").removePrefix("💬").removePrefix("📚").trim()
 			
 			if (title.isBlank()) return@mapNotNull null
@@ -61,11 +55,11 @@ internal class WebtoonPorn(context: MangaLoaderContext) : PagedMangaParser(conte
 			val coverUrl = a.selectFirst("img")?.attr("src")
 
 			Manga(
-				id = generateUid(relativeUrl),
+				id = generateUid(href),
 				title = title,
 				altTitles = emptySet(),
-				url = relativeUrl,
-				publicUrl = relativeUrl.toAbsoluteUrl(domain),
+				url = href,
+				publicUrl = href.toAbsoluteUrl(domain),
 				rating = RATING_UNKNOWN,
 				contentRating = ContentRating.ADULT,
 				coverUrl = coverUrl,

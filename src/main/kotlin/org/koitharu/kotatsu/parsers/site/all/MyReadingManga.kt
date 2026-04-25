@@ -3,23 +3,12 @@ package org.koitharu.kotatsu.parsers.site.all
 import okhttp3.Headers
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
+import org.koitharu.kotatsu.parsers.Broken
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.MangaSourceParser
 import org.koitharu.kotatsu.parsers.config.ConfigKey
 import org.koitharu.kotatsu.parsers.core.PagedMangaParser
-import org.koitharu.kotatsu.parsers.model.ContentRating
-import org.koitharu.kotatsu.parsers.model.ContentType
-import org.koitharu.kotatsu.parsers.model.Manga
-import org.koitharu.kotatsu.parsers.model.MangaChapter
-import org.koitharu.kotatsu.parsers.model.MangaListFilter
-import org.koitharu.kotatsu.parsers.model.MangaListFilterCapabilities
-import org.koitharu.kotatsu.parsers.model.MangaListFilterOptions
-import org.koitharu.kotatsu.parsers.model.MangaPage
-import org.koitharu.kotatsu.parsers.model.MangaParserSource
-import org.koitharu.kotatsu.parsers.model.MangaState
-import org.koitharu.kotatsu.parsers.model.MangaTag
-import org.koitharu.kotatsu.parsers.model.RATING_UNKNOWN
-import org.koitharu.kotatsu.parsers.model.SortOrder
+import org.koitharu.kotatsu.parsers.model.*
 import org.koitharu.kotatsu.parsers.util.attrAsRelativeUrl
 import org.koitharu.kotatsu.parsers.util.generateUid
 import org.koitharu.kotatsu.parsers.util.mapToSet
@@ -33,6 +22,7 @@ import java.util.Locale
 import java.util.regex.Pattern
 import kotlin.collections.joinToString
 
+@Broken
 @MangaSourceParser("MYREADINGMANGA", "MyReadingManga", type = ContentType.HENTAI)
 internal class MyReadingManga(context: MangaLoaderContext) :
 	PagedMangaParser(context, MangaParserSource.MYREADINGMANGA, 18) {

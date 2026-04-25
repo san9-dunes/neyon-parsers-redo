@@ -10,4 +10,7 @@ import org.koitharu.kotatsu.parsers.site.madara.MadaraParser
 @Broken
 @MangaSourceParser("MANGA18XYZ", "Manga18.xyz", "en", ContentType.HENTAI)
 internal class Manga18Xyz(context: MangaLoaderContext) :
-	MadaraParser(context, MangaParserSource.MANGA18XYZ, "manga18.xyz", 36)
+	MadaraParser(context, MangaParserSource.MANGA18XYZ, "manga18.xyz", 24) {
+	override val withoutAjax = true
+}
+

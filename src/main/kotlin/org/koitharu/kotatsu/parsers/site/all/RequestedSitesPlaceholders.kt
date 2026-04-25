@@ -48,11 +48,6 @@ internal class IrodoriComicsParser(context: MangaLoaderContext) :
 	RequestedSitePlaceholderParser(context, MangaParserSource.IRODORICOMICS, "irodoricomics.com")
 
 @Broken("Placeholder: site requires dedicated parser/auth flow")
-@MangaSourceParser("LUSCIOUS", "Luscious")
-internal class LusciousParser(context: MangaLoaderContext) :
-	RequestedSitePlaceholderParser(context, MangaParserSource.LUSCIOUS, "luscious.net")
-
-@Broken("Placeholder: site requires dedicated parser/auth flow")
 @MangaSourceParser("HENTAIFOUNDRY", "Hentai Foundry")
 internal class HentaiFoundryParser(context: MangaLoaderContext) :
 	RequestedSitePlaceholderParser(context, MangaParserSource.HENTAIFOUNDRY, "hentai-foundry.com")

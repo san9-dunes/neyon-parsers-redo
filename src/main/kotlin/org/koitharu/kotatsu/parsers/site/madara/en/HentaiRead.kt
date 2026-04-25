@@ -130,48 +130,28 @@ internal class HentaiRead(context: MangaLoaderContext) :
         }
 
         override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
-                val doc = webClient.httpGet(chapter.url.toAbsoluteUrl(domain)).parseHtml()
+                val response = webClient.httpGet(chapter.url.toAbsoluteUrl(domain))
+                val html = response.body!!.string()
                 
-                // Find the base64 string in scripts
-                val scripts = doc.select("script")
-                var base64Json: String? = null
+                // Find the base64 string in any global variable assignment
+                // Pattern matches window.variableName = "base64..." or var variableName = "base64..."
+                val base64Regex = """(?:window\.|var\s+)([a-zA-Z0-9_$]+)\s*=\s*['"]([a-zA-Z0-9+/=\s]{1000,})['"]""".toRegex()
                 
-                val base64Regex = """window\.[a-zA-Z0-9_$]+\s*=\s*['"]([a-zA-Z0-9+/=\s]{500,})['"]""".toRegex()
-
-                for (script in scripts) {
-                    val data = script.data()
-                    if (data.contains("window.") && (data.contains("=") || data.contains(":"))) {
-                         val match = base64Regex.find(data)
-                         if (match != null) {
-                             base64Json = match.groupValues[1].replace(Regex("\\s"), "")
-                             break
-                         }
-                    }
-                }
+                val match = base64Regex.findAll(html).lastOrNull() 
+                        ?: throw ParseException("Could not find image data in script tags.", chapter.url)
                 
-                if (base64Json == null) {
-                     // Try searching the whole HTML as fallback
-                     val match = base64Regex.find(doc.html())
-                     if (match != null) {
-                         base64Json = match.groupValues[1].replace(Regex("\\s"), "")
-                     }
-                }
-
-                if (base64Json == null) {
-                     throw ParseException("Could not find image data. Scripts found: ${scripts.size}. HTML snippet: ${doc.html().take(500)}", chapter.url)
-                }
-
+                val base64Json = match.groupValues[2].replace(Regex("\\s"), "")
                 val jsonStr = String(Base64.getDecoder().decode(base64Json))
                 val json = JSONObject(jsonStr)
                 
-                // Newer structure: data.chapter.images
-                val data = json.optJSONObject("data") ?: json
-                val images = data.optJSONObject("chapter")?.optJSONArray("images")
-                        ?: json.optJSONArray("collection") // Fallback to old structure
-                        ?: return emptyList()
+                // Extract images from collection[0].chapter.images
+                val collection = json.optJSONArray("collection") ?: return emptyList()
+                val firstItem = collection.optJSONObject(0) ?: return emptyList()
+                val images = firstItem.optJSONObject("chapter")?.optJSONArray("images") ?: return emptyList()
                 
                 return images.mapJSONNotNull { img ->
                         val src = img.getString("src")
+                        // Base URL usually comes from chapterExtraData.baseUrl in JS, defaulting to henread.xyz
                         val url = "https://henread.xyz/$src"
                         MangaPage(
                                 id = generateUid(url),

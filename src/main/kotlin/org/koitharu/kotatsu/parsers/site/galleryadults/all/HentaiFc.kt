@@ -4,6 +4,7 @@ import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.MangaSourceParser
+import org.koitharu.kotatsu.parsers.config.ConfigKey
 import org.koitharu.kotatsu.parsers.model.*
 import org.koitharu.kotatsu.parsers.site.galleryadults.GalleryAdultsParser
 import org.koitharu.kotatsu.parsers.util.*
@@ -13,6 +14,12 @@ import java.util.EnumSet
 internal class HentaiFc(
     context: MangaLoaderContext
 ) : GalleryAdultsParser(context, MangaParserSource.HENTAIFC, "hentaifc.com", pageSize = 30) {
+
+    override fun onCreateConfig(keys: MutableCollection<ConfigKey<*>>) {
+        super.onCreateConfig(keys)
+        keys.add(userAgentKey)
+        keys.add(ConfigKey.InterceptCloudflare(defaultValue = true))
+    }
 
     override val availableSortOrders: Set<SortOrder> = EnumSet.of(SortOrder.UPDATED, SortOrder.POPULARITY)
     

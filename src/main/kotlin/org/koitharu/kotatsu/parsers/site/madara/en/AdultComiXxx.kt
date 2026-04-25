@@ -114,10 +114,30 @@ internal class AdultComiXxx(context: MangaLoaderContext) :
 				)
 			}.toSet()
 
+		val chapters = doc.select(".btn-chapter, a[href*='/chapter-']").mapNotNull { a ->
+			val href = a.attrAsRelativeUrl("href")
+			if (!href.contains("/chapter-")) return@mapNotNull null
+			
+			val title = a.text().trim()
+			val number = title.substringAfter("Chapter").trim().toFloatOrNull() ?: 1f
+
+			MangaChapter(
+				id = generateUid(href),
+				title = title,
+				number = number,
+				volume = 0,
+				url = href,
+				scanlator = null,
+				uploadDate = 0L,
+				branch = null,
+				source = source,
+			)
+		}.distinctBy { it.url }.sortedByDescending { it.number }
+
 		return manga.copy(
 			tags = tags,
 			description = doc.selectFirst(".entry-content p, .xbookin, .xtext")?.text()?.trim(),
-			chapters = listOf(
+			chapters = if (chapters.isNotEmpty()) chapters else listOf(
 				MangaChapter(
 					id = generateUid(manga.url),
 					title = "Chapter 1",
@@ -134,39 +154,22 @@ internal class AdultComiXxx(context: MangaLoaderContext) :
 	}
 
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
-		val html = webClient.httpGet(chapter.url.toAbsoluteUrl(domain)).parseHtml().html()
+		val doc = webClient.httpGet(chapter.url.toAbsoluteUrl(domain)).parseHtml()
 		
-		// Broadest possible regex for imagetwist links. 
-		// We look for the pattern "imagetwist.com/..." regardless of protocol or escaping.
-		val imageTwistRegex = """imagetwist\.com[\\/]+[a-z0-9]+[\\/]+[^"'\s<>\\&]+""".toRegex(RegexOption.IGNORE_CASE)
-		
-		return imageTwistRegex.findAll(html)
-			.map { it.value.replace("\\/", "/").replace("\\", "") }
-			.filter { it.contains(".html", ignoreCase = true) || it.contains("/i/") || it.contains("/th/") }
-			.distinct()
-			.map { path ->
-				val url = if (path.startsWith("http")) path else "https://$path"
-				MangaPage(
-					id = generateUid(url),
-					url = url,
-					preview = null,
-					source = source,
-				)
-			}.toList()
+		return doc.select("img").mapNotNull { img ->
+			val url = img.attr("data-lazy-src").ifEmpty { img.attr("data-src") }.ifEmpty { img.attr("src") }
+			if (url.isBlank() || url.contains("data:image") || url.contains("logo") || url.contains("icon")) {
+				return@mapNotNull null
+			}
+			
+			MangaPage(
+				id = generateUid(url),
+				url = url.toAbsoluteUrl(domain),
+				preview = null,
+				source = source,
+			)
+		}.distinctBy { it.url }
 	}
 
-	override suspend fun getPageUrl(page: MangaPage): String {
-		if (!page.url.contains("imagetwist.com")) {
-			return page.url
-		}
-		if (page.url.contains("imagetwist.com/i/")) {
-			return page.url
-		}
-		val doc = webClient.httpGet(page.url).parseHtml()
-		val imageUrl = doc.selectFirst("img.pic")?.requireSrc()
-			?: doc.selectFirst("a[data-fancybox=gallery][href]")?.attr("href")
-			?: doc.selectFirst(".pic[src]")?.requireSrc()
-			?: doc.selectFirst("img[src*='/img/']")?.requireSrc()
-		return imageUrl?.toAbsoluteUrl("imagetwist.com") ?: page.url
-	}
+	override suspend fun getPageUrl(page: MangaPage): String = page.url.orEmpty()
 }

@@ -1,7 +1,6 @@
 package org.koitharu.kotatsu.parsers.site.all
 
 import okhttp3.Headers
-import org.json.JSONObject
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.MangaSourceParser
 import org.koitharu.kotatsu.parsers.config.ConfigKey
@@ -10,11 +9,11 @@ import org.koitharu.kotatsu.parsers.model.*
 import org.koitharu.kotatsu.parsers.util.*
 import java.util.*
 
-@MangaSourceParser("HENTAIRUN", "HentaiRun", type = ContentType.HENTAI)
-internal class HentaiRun(context: MangaLoaderContext) :
-	PagedMangaParser(context, MangaParserSource.HENTAIRUN, pageSize = 24) {
+@MangaSourceParser("ILIKECOMIX", "ILikeComix", type = ContentType.HENTAI)
+internal class ILikeComix(context: MangaLoaderContext) :
+	PagedMangaParser(context, MangaParserSource.valueOf("ILIKECOMIX"), pageSize = 20) {
 
-	override val configKeyDomain = ConfigKey.Domain("hentairun.com")
+	override val configKeyDomain = ConfigKey.Domain("ilikecomix.com")
 
 	override fun onCreateConfig(keys: MutableCollection<ConfigKey<*>>) {
 		super.onCreateConfig(keys)
@@ -26,7 +25,7 @@ internal class HentaiRun(context: MangaLoaderContext) :
 		.add("Referer", "https://$domain/")
 		.build()
 
-	override val availableSortOrders: Set<SortOrder> = EnumSet.of(SortOrder.UPDATED, SortOrder.POPULARITY)
+	override val availableSortOrders: Set<SortOrder> = EnumSet.of(SortOrder.NEWEST)
 
 	override val filterCapabilities: MangaListFilterCapabilities
 		get() = MangaListFilterCapabilities(isSearchSupported = true)
@@ -38,28 +37,25 @@ internal class HentaiRun(context: MangaLoaderContext) :
 			append("https://")
 			append(domain)
 			if (!filter.query.isNullOrEmpty()) {
-				append("/search/?q=")
+				append("/?s=")
 				append(filter.query.urlEncoded())
 			} else {
-				if (order == SortOrder.POPULARITY) {
-					append("/popular")
-				} else {
-					append("/")
-				}
+				append("/en-comics/")
 			}
 			if (page > 0) {
-				append(if (contains("?")) "&" else "?")
-				append("page=")
+				append("page/")
 				append(page + 1)
+				append("/")
 			}
 		}
 
 		val doc = webClient.httpGet(url).parseHtml()
-		return doc.select(".item, .manga-item").mapNotNull { el ->
+		return doc.select("article, .post-item, .entry-header").mapNotNull { el ->
 			val a = el.selectFirst("a") ?: return@mapNotNull null
 			val href = a.attrAsRelativeUrl("href")
-			val title = el.selectFirst(".title, h2, h3")?.text()?.trim() ?: a.attr("title").trim()
+			if (href == "/" || href.contains("/category/")) return@mapNotNull null
 			
+			val title = el.selectFirst(".entry-title, .title")?.text()?.trim() ?: a.text().trim()
 			if (title.isBlank()) return@mapNotNull null
 
 			val img = el.selectFirst("img")
@@ -79,28 +75,25 @@ internal class HentaiRun(context: MangaLoaderContext) :
 				authors = emptySet(),
 				source = source,
 			)
-		}
+		}.distinctBy { it.url }
 	}
 
 	override suspend fun getDetails(manga: Manga): Manga {
 		val doc = webClient.httpGet(manga.url.toAbsoluteUrl(domain)).parseHtml()
 
-		val tags = doc.select("a[href*='/tag/']").mapNotNullToSet { a ->
+		val tags = doc.select(".entry-meta a, .tags a, .xtags a").mapNotNullToSet { a ->
 			val text = a.text().trim()
 			if (text.isBlank()) return@mapNotNullToSet null
 			MangaTag(title = text, key = text, source = source)
 		}
 
-		val authors = doc.select("a[href*='/artist/']").map { it.text().trim() }.toSet()
-
 		return manga.copy(
 			tags = tags,
-			authors = authors,
-			description = doc.selectFirst(".description")?.text()?.trim(),
+			description = doc.selectFirst(".description, .entry-content p")?.text()?.trim(),
 			chapters = listOf(
 				MangaChapter(
 					id = generateUid(manga.url),
-					title = "Chapter 1",
+					title = "Comic",
 					number = 1f,
 					url = manga.url,
 					source = source,
@@ -114,33 +107,53 @@ internal class HentaiRun(context: MangaLoaderContext) :
 	}
 
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
-		val html = webClient.httpGet(chapter.url.toAbsoluteUrl(domain)).parseHtml().html()
+		val response = webClient.httpGet(chapter.url.toAbsoluteUrl(domain))
+		val html = response.body!!.string()
 		
-		// Use the same script extraction logic as Fakku/9Hentai
-		val imagesRegex = """["'](https?://[^"']+/hentai/[^"']+\.(jpg|png|webp))["']""".toRegex()
-		val matches = imagesRegex.findAll(html).map { it.groupValues[1] }.distinct().toList()
-
-		if (matches.isNotEmpty()) {
-			return matches.map { url ->
+		val imageTwistRegex = """imagetwist\.com[\\/]+[a-z0-9]+[\\/]+[^"'\s<>\\&]+""".toRegex(RegexOption.IGNORE_CASE)
+		
+		val pages = imageTwistRegex.findAll(html)
+			.map { it.value.replace("\\/", "/").replace("\\", "") }
+			.filter { it.contains(".html", ignoreCase = true) || it.contains("/i/") || it.contains("/th/", ignoreCase = true) }
+			.distinct()
+			.map { path ->
+				val url = if (path.startsWith("http")) path else "https://$path"
 				MangaPage(
 					id = generateUid(url),
 					url = url,
 					preview = null,
-					source = source
+					source = source,
 				)
-			}
-		}
+			}.toList()
 
-		// Fallback for simple layouts
+		if (pages.isNotEmpty()) return pages
+
+		// Fallback for native hosting
 		val doc = org.jsoup.Jsoup.parse(html)
-		return doc.select("img[src*='/hentai/']").map { img ->
-			val url = img.requireSrc()
+		return doc.select("img").mapNotNull { img ->
+			val src = (img.attr("data-src").takeIf { it.isNotEmpty() } ?: img.attr("src"))
+			if (src.isBlank() || src.contains("data:image") || src.contains("logo") || src.contains("icon")) {
+				return@mapNotNull null
+			}
+			
 			MangaPage(
-				id = generateUid(url),
-				url = url,
+				id = generateUid(src),
+				url = src.toAbsoluteUrl(domain),
 				preview = null,
 				source = source
 			)
-		}
+		}.distinctBy { it.url }
+	}
+
+	override suspend fun getPageUrl(page: MangaPage): String {
+		if (!page.url.contains("imagetwist.com")) return page.url
+		if (page.url.contains("imagetwist.com/i/")) return page.url
+		
+		val doc = webClient.httpGet(page.url).parseHtml()
+		val imageUrl = doc.selectFirst("img.pic")?.requireSrc()
+			?: doc.selectFirst(".pic[src]")?.requireSrc()
+			?: doc.selectFirst("img[src*='/img/']")?.requireSrc()
+		
+		return imageUrl?.toAbsoluteUrl("imagetwist.com") ?: page.url
 	}
 }

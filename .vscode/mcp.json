@@ -1,11 +1,17 @@
 {
 	"servers": {
-		"playwright": {
+		"microsoft/playwright-mcp": {
+			"type": "stdio",
 			"command": "npx",
 			"args": [
-				"@playwright/mcp@latest"
+				"@playwright/mcp@latest",
+				"--browser",
+				"chromium",
+				"--executable-path",
+				"C:\\Users\\Koushik\\AppData\\Local\\ms-playwright\\chromium-1217\\chrome-win64\\chrome.exe"
 			],
-			"type": "stdio"
+			"gallery": "https://api.mcp.github.com",
+			"version": "0.0.1-seed"
 		}
 	},
 	"inputs": []

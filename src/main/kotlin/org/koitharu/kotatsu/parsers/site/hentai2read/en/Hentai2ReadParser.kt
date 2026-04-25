@@ -1,5 +1,6 @@
 package org.koitharu.kotatsu.parsers.site.hentai2read.en
 
+import okhttp3.Headers
 import org.json.JSONArray
 import org.jsoup.nodes.Document
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
@@ -33,6 +34,16 @@ internal abstract class Hentai2ReadBaseParser(
 ) : PagedMangaParser(context, source, pageSize = 40, searchPageSize = 36) {
 
         override val configKeyDomain = ConfigKey.Domain(defaultDomain)
+
+        override fun onCreateConfig(keys: MutableCollection<ConfigKey<*>>) {
+                super.onCreateConfig(keys)
+                keys.add(userAgentKey)
+                keys.add(ConfigKey.InterceptCloudflare(defaultValue = true))
+        }
+
+        override fun getRequestHeaders(): Headers = Headers.Builder()
+                .add("Referer", "https://$domain/")
+                .build()
 
         override val availableSortOrders: Set<SortOrder> = EnumSet.of(
                 SortOrder.UPDATED,
@@ -105,11 +116,14 @@ internal abstract class Hentai2ReadBaseParser(
 
                 return buildList(images.length()) {
                         for (i in 0 until images.length()) {
-                                val imagePath = images.getString(i).replace("\\/", "/")
+                                var imagePath = images.getString(i).replace("\\/", "/")
                                 val url = if (imagePath.startsWith("http://") || imagePath.startsWith("https://")) {
                                         imagePath
                                 } else {
-                                        "$imageHostPrefix$imagePath"
+                                        // Ensure single slash between host and path
+                                        val host = imageHostPrefix.removeSuffix("/")
+                                        val path = if (imagePath.startsWith("/")) imagePath else "/$imagePath"
+                                        "$host$path"
                                 }
 
                                 add(
@@ -219,7 +233,7 @@ internal abstract class Hentai2ReadBaseParser(
                                 title = title.toTitleCase(),
                                 key = key,
                                 source = source,
-                        )
+                                )
                 }
         }
 

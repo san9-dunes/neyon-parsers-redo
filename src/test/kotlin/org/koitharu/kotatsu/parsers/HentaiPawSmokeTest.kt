@@ -7,7 +7,7 @@ import org.koitharu.kotatsu.parsers.model.MangaListFilter
 import org.koitharu.kotatsu.parsers.model.MangaParserSource
 import kotlin.time.Duration.Companion.minutes
 
-internal class RequestedSourcesSmokeTest {
+internal class HentaiPawSmokeTest {
 
     private val context = MangaLoaderContextMock
 
@@ -15,11 +15,7 @@ internal class RequestedSourcesSmokeTest {
     @EnumSource(
         value = MangaParserSource::class,
         names = [
-            "BONDAGECOMIXXX",
-            "ADULTCOMIXXX",
-            "WEBTOONPORN",
-            "MANHWACLUB",
-            "HENTAIFC"
+            "HENTAIPAW"
         ],
         mode = EnumSource.Mode.INCLUDE,
     )
@@ -36,13 +32,7 @@ internal class RequestedSourcesSmokeTest {
         val details = parser.getDetails(manga)
         println("SMOKE_TEST: ${source.name} => DETAILS chapters: ${details.chapters?.size}")
         
-        var targetChapters = details.chapters
-        if (targetChapters.isNullOrEmpty() && list.size > 1) {
-            println("SMOKE_TEST: ${source.name} => First item had 0 chapters, trying second item...")
-            val details2 = parser.getDetails(list[1])
-            targetChapters = details2.chapters
-        }
-
+        val targetChapters = details.chapters
         checkNotNull(targetChapters) { "Chapters list is null for ${source.name}" }
         check(targetChapters.isNotEmpty()) { "Chapters list is empty for ${source.name}" }
 

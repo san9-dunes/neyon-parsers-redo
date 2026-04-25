@@ -52,10 +52,14 @@ internal abstract class WebtoonsParser(
 	}
 
 	private val languageCode: String
-		get() = when (val tag = sourceLocale.toLanguageTag()) {
-			"in" -> "id"
+		get() = when (val tag = sourceLocale.language) {
+			"in", "id" -> "id"
 			"zh" -> "zh-hant"
-			else -> tag
+			"es" -> "es"
+			"fr" -> "fr"
+			"de" -> "de"
+			"th" -> "th"
+			else -> "en"
 		}
 
 	private suspend fun fetchEpisodes(titleNo: Long, type: String): List<MangaChapter> {
