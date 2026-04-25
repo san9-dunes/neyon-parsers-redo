@@ -15,6 +15,11 @@ internal class BondageComiXxx(context: MangaLoaderContext) :
 
 	override val configKeyDomain = ConfigKey.Domain("bondagecomixxx.net")
 
+	override fun onCreateConfig(keys: MutableCollection<ConfigKey<*>>) {
+		super.onCreateConfig(keys)
+		keys.add(ConfigKey.InterceptCloudflare(defaultValue = true))
+	}
+
 	override val availableSortOrders: Set<SortOrder> = EnumSet.of(SortOrder.NEWEST)
 
 	override val filterCapabilities: MangaListFilterCapabilities
@@ -130,32 +135,24 @@ internal class BondageComiXxx(context: MangaLoaderContext) :
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
 		val html = webClient.httpGet(chapter.url.toAbsoluteUrl(domain)).parseHtml().html()
 		
-		// Aggressive regex to find any ImageTwist link in the HTML
-		val imageTwistRegex = """https?://imagetwist\.com/[a-z0-9]+/[^"'\s<>]+""".toRegex()
-		val links = imageTwistRegex.findAll(html).map { it.value }.distinct().toList()
+		// NitroPack/WP optimization can bury links or escape slashes.
+		// We look for any imagetwist pattern, handling escaped slashes and various extensions.
+		val imageTwistRegex = """https?[:\\]+/[\\/]+imagetwist\.com[\\/]+[a-z0-9]+[\\/]+[^"'\s<>\\&]+""".toRegex(RegexOption.IGNORE_CASE)
 		
-		if (links.isNotEmpty()) {
-			return links.map { url ->
+		val links = imageTwistRegex.findAll(html)
+			.map { it.value.replace("\\/", "/").replace("\\", "") }
+			.filter { it.contains(".html", ignoreCase = true) || it.contains("/i/") || it.endsWith(".jpg") || it.endsWith(".png") }
+			.distinct()
+			.map { url ->
 				MangaPage(
 					id = generateUid(url),
 					url = url,
 					preview = null,
 					source = source,
 				)
-			}
-		}
-
-		// Fallback to selector
-		val doc = org.jsoup.Jsoup.parse(html)
-		return doc.select("a[href*='imagetwist.com']").map { a ->
-			val url = a.attr("href")
-			MangaPage(
-				id = generateUid(url),
-				url = url,
-				preview = a.selectFirst("img")?.attr("src"),
-				source = source,
-			)
-		}
+			}.toList()
+		
+		return links
 	}
 
 	override suspend fun getPageUrl(page: MangaPage): String {

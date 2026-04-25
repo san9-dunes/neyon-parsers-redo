@@ -137,15 +137,15 @@ internal abstract class EightMusesParser(
                 val doc = webClient.httpGet(chapter.url.toAbsoluteUrl(domain)).parseHtml()
                 
                 // If it's an image page already
-                if (chapter.url.contains("/image/")) {
-                         val src = doc.selectFirst("img.main-image, img[src*='/image/fm/']")?.requireSrc()
+                if (chapter.url.contains("/image/") || chapter.url.contains("/picture/")) {
+                         val src = doc.selectFirst("img.main-image, img[src*='/image/fm/'], img[src*='/picture/fm/']")?.requireSrc()
                          return if (src != null) {
                                  listOf(MangaPage(id = generateUid(src), url = src, preview = null, source = source))
                          } else emptyList()
                 }
 
                 // If it's an album page, find all image links
-                return doc.select(".gallery .image a[href*='/image/']").map { a ->
+                return doc.select(".gallery .image a[href*='/image/'], .gallery .image a[href*='/picture/'], .gallery a[href*='/picture/']").map { a ->
                         val href = a.attrAsRelativeUrl("href")
                         MangaPage(
                                 id = generateUid(href),
@@ -157,10 +157,10 @@ internal abstract class EightMusesParser(
         }
 
         override suspend fun getPageUrl(page: MangaPage): String {
-                if (page.url.contains("/image/fm/")) return page.url
+                if (page.url.contains("/image/fm/") || page.url.contains("/picture/fm/")) return page.url
                 
                 val doc = webClient.httpGet(page.url.toAbsoluteUrl(domain)).parseHtml()
-                val src = doc.selectFirst("img.main-image, .image-container img, img[src*='/image/fm/']")?.requireSrc()
+                val src = doc.selectFirst("img.main-image, .image-container img, img[src*='/image/fm/'], img[src*='/picture/fm/']")?.requireSrc()
                 return src ?: page.url
         }
 }

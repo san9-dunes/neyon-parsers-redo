@@ -1,0 +1,159 @@
+- generic [ref=e2]:
+  - text: 
+  - generic [ref=e3]:
+    - generic [ref=e4]:
+      - link "8muses" [ref=e6] [cursor=pointer]:
+        - /url: /comics
+        - img "8muses" [ref=e7]
+      - list [ref=e9]:
+        - listitem [ref=e10]:
+          - link "" [ref=e11] [cursor=pointer]:
+            - /url: /comics
+            - generic [ref=e12]: 
+        - listitem [ref=e13]:
+          - text: 
+          - generic [ref=e14] [cursor=pointer]: Search
+        - listitem [ref=e15]:
+          - text: 
+          - link "simpsons" [ref=e16] [cursor=pointer]:
+            - /url: /search?q=simpsons
+      - generic [ref=e17]:
+        - generic [ref=e18]:
+          - text: 
+          - generic [ref=e19]:
+            - text: "Sort by:"
+            - list [ref=e20]:
+              - listitem [ref=e21]:
+                - text: 
+                - link "Views" [ref=e22] [cursor=pointer]:
+                  - /url: /search?q=simpsons
+              - listitem [ref=e23]:
+                - link "Likes" [ref=e24] [cursor=pointer]:
+                  - /url: /search?q=simpsons&sort=like
+              - listitem [ref=e25]:
+                - link "Date" [ref=e26] [cursor=pointer]:
+                  - /url: /search?q=simpsons&sort=date
+              - listitem [ref=e27]:
+                - link "A-Z" [ref=e28] [cursor=pointer]:
+                  - /url: /search?q=simpsons&sort=az
+        - link " Log in" [ref=e30] [cursor=pointer]:
+          - /url: /auth/login?back=%2Fsearch
+          - generic [ref=e31]: 
+          - text: Log in
+    - generic [ref=e32]:
+      - list [ref=e33]:
+        - listitem [ref=e34]:
+          - link "Recently Updated" [ref=e35] [cursor=pointer]:
+            - /url: /comics/lastupdate
+        - listitem [ref=e36]:
+          - generic [ref=e37]: More Content     
+        - text: 
+        - listitem [ref=e38]:
+          - generic [ref=e39]:
+            - textbox "SEARCH" [ref=e40]: simpsons
+            - button "" [ref=e41] [cursor=pointer]:
+              - generic [ref=e42]: 
+      - generic [ref=e43]:
+        - heading "The ORIGINAL 8muses" [level=3] [ref=e44]
+        - paragraph [ref=e45]: 8muses.com is the only real 8muses website
+        - paragraph [ref=e46]: Enjoy thousands of free adult porn comics!
+      - iframe [ref=e48]:
+        - iframe [ref=f567e2]:
+          
+      - list [ref=e50]:
+        - listitem [ref=e51]:
+          - link "DMCA" [ref=e52] [cursor=pointer]:
+            - /url: /dmca.html
+    - generic [ref=e55]:
+      - link "The Simpsons" [ref=e56] [cursor=pointer]:
+        - /url: /comics/album/Theme-Collections/The-Simpsons
+        - img [ref=e58]
+        - generic [ref=e61]: The Simpsons
+      - link "The Simpsons" [ref=e62] [cursor=pointer]:
+        - /url: /comics/album/Cartoon-Reality-Comics/The-Simpsons
+        - img [ref=e64]
+        - generic [ref=e67]: The Simpsons
+      - link "The Simpsons - Love for the Bully" [ref=e68] [cursor=pointer]:
+        - /url: /comics/album/Croc-Comics/The-Simpsons-Love-for-the-Bully
+        - img [ref=e70]
+        - generic [ref=e73]: The Simpsons - Love for the Bully
+      - link [ref=e74] [cursor=pointer]:
+        - /url: ""
+        - iframe [ref=e76]:
+          - iframe [ref=f568e2]:
+            - generic [ref=f572e3]:
+              - text: The webpage at
+              - strong [ref=f572e4]: https://syndication.traffichaus.com/adserve/index.php?z=959827
+              - text: might be temporarily down or it may have moved permanently to a new web address.
+      - link "The Simpsons" [ref=e77] [cursor=pointer]:
+        - /url: /comics/album/MilfToon-Comics/The-Simpsons
+        - img [ref=e79]
+        - generic [ref=e82]: The Simpsons
+      - link "The Simpsons Into the Multiverse" [ref=e83] [cursor=pointer]:
+        - /url: /comics/album/Kogeikun-Comics/The-Simpsons-Into-the-Multiverse
+        - img [ref=e85]
+        - generic [ref=e88]: The Simpsons Into the Multiverse
+      - link "The Simpsons" [ref=e89] [cursor=pointer]:
+        - /url: /comics/album/Tram-Pararam-Comics/The-Simpsons
+        - img [ref=e91]
+        - generic [ref=e94]: The Simpsons
+      - link "The Simpsons" [ref=e95] [cursor=pointer]:
+        - /url: /comics/album/Seiren_com_br-Comics/The-Simpsons
+        - img [ref=e97]
+        - generic [ref=e100]: The Simpsons
+      - link "Kogeikun - Simpsons Vs Anime" [ref=e101] [cursor=pointer]:
+        - /url: /comics/album/Kogeikun-Comics/Kogeikun-Simpsons-Vs-Anime
+        - img [ref=e103]
+        - generic [ref=e106]: Kogeikun - Simpsons Vs Anime
+      - link "The Simpsons" [ref=e107] [cursor=pointer]:
+        - /url: /comics/album/AKABUR-Comics/Simpsons-Parody/The-Simpsons
+        - img [ref=e109]
+        - generic [ref=e112]: The Simpsons
+      - link "The Simpsons - Homer's Nightmare - English" [ref=e113] [cursor=pointer]:
+        - /url: /comics/album/Various-Authors/Drah-Navlag/The-Simpsons-Homers-Nightmare-English
+        - img [ref=e115]
+        - generic [ref=e118]: The Simpsons - Homer's Nightmare - English
+      - link [ref=e119] [cursor=pointer]:
+        - /url: ""
+        - iframe [ref=e121]:
+          - iframe [ref=f569e2]:
+            - generic [ref=f573e3]:
+              - text: The webpage at
+              - strong [ref=f573e4]: https://syndication.traffichaus.com/adserve/index.php?z=959827
+              - text: might be temporarily down or it may have moved permanently to a new web address.
+      - link "Simpsons Parody" [ref=e122] [cursor=pointer]:
+        - /url: /comics/album/AKABUR-Comics/Simpsons-Parody
+        - img [ref=e124]
+        - generic [ref=e127]: Simpsons Parody
+      - link "Los Simpsons - Old Habits" [ref=e128] [cursor=pointer]:
+        - /url: /comics/album/Croc-Comics/Los-Simpsons-Old-Habits
+        - img [ref=e130]
+        - generic [ref=e133]: Los Simpsons - Old Habits
+      - link "Simpsons Set 3" [ref=e134] [cursor=pointer]:
+        - /url: /comics/album/AKABUR-Comics/Simpsons-Parody/Simpsons-Set-3
+        - img [ref=e136]
+        - generic [ref=e139]: Simpsons Set 3
+      - link "The Simpsons" [ref=e140] [cursor=pointer]:
+        - /url: /comics/album/Nihaotomita-Comics/The-Simpsons
+        - img [ref=e142]
+        - generic [ref=e145]: The Simpsons
+      - link "The Simpsons My Son is Huge!" [ref=e146] [cursor=pointer]:
+        - /url: /comics/album/Various-Authors/PokuArts/The-Simpsons-My-Son-is-Huge
+        - img [ref=e148]
+        - generic [ref=e151]: The Simpsons My Son is Huge!
+      - link "The Simpsons Paradise" [ref=e152] [cursor=pointer]:
+        - /url: /comics/album/Various-Authors/Drah-Navlag/The-Simpsons-Paradise
+        - img [ref=e154]
+        - generic [ref=e157]: The Simpsons Paradise
+      - link [ref=e158] [cursor=pointer]:
+        - /url: ""
+        - iframe [ref=e160]:
+          - iframe [ref=f570e2]:
+            - generic [ref=f574e3]:
+              - text: The webpage at
+              - strong [ref=f574e4]: https://syndication.traffichaus.com/adserve/index.php?z=959827
+              - text: might be temporarily down or it may have moved permanently to a new web address.
+      - link "The Simpsons - Homer's Nightmare - Spanish" [ref=e161] [cursor=pointer]:
+        - /url: /comics/album/Various-Authors/Drah-Navlag/The-Simpsons-Homers-Nightmare-Spanish
+        - img [ref=e163]
+        - generic [ref=e166]: The Simpsons - Homer's Nightmare - Spanish

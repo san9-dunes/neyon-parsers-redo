@@ -1,0 +1,15 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e4]:
+    - heading "404" [level=1] [ref=e5]
+    - heading "We are sorry but the page you are looking for was not found." [level=2] [ref=e6]
+    - generic [ref=e7]:
+      - text: Would you like to let us know about it?
+      - link "Report it" [ref=e8] [cursor=pointer]:
+        - /url: javascript:void(0)
+      - text: or
+      - link "Go Back to Dashboard" [ref=e9] [cursor=pointer]:
+        - /url: https://hentai2read.com/
+  - generic [ref=e10]:
+    - text: 2016 ©
+    - link "A.R.F. Network" [ref=e11] [cursor=pointer]:
+      - /url: https://hentai2read.com/
