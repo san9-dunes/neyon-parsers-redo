@@ -46,20 +46,19 @@ internal class WebtoonPorn(context: MangaLoaderContext) : PagedMangaParser(conte
 			val rawHref = a.attr("href")
 			val link = when {
 				rawHref.contains("tracking.php?") -> rawHref.toAbsoluteUrl(domain).toHttpUrl().queryParameter("url")
-				rawHref.contains("/manhwa1-") -> rawHref
+				rawHref.contains("/manhwa") -> rawHref
 				else -> null
 			} ?: return@mapNotNull null
 			
 			val relativeUrl = link.toRelativeUrl(domain)
-			if (!relativeUrl.startsWith("/manhwa1-")) return@mapNotNull null
+			if (!relativeUrl.contains("/manhwa")) return@mapNotNull null
 
 			val title = a.parent()?.selectFirst("strong")?.text()?.trim() 
 				?: a.text().trim().removePrefix("🏁").removePrefix("💬").removePrefix("📚").trim()
 			
 			if (title.isBlank()) return@mapNotNull null
 			
-			val coverUrl = a.selectFirst("img")?.requireSrc() 
-				?: "https://cdn.webtoonporn.com/img/loading.gif" // Fallback
+			val coverUrl = a.selectFirst("img")?.attr("src")
 
 			Manga(
 				id = generateUid(relativeUrl),

@@ -48,6 +48,8 @@ internal class AdultComiXxx(context: MangaLoaderContext) :
 					append(page + 1)
 				}
 			}
+			append(if (contains("?")) "&" else "?")
+			append("nonitro=1")
 		}
 
 		val doc = webClient.httpGet(url).parseHtml()
@@ -134,15 +136,16 @@ internal class AdultComiXxx(context: MangaLoaderContext) :
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
 		val html = webClient.httpGet(chapter.url.toAbsoluteUrl(domain)).parseHtml().html()
 		
-		// NitroPack/WP optimization can bury links or escape slashes.
-		// We look for any imagetwist pattern, handling escaped slashes and various extensions.
-		val imageTwistRegex = """https?[:\\]+/[\\/]+imagetwist\.com[\\/]+[a-z0-9]+[\\/]+[^"'\s<>\\&]+""".toRegex(RegexOption.IGNORE_CASE)
+		// Broadest possible regex for imagetwist links. 
+		// We look for the pattern "imagetwist.com/..." regardless of protocol or escaping.
+		val imageTwistRegex = """imagetwist\.com[\\/]+[a-z0-9]+[\\/]+[^"'\s<>\\&]+""".toRegex(RegexOption.IGNORE_CASE)
 		
-		val links = imageTwistRegex.findAll(html)
+		return imageTwistRegex.findAll(html)
 			.map { it.value.replace("\\/", "/").replace("\\", "") }
-			.filter { it.contains(".html", ignoreCase = true) || it.contains("/i/") || it.endsWith(".jpg") || it.endsWith(".png") }
+			.filter { it.contains(".html", ignoreCase = true) || it.contains("/i/") || it.contains("/th/") }
 			.distinct()
-			.map { url ->
+			.map { path ->
+				val url = if (path.startsWith("http")) path else "https://$path"
 				MangaPage(
 					id = generateUid(url),
 					url = url,
@@ -150,8 +153,6 @@ internal class AdultComiXxx(context: MangaLoaderContext) :
 					source = source,
 				)
 			}.toList()
-		
-		return links
 	}
 
 	override suspend fun getPageUrl(page: MangaPage): String {

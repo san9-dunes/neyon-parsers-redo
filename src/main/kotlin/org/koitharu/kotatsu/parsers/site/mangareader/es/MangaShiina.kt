@@ -2,6 +2,7 @@ package org.koitharu.kotatsu.parsers.site.mangareader.es
 
 import okhttp3.Headers
 import org.json.JSONObject
+import org.koitharu.kotatsu.parsers.Broken
 import org.koitharu.kotatsu.parsers.MangaLoaderContext
 import org.koitharu.kotatsu.parsers.MangaSourceParser
 import org.koitharu.kotatsu.parsers.config.ConfigKey
@@ -13,6 +14,7 @@ import org.koitharu.kotatsu.parsers.util.json.getStringOrNull
 import org.koitharu.kotatsu.parsers.util.json.mapJSONNotNull
 import java.util.*
 
+@Broken
 @MangaSourceParser("MANGASHIINA", "MangaMukai.com", "es")
 internal class MangaShiina(context: MangaLoaderContext) :
 	PagedMangaParser(context, MangaParserSource.valueOf("MANGASHIINA"), pageSize = 20) {
@@ -35,22 +37,23 @@ internal class MangaShiina(context: MangaLoaderContext) :
 	}
 
 	override suspend fun getListPage(page: Int, order: SortOrder, filter: MangaListFilter): List<Manga> {
-		if (page > 0) return emptyList() // API returns all
+		if (page > 0) return emptyList()
 
 		val url = "https://$domain/wp-json/mangamukai/v1/catalog"
 		val response = webClient.httpGet(url).parseJson()
 		val mangas = response.optJSONArray("mangas") ?: return emptyList()
 
 		return mangas.mapJSONNotNull { item ->
-			val id = item.optInt("id", 0).takeIf { it != 0 }?.toString() ?: return@mapJSONNotNull null
-			val title = item.getStringOrNull("titulo") ?: "Unknown"
-			val relativeUrl = "/manga/$id"
-
+		        val id = item.optInt("id", 0).takeIf { it != 0 }?.toString() ?: return@mapJSONNotNull null
+		        val title = item.getStringOrNull("titulo") ?: return@mapJSONNotNull null
+		        if (title.isBlank() || title.contains("DUMMY", ignoreCase = true)) return@mapJSONNotNull null
+		        
+		        val relativeUrl = "/manga/$id"
 			Manga(
 				id = generateUid(relativeUrl),
 				title = title,
 				altTitles = emptySet(),
-				url = id,
+				url = id, // Use numeric ID as internal URL
 				publicUrl = relativeUrl.toAbsoluteUrl(domain),
 				rating = RATING_UNKNOWN,
 				contentRating = null,
@@ -73,7 +76,7 @@ internal class MangaShiina(context: MangaLoaderContext) :
 		val chaptersResponse = webClient.httpGet(chaptersUrl).parseJson()
 		val chaptersJson = chaptersResponse.optJSONArray("chapters") ?: return manga
 
-		val chapters = chaptersJson.mapJSONNotNull { ch ->
+		var chapters = chaptersJson.mapJSONNotNull { ch ->
 			val id = ch.optInt("id", 0).takeIf { it != 0 } ?: return@mapJSONNotNull null
 			val num = ch.optDouble("chapter_number", 0.0).toFloat()
 			val relativeUrl = "/manga/${manga.url}/chapter/$id"
@@ -90,7 +93,7 @@ internal class MangaShiina(context: MangaLoaderContext) :
 				source = source,
 			)
 		}.sortedByDescending { it.number }
-
+		
 		return manga.copy(
 			description = item.getStringOrNull("descripcion"),
 			chapters = chapters,
@@ -98,7 +101,29 @@ internal class MangaShiina(context: MangaLoaderContext) :
 	}
 
 	override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
-		val doc = webClient.httpGet(chapter.url.toAbsoluteUrl(domain)).parseHtml()
+		val html = webClient.httpGet(chapter.url.toAbsoluteUrl(domain)).parseHtml().html()
+		
+		// Search for images in script tags (common in MangaMukai React layout)
+		val imagesRegex = """["'](https?://[^"']+/wp-content/uploads/[^"']+)["']""".toRegex()
+		val matches = imagesRegex.findAll(html)
+			.map { it.groupValues[1] }
+			.filter { it.contains("/manga/") || it.contains("/uploads/") }
+			.distinct()
+			.toList()
+
+		if (matches.isNotEmpty()) {
+			return matches.map { url ->
+				MangaPage(
+					id = generateUid(url),
+					url = url,
+					preview = null,
+					source = source,
+				)
+			}
+		}
+
+		// Fallback to direct selection
+		val doc = org.jsoup.Jsoup.parse(html)
 		return doc.select("img[src*='wp-content/uploads']").map { img ->
 			val url = img.requireSrc()
 			MangaPage(

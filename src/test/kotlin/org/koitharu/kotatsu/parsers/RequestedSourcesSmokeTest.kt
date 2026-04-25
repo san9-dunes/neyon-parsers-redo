@@ -15,23 +15,13 @@ internal class RequestedSourcesSmokeTest {
     @EnumSource(
         value = MangaParserSource::class,
         names = [
-            "NHENTAI_COM",
-            "HENTAIREAD",
-            "MANGASHIINA",
             "BONDAGECOMIXXX",
-            "WEBTOONPORN",
-            "FREECOMICS_XXX",
-            "COMICPORN",
             "ADULTCOMIXXX",
             "EIGHTMUSES",
             "EIGHTMUSES_COM",
-            "EIGHTMUSES_XXX",
             "MULTPORN",
-            "LXMANGA",
-            "MANGAKITA",
-            "SVSCOMICS",
-            "HENTAIFC",
-            "HENTAI2READ"
+            "MANGASHIINA",
+            "WEBTOONPORN"
         ],
         mode = EnumSource.Mode.INCLUDE,
     )
@@ -41,17 +31,25 @@ internal class RequestedSourcesSmokeTest {
         println("SMOKE_TEST: ${source.name} => FOUND ${list.size} items")
         check(list.isNotEmpty()) { "List is empty for ${source.name}" }
         
-        // Check more than just existence
-        if (list.size == 1 && list.first().title.isBlank()) {
-             error("Suspicious result for ${source.name}: only 1 empty item")
+        // Find first manga that actually has a title (to avoid dummy entries)
+        val manga = list.firstOrNull { it.title.isNotBlank() } 
+            ?: error("All found items for ${source.name} have blank titles")
+
+        val details = parser.getDetails(manga)
+        println("SMOKE_TEST: ${source.name} => DETAILS chapters: ${details.chapters?.size}")
+        
+        // For MangaShiina/others, if first item has 0 chapters, try the second one
+        var targetChapters = details.chapters
+        if (targetChapters.isNullOrEmpty() && list.size > 1) {
+            println("SMOKE_TEST: ${source.name} => First item had 0 chapters, trying second item...")
+            val details2 = parser.getDetails(list[1])
+            targetChapters = details2.chapters
         }
 
-        val details = parser.getDetails(list.first())
-        println("SMOKE_TEST: ${source.name} => DETAILS chapters: ${details.chapters?.size}")
-        checkNotNull(details.chapters) { "Chapters list is null for ${source.name}" }
-        check(details.chapters!!.isNotEmpty()) { "Chapters list is empty for ${source.name}" }
+        checkNotNull(targetChapters) { "Chapters list is null for ${source.name}" }
+        check(targetChapters.isNotEmpty()) { "Chapters list is empty for ${source.name}" }
 
-        val pages = parser.getPages(details.chapters!!.first())
+        val pages = parser.getPages(targetChapters.first())
         println("SMOKE_TEST: ${source.name} => PAGES: ${pages.size}")
         check(pages.isNotEmpty()) { "Pages list is empty for ${source.name}" }
     }

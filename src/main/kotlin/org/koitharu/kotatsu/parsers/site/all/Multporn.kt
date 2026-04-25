@@ -192,28 +192,56 @@ internal class Multporn(context: MangaLoaderContext) :
                     uploadDate = 0L,
                     branch = null,
                     source = source,
-                )
+                ),
             ),
         )
     }
 
     override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
         val html = webClient.httpGet(chapter.url.toAbsoluteUrl(domain)).parseHtml().html()
-        val configUrl = configUrlRegex.find(html)?.groupValues?.get(1)
-            ?.replace("\\/", "/")
-            ?: throw ParseException("Juicebox config not found", chapter.url)
 
-        val xml = webClient.httpGet(configUrl.toAbsoluteUrl(domain)).parseHtml()
-        return xml.select("image").map { image ->
-            val url = image.attr("linkURL").ifEmpty { image.attr("largeImageURL") }
-                .toAbsoluteUrl(domain)
-            MangaPage(
-                id = generateUid(url),
-                url = url,
-                preview = image.attr("thumbURL").toAbsoluteUrl(domain).nullIfEmpty(),
-                source = source,
-            )
+        // Search for images with Juicebox styles (e.g. /styles/juicebox_square_thumbnail_comics/public/...)
+        val doc = org.jsoup.Jsoup.parse(html)
+        val images = doc.select("img[src*='/styles/']").mapNotNull { img ->
+            val src = img.attr("src")
+            if (src.contains("/public/")) {
+                // Transform thumbnail to original: remove segment between /styles/ and /public/
+                val originalUrl = src.replace(Regex("/styles/[^/]+/public/"), "/public/")
+                    .substringBefore("?")
+                    .toAbsoluteUrl(domain)
+                
+                MangaPage(
+                    id = generateUid(originalUrl),
+                    url = originalUrl,
+                    preview = src.toAbsoluteUrl(domain),
+                    source = source,
+                )
+            } else null
+        }.distinctBy { it.url }
+
+        if (images.isNotEmpty()) {
+            return images
         }
+
+        // Fallback: search any wp-content/uploads pattern
+        val imagesRegex = """["'](https?://[^"']+/wp-content/uploads/[^"']+)["']""".toRegex()
+        val matches = imagesRegex.findAll(html)
+            .map { it.groupValues[1] }
+            .distinct()
+            .toList()
+
+        if (matches.isNotEmpty()) {
+            return matches.map { url ->
+                MangaPage(
+                    id = generateUid(url),
+                    url = url,
+                    preview = null,
+                    source = source,
+                )
+            }
+        }
+
+        return emptyList()
     }
 
     private fun parseUnlabelledAuthorNames(document: org.jsoup.nodes.Document): List<String> {
@@ -232,5 +260,4 @@ internal class Multporn(context: MangaLoaderContext) :
     companion object {
         private val configUrlRegex = """(?:"configUrl"|configUrl)\s*:\s*"([^"]+)"""".toRegex()
     }
-
 }

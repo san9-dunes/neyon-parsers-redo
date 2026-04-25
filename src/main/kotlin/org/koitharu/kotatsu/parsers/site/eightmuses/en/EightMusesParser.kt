@@ -136,31 +136,57 @@ internal abstract class EightMusesParser(
         override suspend fun getPages(chapter: MangaChapter): List<MangaPage> {
                 val doc = webClient.httpGet(chapter.url.toAbsoluteUrl(domain)).parseHtml()
                 
-                // If it's an image page already
-                if (chapter.url.contains("/image/") || chapter.url.contains("/picture/")) {
-                         val src = doc.selectFirst("img.main-image, img[src*='/image/fm/'], img[src*='/picture/fm/']")?.requireSrc()
+                // If it's a viewer page (single image)
+                if (chapter.url.contains("/picture/")) {
+                         val img = doc.selectFirst("img.main-image, .image img, img[src*='/image/']")
+                         val src = img?.attr("data-src")?.takeIf { it.isNotEmpty() } ?: img?.attr("src")
                          return if (src != null) {
-                                 listOf(MangaPage(id = generateUid(src), url = src, preview = null, source = source))
+                                 val fullSrc = src.toFullImageSize().toAbsoluteUrl(domain)
+                                 listOf(MangaPage(id = generateUid(fullSrc), url = fullSrc, preview = null, source = source))
                          } else emptyList()
                 }
 
-                // If it's an album page, find all image links
-                return doc.select(".gallery .image a[href*='/image/'], .gallery .image a[href*='/picture/'], .gallery a[href*='/picture/']").map { a ->
-                        val href = a.attrAsRelativeUrl("href")
-                        MangaPage(
+                // If it's an album page, find all items
+                return doc.select(".gallery .image, .gallery .album, .album-card, .image-container").mapNotNull { el ->
+                        val a = el.selectFirst("a")
+                        val img = el.selectFirst("img")
+                        val src = img?.attr("data-src")?.takeIf { it.isNotEmpty() } ?: img?.attr("src")
+                        
+                        if (a != null) {
+                            val href = a.attrAsRelativeUrl("href")
+                            MangaPage(
                                 id = generateUid(href),
                                 url = href,
-                                preview = a.selectFirst("img")?.requireSrc(),
+                                preview = src?.toAbsoluteUrl(domain),
                                 source = source,
-                        )
+                            )
+                        } else if (src != null) {
+                            // Direct image link (thumbnail to full)
+                            val fullSrc = src.toFullImageSize().toAbsoluteUrl(domain)
+                            MangaPage(
+                                id = generateUid(fullSrc),
+                                url = fullSrc,
+                                preview = src.toAbsoluteUrl(domain),
+                                source = source,
+                            )
+                        } else null
                 }
         }
 
         override suspend fun getPageUrl(page: MangaPage): String {
-                if (page.url.contains("/image/fm/") || page.url.contains("/picture/fm/")) return page.url
+                if (page.url.contains("/image/fl/") || page.url.contains("/image/pb/") || page.url.contains("/image/images/")) return page.url
                 
                 val doc = webClient.httpGet(page.url.toAbsoluteUrl(domain)).parseHtml()
-                val src = doc.selectFirst("img.main-image, .image-container img, img[src*='/image/fm/'], img[src*='/picture/fm/']")?.requireSrc()
-                return src ?: page.url
+                val img = doc.selectFirst("img.main-image, .image img, #image, img[src*='/image/']")
+                val src = img?.attr("data-src")?.takeIf { it.isNotEmpty() } ?: img?.attr("src")
+                
+                return src?.toFullImageSize()?.toAbsoluteUrl(domain) ?: page.url
+        }
+
+        private fun String.toFullImageSize(): String {
+                return replace("/th/", "/fl/")
+                        .replace("/as/", "/fl/")
+                        .replace("/thumbnails/", "/images/")
+                        .replace("/fm/", "/fl/")
         }
 }
